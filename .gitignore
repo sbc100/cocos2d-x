@@ -44,6 +44,10 @@ local.properties
 # Ignore files build by linux
 *.o
 
+# Ignore files built by NaCl
+*/proj.nacl/lib*.a
+*/proj.nacl/lib*.so
+
 # Ignore python compiled files
 *.pyc
 

@@ -1,9 +1,11 @@
+AR      = i686-nacl-ar
 CC      = i686-nacl-gcc
 CXX     = i686-nacl-g++
-TARGET	= libcocos2d.so
+TARGET	= libcocos2d.a
 CCFLAGS = -Wall -fPIC
 CXXFLAGS = -Wall -fPIC
 VISIBILITY = 
+ARFLAGS = cr
 
 LIBS = 
 
@@ -162,8 +164,11 @@ release: DEFINES += -DNDEBUG -DCC_ENABLE_CHIPMUNK_INTEGRATION
 release: $(TARGET)
 
 ####### Build rules
+#$(TARGET): $(OBJECTS) 
+#	$(CXX) $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(OBJECTS) -shared -o $(TARGET) $(SHAREDLIBS) $(STATICLIBS) $(LIBS)
+
 $(TARGET): $(OBJECTS) 
-	$(CXX) $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(OBJECTS) -shared -o $(TARGET) $(SHAREDLIBS) $(STATICLIBS) $(LIBS)
+	$(AR) $(ARFLAGS) $(TARGET) $(OBJECTS)
 
 ####### Compile
 %.o: %.cpp
