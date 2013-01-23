@@ -1,9 +1,11 @@
-AR      = i686-nacl-ar
-CC      = i686-nacl-gcc
+NACL_ARCH = x86_64
+NACL_LIBC = newlib
+AR      = $(NACL_ARCH)-nacl-ar
+CC      = $(NACL_ARCH)-nacl-gcc
 CXX     = i686-nacl-g++
 TARGET	= libcocos2d.a
-CCFLAGS = -Wall -fPIC
-CXXFLAGS = -Wall -fPIC
+CCFLAGS = -Wall
+CXXFLAGS = -Wall
 VISIBILITY = 
 ARFLAGS = cr
 
@@ -21,14 +23,14 @@ INCLUDES = -I.. \
 			-I../../extensions/GUI/CCControlExtension \
                         -I../../external/chipmunk/include/chipmunk \
 			-I../../extensions/network \
-			-I../platform/nacl/ \
-			-I../platform/third_party/linux/libxml2 \
-			-I../platform/third_party/linux/libpng \
-			-I../platform/third_party/linux/libjpeg \
-			-I../platform/third_party/linux/libtiff/include
+			-I../platform/nacl/
+			#-I../platform/third_party/linux/libxml2 \
+			#-I../platform/third_party/linux/libpng \
+			#-I../platform/third_party/linux/libjpeg \
+			#-I../platform/third_party/linux/libtiff/include
 
 NACL_ARCH ?= 'i686'
-INCLUDES += -I$(COCOS2DX_PATH)/platform/third_party/nacl -I$(NACL_SDK_ROOT)/include
+INCLUDES += -I$(COCOS2DX_PATH)/platform/third_party/nacl -I$(NACL_SDK_ROOT)/include -I$(NACL_SDK_ROOT)/toolchain/linux_x86_$(NACL_LIBC)/$(NACL_ARCH)-nacl/usr/include/libxml2
 
 OBJECTS = ../actions/CCAction.o \
 ../actions/CCActionCamera.o \
@@ -88,6 +90,7 @@ OBJECTS = ../actions/CCAction.o \
 ../platform/nacl/CCApplication.o \
 ../platform/nacl/CCEGLView.o \
 ../platform/nacl/CCImage.o \
+../platform/nacl/CCInstance.o \
 ../platform/nacl/jpeg_mem_src.o \
 ../script_support/CCScriptSupport.o \
 ../sprite_nodes/CCAnimation.o \

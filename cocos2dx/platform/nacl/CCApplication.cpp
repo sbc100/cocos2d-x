@@ -5,6 +5,7 @@
  *      Author: laschweinski
  */
 #include "CCApplication.h"
+#include "CCEGLView.h"
 #include <unistd.h>
 #include <sys/time.h>
 #include <string>
@@ -41,11 +42,8 @@ CCApplication::~CCApplication()
 int CCApplication::run()
 {
     // Initialize instance and cocos2d.
-    if (! applicationDidFinishLaunching())
-    {
+    if (!applicationDidFinishLaunching())
         return 0;
-    }
-
 
     for (;;) {
         long iLastTime = getCurrentMillSecond();
@@ -56,6 +54,7 @@ int CCApplication::run()
         }
 
     }
+
     return -1;
 }
 

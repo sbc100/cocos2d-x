@@ -1,30 +1,79 @@
 #include "main.h"
 #include "../Classes/AppDelegate.h"
 #include "cocos2d.h"
-
+#include "CCInstance.h"
+#include "CCModule.h"
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <string>
 
+#include "nacl-mounts/base/UrlLoaderJob.h"
+#include "fcntl.h"
+#include "sys/stat.h"
+
 USING_NS_CC;
 
-// 500 is enough?
-#define MAXPATHLEN 500
+AppDelegate g_app;
 
-int main(int argc, char **argv)
+void downloadFiles(MainThreadRunner* runner, const char** filenames, int num_files)
 {
-    // get application path
-    int length;
-    char fullpath[MAXPATHLEN];
-    length = readlink("/proc/self/exe", fullpath, sizeof(fullpath));
-    fullpath[length] = '\0';
+    CCLOG("Downloading %d files...", num_files);
+    for (int i = 0; i < num_files; i++)
+    {
+        std::vector<char> data;
+        const char* filename = filenames[i];
+        std::string url = "Resources/";
+        url += filename;
 
-    // create the application instance
-    AppDelegate app;
+        CCLOG("Downloading: %s -> %s", url.c_str(), filename);
+        UrlLoaderJob *job = new UrlLoaderJob;
+        job->set_url(url);
+        job->set_dst(&data);
+        runner->RunJob(job);
+        CCLOG("Got %d bytes", data.size());
+
+        CCLOG("Writing file: %s", filename);
+        int fd = open(filename, O_CREAT | O_WRONLY);
+        if (fd == -1)
+        {
+            CCLOG("Error writing file: %s", filename);
+            continue;
+        }
+        write(fd, &data[0], data.size());
+        close(fd);
+    }
+}
+
+void* cocos_main(void* arg)
+{
+    CocosPepperInstance* instance = (CocosPepperInstance*)arg;
+    fprintf(stderr, "in cocos_main\n");
+
+    mkdir("ipad", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    const char* filenames[] = { "ipad/HelloWorld.png",
+                                "ipad/CloseSelected.png",
+                                "ipad/CloseNormal.png" };
+
+    downloadFiles(instance->m_runner, filenames, sizeof(filenames)/sizeof(char*));
+
+    CCEGLView::g_instance = instance;
     CCEGLView* eglView = CCEGLView::sharedOpenGLView();
-    eglView->setFrameSize(480, 320);
+    fprintf(stderr, "calling setFrameSize\n");
+    eglView->setFrameSize(instance->m_size.width(), instance->m_size.height());
+    fprintf(stderr, "calling application->run\n");
+    int rtn = CCApplication::sharedApplication()->run();
+    fprintf(stderr, "app run returned: %d\n", rtn);
+    return NULL;
+}
 
-    return CCApplication::sharedApplication()->run();
+namespace pp
+{
+
+Module* CreateModule()
+{
+  return new CocosPepperModule();
+}
+
 }

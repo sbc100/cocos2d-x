@@ -11,12 +11,18 @@
 #include "platform/CCCommon.h"
 #include "cocoa/CCGeometry.h"
 #include "platform/CCEGLViewProtocol.h"
+#include "CCInstance.h"
+
+#include "ppapi/cpp/instance.h"
 
 bool initExtensions();
 
+class OpenGLContext;
+
 NS_CC_BEGIN
 
-class CCEGLView : public CCEGLViewProtocol{
+class CCEGLView : public CCEGLViewProtocol
+{
 public:
     CCEGLView();
     virtual ~CCEGLView();
@@ -42,12 +48,13 @@ public:
      @brief get the shared main open gl window
      */
     static CCEGLView* sharedOpenGLView();
+    static CocosPepperInstance* g_instance;
 private:
-    bool initGL();
+    bool initGL(int width, int height);
     void destroyGL();
-private:
     bool bIsInit;
     float m_fFrameZoomFactor;
+    OpenGLContext* m_context;
 };
 
 NS_CC_END

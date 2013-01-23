@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MAKEFLAGS=-j10
+MAKEFLAGS="-j10 CC=x86_64-nacl-gcc CXX=x86_64-nacl-g++"
 TXTCOLOR_DEFAULT="\033[0;m"
 TXTCOLOR_RED="\033[0;31m"
 TXTCOLOR_GREEN="\033[0;32m"
@@ -23,7 +23,7 @@ mkdir -p $OUTPUT_RELEASE
 make $MAKEFLAGS -C $COCOS2DX20_TRUNK/cocos2dx/proj.nacl debug
 check_make_result
 cp $COCOS2DX20_TRUNK/cocos2dx/proj.nacl/libcocos2d.a $OUTPUT_DEBUG
-#rm $COCOS2DX20_TRUNK/cocos2dx/proj.nacl/libcocos2d.a
+rm $COCOS2DX20_TRUNK/cocos2dx/proj.nacl/libcocos2d.a
 
 #make $MAKEFLAGS -C $COCOS2DX20_TRUNK/cocos2dx/proj.nacl clean
 #make $MAKEFLAGS -C $COCOS2DX20_TRUNK/cocos2dx/proj.nacl release

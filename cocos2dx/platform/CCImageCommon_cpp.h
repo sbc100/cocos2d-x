@@ -365,7 +365,6 @@ bool CCImage::_initWithPngData(void * pData, int nDatalen)
         CC_BREAK_IF(!info_ptr);
 
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_BADA && CC_TARGET_PLATFORM != CC_PLATFORM_NACL)
-#error goo
         CC_BREAK_IF(setjmp(png_jmpbuf(png_ptr)));
 #endif
 
