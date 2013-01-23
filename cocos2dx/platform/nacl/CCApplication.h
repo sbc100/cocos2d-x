@@ -17,35 +17,29 @@ class CCRect;
 class CCApplication : public CCApplicationProtocol
 {
 public:
-	CCApplication();
-	virtual ~CCApplication();
+    CCApplication();
+    virtual ~CCApplication();
 
-	/**
-	 @brief	Callback by CCDirector for limit FPS.
-	 @interval       The time, which expressed in second in second, between current frame and next.
-	 */
-	void setAnimationInterval(double interval);
+    /**
+     @brief Callback by CCDirector for limit FPS.
+     @interval       The time, which expressed in second in second, between current frame and next.
+     */
+    void setAnimationInterval(double interval);
 
-	/**
-	 @brief	Run the message loop.
-	 */
-	int run();
+    /**
+     @brief Run the message loop.
+     */
+    int run();
 
-	/**
-	 @brief	Get current applicaiton instance.
-	 @return Current application instance pointer.
-	 */
-	static CCApplication* sharedApplication();
+    /**
+     @brief Get current applicaiton instance.
+     @return Current application instance pointer.
+     */
+    static CCApplication* sharedApplication();
 
-	/* override functions */
-	virtual ccLanguageType getCurrentLanguage();
+    /* override functions */
+    virtual ccLanguageType getCurrentLanguage();
 
-	/* set the Resource root path */
-	void setResourceRootPath(const char* pszRootResDir);
-    
-	/* get the Resource root path */
-	const char* getResourceRootPath(void);
-    
     /**
      @brief Get target platform
      */
@@ -53,7 +47,7 @@ public:
 protected:
     long       m_nAnimationInterval;  //micro second
 
-	static CCApplication * sm_pSharedApplication;
+    static CCApplication * sm_pSharedApplication;
 };
 
 NS_CC_END

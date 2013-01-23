@@ -83,6 +83,12 @@ OBJECTS = ../actions/CCAction.o \
 ../platform/CCThread.o \
 ../platform/platform.o \
 ../platform/CCEGLViewProtocol.o \
+../platform/nacl/CCCommon.o \
+../platform/nacl/CCFileUtils.o \
+../platform/nacl/CCApplication.o \
+../platform/nacl/CCEGLView.o \
+../platform/nacl/CCImage.o \
+../platform/nacl/jpeg_mem_src.o \
 ../script_support/CCScriptSupport.o \
 ../sprite_nodes/CCAnimation.o \
 ../sprite_nodes/CCAnimationCache.o \
