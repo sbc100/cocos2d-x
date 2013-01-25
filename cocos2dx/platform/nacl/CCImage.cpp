@@ -29,6 +29,7 @@ struct TextLine {
 };
 
 NS_CC_BEGIN
+
 class BitmapDC
 {
 public:
@@ -167,7 +168,7 @@ public:
             ++text_len;
             iCurXCursor += SHIFT6(face->glyph->metrics.horiAdvance) + iInterval;
         }
-        
+
         if (iError) {
             free(text_buf);
             return false;
@@ -215,8 +216,8 @@ public:
             //vertical center
             iRet = (borderHeight - txtHeight)/2 + SHIFT6(face->size->metrics.ascender);
 
-        } else if (eAlignMask == CCImage::kAlignBottomRight || 
-                   eAlignMask == CCImage::kAlignBottom || 
+        } else if (eAlignMask == CCImage::kAlignBottomRight ||
+                   eAlignMask == CCImage::kAlignBottom ||
                    eAlignMask == CCImage::kAlignBottomLeft ) {
             //vertical bottom
             iRet = borderHeight - txtHeight + SHIFT6(face->size->metrics.ascender);
@@ -269,25 +270,18 @@ public:
         FT_Face face;
         FT_Error iError;
 
-        //data will be deleted by CCImage
-//      if (m_pData) {
-//          delete m_pData;
-//      }
-
         int iCurXCursor, iCurYCursor;
         bool bRet = false;
-        if (libError) {
+        if (libError)
             return false;
-        }
-        do {
+
+        do
+        {
             std::string fontfile = getFontFile(pFontName);
             iError = FT_New_Face( library, fontfile.c_str(), 0, &face );
 
-            if (iError) {
-                //no valid font found use default
-//              CCLog("no valid font, use default %s\n", pFontName);
-                iError = FT_New_Face( library, "/usr/share/fonts/truetype/freefont/FreeSerif.ttf", 0, &face );
-            }
+            if (iError)
+                iError = FT_New_Face( library, "fonts/Marker Felt.ttf", 0, &face );
             CC_BREAK_IF(iError);
 
             //select utf8 charmap
@@ -349,16 +343,6 @@ public:
                                 continue;
                             }
 
-//                          m_pData[(iY * iMaxLineWidth + iX) * 4 + 3] =
-//                          bitmap.buffer[i * bitmap.width + j] ?
-//                          0xff : 0;//alpha
-//                          m_pData[(iY * iMaxLineWidth + iX) * 4 + 1] =
-//                          bitmap.buffer[i * bitmap.width + j];//R
-//                          m_pData[(iY * iMaxLineWidth + iX) * 4 + 2] =
-//                          bitmap.buffer[i * bitmap.width + j];//G
-//                          m_pData[(iY * iMaxLineWidth + iX) * 4 + 0] =
-//                          bitmap.buffer[i * bitmap.width + j];//B
-
                             int iTemp = cTemp << 24 | cTemp << 16 | cTemp << 8 | cTemp;
                             *(int*) &m_pData[(iY * iMaxLineWidth + iX) * 4 + 0] = iTemp;
                         }
@@ -370,25 +354,17 @@ public:
                 iCurYCursor += (face->size->metrics.ascender >> 6)
                 - (face->size->metrics.descender >> 6);
             }
-            //print all image bitmap
-//          for (int i = 0; i < iMaxLineHeight; i++) {
-//              for (int j = 0; j < iMaxLineWidth; j++) {
-//                  printf("%d",
-//                          m_pData[(i * iMaxLineWidth + j) * 4] ? 1 : 0);
-//              }
-//              printf("\n");
-//          }
 
             //  free face
             FT_Done_Face(face);
             face = NULL;
 
             //success;
-            if (iError) {
+            if (iError)
                 bRet = false;
-            } else
-            bRet = true;
-        }while(0);
+            else
+                bRet = true;
+        } while(0);
 
         return bRet;
     }
@@ -441,7 +417,10 @@ bool CCImage::initWithString(
         bRet = true;
 
         dc.reset();
-    }while (0);
+    } while (0);
+
+    if (!bRet)
+      CCLOG("CCImage::initWithString failed");
 
     //do nothing
     return bRet;
