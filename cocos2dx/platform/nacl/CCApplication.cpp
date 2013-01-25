@@ -45,11 +45,15 @@ int CCApplication::run()
     if (!applicationDidFinishLaunching())
         return 0;
 
-    for (;;) {
+    for (;;)
+    {
+        //CCLOG("looping");
         long iLastTime = getCurrentMillSecond();
         CCDirector::sharedDirector()->mainLoop();
         long iCurTime = getCurrentMillSecond();
-        if (iCurTime-iLastTime<m_nAnimationInterval){
+        if (iCurTime-iLastTime<m_nAnimationInterval)
+        {
+            //CCLOG("sleeping");
             usleep((m_nAnimationInterval - iCurTime+iLastTime)*1000);
         }
 
@@ -60,7 +64,6 @@ int CCApplication::run()
 
 void CCApplication::setAnimationInterval(double interval)
 {
-    //TODO do something else
     m_nAnimationInterval = interval*1000.0f;
 }
 

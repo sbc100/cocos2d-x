@@ -37,23 +37,8 @@ public:
     void InvalidateContext();
     void ResizeContext(int width, int height);
     void FlushContext();
-
-    bool flush_pending() const
-    {
-        return m_flush_pending;
-    }
-    void set_flush_pending(bool flag)
-    {
-        m_flush_pending = flag;
-    }
 private:
-    static void FlushCallback(void* data, int32_t result)
-    {
-        static_cast<OpenGLContext*>(data)->set_flush_pending(false);
-    }
-
     pp::Graphics3D m_context;
-    bool m_flush_pending;
     const struct PPB_OpenGLES2* m_gles2_interface;
     pp::Instance* m_instance;
     int m_width;
@@ -61,7 +46,7 @@ private:
 };
 
 OpenGLContext::OpenGLContext(pp::Instance* instance, int width, int height) :
-   pp::Graphics3DClient(instance), m_flush_pending(false), m_instance(instance), m_width(width), m_height(height)
+   pp::Graphics3DClient(instance), m_instance(instance), m_width(width), m_height(height)
 {
     pp::Module* module = pp::Module::Get();
     assert(module);
@@ -127,14 +112,8 @@ void OpenGLContext::ResizeContext(int width, int height)
 
 void OpenGLContext::FlushContext()
 {
-    CCLOG("OpenGLContext::FlushContext");
-    if (flush_pending())
-    {
-        // A flush is pending so do nothing; just drop this flush on the floor.
-        return;
-    }
-    set_flush_pending(true);
-    m_context.SwapBuffers(pp::BlockUntilComplete()); //CompletionCallback(&FlushCallback, this));
+    //CCLOG("OpenGLContext::FlushContext");
+    m_context.SwapBuffers(pp::BlockUntilComplete());
 }
 
 
