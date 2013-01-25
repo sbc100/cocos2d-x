@@ -31,11 +31,11 @@ rm $COCOS2DX20_TRUNK/cocos2dx/proj.nacl/libcocos2d.a
 #cp $COCOS2DX20_TRUNK/cocos2dx/proj.nacl/libcocos2d.a $OUTPUT_RELEASE
 #rm $COCOS2DX20_TRUNK/cocos2dx/proj.nacl/libcocos2d.a
 
-make $MAKEFLAGS -C $COCOS2DX20_TRUNK/samples/Cpp/HelloCpp/proj.nacl clean
-make $MAKEFLAGS -C $COCOS2DX20_TRUNK/samples/Cpp/HelloCpp/proj.nacl debug
+make $MAKEFLAGS -C $COCOS2DX20_TRUNK/samples/Cpp/HelloCpp/proj.nacl DEBUG=1 clean
+make $MAKEFLAGS -C $COCOS2DX20_TRUNK/samples/Cpp/HelloCpp/proj.nacl DEBUG=1
 check_make_result
 #make $MAKEFLAGS -C $COCOS2DX20_TRUNK/samples/Cpp/HelloCpp/proj.nacl clean
-#make $MAKEFLAGS -C $COCOS2DX20_TRUNK/samples/Cpp/HelloCpp/proj.nacl release
+#make $MAKEFLAGS -C $COCOS2DX20_TRUNK/samples/Cpp/HelloCpp/proj.nacl
 #check_make_result
 
 #make $MAKEFLAGS -C $COCOS2DX20_TRUNK/samples/Cpp/TestCpp/proj.nacl clean
