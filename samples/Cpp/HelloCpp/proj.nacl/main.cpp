@@ -52,10 +52,14 @@ void* cocos_main(void* arg)
     fprintf(stderr, "in cocos_main\n");
 
     mkdir("ipad", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    mkdir("iphone", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     mkdir("fonts", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     const char* filenames[] = { "ipad/HelloWorld.png",
                                 "ipad/CloseSelected.png",
                                 "ipad/CloseNormal.png",
+                                "iphone/HelloWorld.png",
+                                "iphone/CloseSelected.png",
+                                "iphone/CloseNormal.png",
                                 "fonts/Marker Felt.ttf" };
 
     downloadFiles(instance->m_runner, filenames, sizeof(filenames)/sizeof(char*));
