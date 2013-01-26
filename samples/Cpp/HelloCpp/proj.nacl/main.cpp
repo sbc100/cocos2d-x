@@ -51,6 +51,7 @@ void* cocos_main(void* arg)
     CocosPepperInstance* instance = (CocosPepperInstance*)arg;
     fprintf(stderr, "in cocos_main\n");
 
+    // TODO(sbc): remove this hack an replace with some kind of URL mount
     mkdir("ipad", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     mkdir("iphone", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     mkdir("fonts", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);

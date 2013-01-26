@@ -11,13 +11,14 @@
 #include "platform/CCCommon.h"
 #include "cocoa/CCGeometry.h"
 #include "platform/CCEGLViewProtocol.h"
-#include "CCInstance.h"
+#include "ppapi/cpp/input_event.h"
+#include <queue>
 
-#include "ppapi/cpp/instance.h"
 
 bool initExtensions();
 
 class OpenGLContext;
+class CocosPepperInstance;
 
 NS_CC_BEGIN
 
@@ -44,6 +45,10 @@ public:
     virtual void swapBuffers();
     virtual void setIMEKeyboardState(bool bOpen);
 
+    void addEvent();
+    void ProcessEventQueue();
+    void AddEvent(const pp::InputEvent& event);
+
     /**
      @brief get the shared main open gl window
      */
@@ -53,8 +58,11 @@ private:
     bool initGL(int width, int height);
     void destroyGL();
     bool bIsInit;
+    bool bIsMouseDown;
     float m_fFrameZoomFactor;
     OpenGLContext* m_context;
+    std::queue<pp::InputEvent> m_event_queue;
+    pthread_mutex_t m_mutex;
 };
 
 NS_CC_END

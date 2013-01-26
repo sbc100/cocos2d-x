@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <algorithm>
 #include <fontconfig/fontconfig.h>
 
 #include "platform/CCFileUtils.h"
@@ -34,7 +35,7 @@ class BitmapDC
 {
 public:
     BitmapDC() {
-        libError = FT_Init_FreeType( &library );
+        libError = FT_Init_FreeType(&library);
         FcInit();
         iInterval = szFont_kenning;
         m_pData = NULL;
@@ -98,7 +99,8 @@ public:
         return 0;
     }
 
-    void buildLine(wchar_t* buf, size_t buf_len, FT_Face face, int iCurXCursor, FT_UInt cLastChar) {
+    void buildLine(wchar_t* buf, size_t buf_len, FT_Face face, int iCurXCursor, FT_UInt cLastChar)
+    {
         TextLine oTempLine;
         wchar_t* text = (wchar_t*)malloc(sizeof(wchar_t) * (buf_len+1));
         memcpy(text, buf, sizeof(wchar_t) * buf_len);
@@ -106,7 +108,7 @@ public:
         oTempLine.text = text;
 
         //get last glyph
-        int iError = FT_Load_Char(face, cLastChar, FT_LOAD_DEFAULT);
+        FT_Load_Char(face, cLastChar, FT_LOAD_DEFAULT);
 
         oTempLine.iLineWidth = iCurXCursor;// - SHIFT6((face->glyph->metrics.horiAdvance + face->glyph->metrics.horiBearingX - face->glyph->metrics.width))/*-iInterval*/;//TODO interval
         iMaxLineWidth = MAX(iMaxLineWidth, oTempLine.iLineWidth);
@@ -114,9 +116,10 @@ public:
         vLines.push_back(oTempLine);
     }
 
-    bool divideString(FT_Face face, const char* sText, int iMaxWidth, int iMaxHeight) {
+    bool divideString(FT_Face face, const char* sText, int iMaxWidth, int iMaxHeight)
+    {
         int iError = 0;
-        int iCurXCursor, iCurYCursor;
+        int iCurXCursor;
         const char* pText = sText;
 
         FT_UInt unicode = utf8((char**)&pText);
@@ -131,7 +134,7 @@ public:
         pText = sText;
         size_t text_len = 0;
         wchar_t* text_buf = (wchar_t*) malloc(sizeof(wchar_t) * strlen(sText));
-        while (unicode=utf8((char**)&pText)) {
+        while ((unicode=utf8((char**)&pText))) {
             if (unicode == '\n') {
                 buildLine(text_buf, text_len, face, iCurXCursor, cLastCh);
                 text_len = 0;
@@ -209,7 +212,8 @@ public:
         return iRet;
     }
 
-    int computeLineStartY( FT_Face face, CCImage::ETextAlign eAlignMask, int txtHeight, int borderHeight ){
+    int computeLineStartY(FT_Face face, CCImage::ETextAlign eAlignMask, int txtHeight, int borderHeight)
+    {
         int iRet;
         if (eAlignMask == CCImage::kAlignCenter || eAlignMask == CCImage::kAlignLeft ||
             eAlignMask == CCImage::kAlignRight ) {
@@ -228,15 +232,18 @@ public:
         return iRet;
     }
 
-    std::string getFontFile(const char* family_name) {
+    std::string getFontFile(const char* family_name)
+    {
         std::string fontPath = family_name;
 
         // check if the parameter is a font file shipped with the application
-        if ( fontPath.find(".ttf") != std::string::npos ) {
+        if (fontPath.find(".ttf") != std::string::npos)
+        {
             fontPath = std::string("/") + fontPath;
 
             FILE *f = fopen(fontPath.c_str(), "r");
-            if ( f ) {
+            if (f)
+            {
                 fclose(f);
                 return fontPath;
             }
@@ -249,9 +256,11 @@ public:
 
         FcResult result;
         FcPattern *font = FcFontMatch(0, pattern, &result);
-        if ( font ) {
+        if (font)
+        {
             FcChar8 *s = NULL;
-            if ( FcPatternGetString(font, FC_FILE, 0, &s) == FcResultMatch ) {
+            if (FcPatternGetString(font, FC_FILE, 0, &s) == FcResultMatch)
+            {
                 fontPath = (const char*)s;
 
                 FcPatternDestroy(font);
@@ -266,7 +275,8 @@ public:
         return family_name;
     }
 
-    bool getBitmap(const char *text, int nWidth, int nHeight, CCImage::ETextAlign eAlignMask, const char * pFontName, float fontSize) {
+    bool getBitmap(const char *text, int nWidth, int nHeight, CCImage::ETextAlign eAlignMask, const char * pFontName, float fontSize)
+    {
         FT_Face face;
         FT_Error iError;
 
@@ -278,10 +288,36 @@ public:
         do
         {
             std::string fontfile = getFontFile(pFontName);
-            iError = FT_New_Face( library, fontfile.c_str(), 0, &face );
+            std::string fontfile_orig = std::string(fontfile);
+
+            std::string ext = fileNameExtension(fontfile) ;
+            if (ext.empty() || (ext != "ttf" && ext != "TTF"))
+            {
+                fontfile += ".ttf" ;
+            }
+
+            iError = FT_New_Face(library, fontfile.c_str(), 0, &face);
+            // try with fonts prefixed
+            if (iError && !startsWith(fontfile,"fonts/") )
+            {
+                fontfile = std::string("fonts/") + fontfile;
+                iError = FT_New_Face(library, fontfile.c_str(), 0, &face);
+            }
 
             if (iError)
-                iError = FT_New_Face( library, "fonts/Marker Felt.ttf", 0, &face );
+            {
+                // try lowercase version
+                std::transform(fontfile.begin(), fontfile.end(), fontfile.begin(), ::tolower);
+                iError = FT_New_Face(library, fontfile.c_str(), 0, &face);
+                if (iError)
+                {
+                    // try default font
+                    CCLOG("font missing (%s) falling back to default font", fontfile_orig.c_str());
+                    iError = FT_New_Face(library, "fonts/Marker Felt.ttf", 0, &face);
+                    if (iError)
+                        CCLOG("default font missing (fonts/Marker Felt.ttf)");
+                }
+            }
             CC_BREAK_IF(iError);
 
             //select utf8 charmap
@@ -305,7 +341,7 @@ public:
             iMaxLineHeight = MAX(iMaxLineHeight, nHeight);
             m_pData = new unsigned char[iMaxLineWidth * iMaxLineHeight*4];
 //          iCurYCursor = SHIFT6(face->size->metrics.ascender);
-            iCurYCursor = computeLineStartY( face, eAlignMask, txtHeight, iMaxLineHeight );
+            iCurYCursor = computeLineStartY(face, eAlignMask, txtHeight, iMaxLineHeight);
 
             memset(m_pData,0, iMaxLineWidth * iMaxLineHeight*4);
 
@@ -369,6 +405,7 @@ public:
         return bRet;
     }
 public:
+
     FT_Library library;
 
     unsigned char *m_pData;
@@ -377,6 +414,9 @@ public:
     int iInterval;
     int iMaxLineWidth;
     int iMaxLineHeight;
+private:
+    bool startsWith(const std::string& str, const std::string& what);
+    std::string fileNameExtension(const std::string& pathName);
 };
 
 static BitmapDC& sharedBitmapDC()
@@ -424,6 +464,28 @@ bool CCImage::initWithString(
 
     //do nothing
     return bRet;
+}
+
+std::string BitmapDC::fileNameExtension(const std::string& pathName)
+{
+    std::string ext ;
+    std::string::size_type pos = pathName.find_last_of(".") ;
+    if (pos != std::string::npos && pos != pathName.size()-1 )
+    {
+        ext = pathName.substr(pos+1) ;
+    }
+
+    return ext ;
+}
+
+bool BitmapDC::startsWith(const std::string& str, const std::string& what)
+{
+    bool result = false ;
+    if (what.size() <= str.size())
+    {
+        result = (str.substr(0, what.size()) == what);
+    }
+    return result ;
 }
 
 NS_CC_END

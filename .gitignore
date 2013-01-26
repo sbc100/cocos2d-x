@@ -42,9 +42,8 @@ local.properties
 *.o
 
 # Ignore files built by NaCl
-*/proj.nacl/lib*.a
-*/proj.nacl/lib*.so
 samples/Cpp/HelloCpp/proj.nacl/Resources/
+samples/Cpp/TestCpp/proj.nacl/Resources/
 
 # Ignore python compiled files
 *.pyc

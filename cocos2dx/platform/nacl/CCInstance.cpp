@@ -1,5 +1,6 @@
 #include "platform/CCCommon.h"
 #include "CCInstance.h"
+#include "CCEGLView.h"
 #include <ppapi/cpp/instance.h>
 #include <ppapi/cpp/module.h>
 #ifndef OLD_NACL_MOUNTS
@@ -9,8 +10,9 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
-
 #include <pthread.h>
+
+USING_NS_CC;
 
 CocosPepperInstance::CocosPepperInstance(PP_Instance instance) : pp::Instance(instance),
 #ifdef OLD_NACL_MOUNTS
@@ -52,3 +54,10 @@ bool CocosPepperInstance::Init(uint32_t argc, const char* argn[], const char* ar
     CCLOG("CocosPepperInstance::Init");
     return true;
 }
+
+bool CocosPepperInstance::HandleInputEvent(const pp::InputEvent& event)
+{
+    CCEGLView::sharedOpenGLView()->AddEvent(event);
+    return true;
+}
+

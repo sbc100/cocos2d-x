@@ -9,6 +9,7 @@
 #include "CCGL.h"
 #include "ccMacros.h"
 #include "CCDirector.h"
+#include "CCInstance.h"
 #include "touch_dispatcher/CCTouch.h"
 #include "touch_dispatcher/CCTouchDispatcher.h"
 #include "text_input_node/CCIMEDispatcher.h"
@@ -18,7 +19,6 @@
 #include "ppapi/cpp/graphics_3d_client.h"
 #include "ppapi/cpp/size.h"
 #include "ppapi/cpp/module.h"
-
 #include "ppapi/cpp/completion_callback.h"
 #include "ppapi/gles2/gl2ext_ppapi.h"
 
@@ -119,9 +119,10 @@ void OpenGLContext::FlushContext()
 
 NS_CC_BEGIN
 
-CCEGLView::CCEGLView() : bIsInit(false), m_fFrameZoomFactor(1.0f), m_context(NULL)
+CCEGLView::CCEGLView() : bIsInit(false), bIsMouseDown(false), m_fFrameZoomFactor(1.0f), m_context(NULL)
 {
     CCLOG("CCEGLView::CCEGLView");
+    pthread_mutex_init(&m_mutex, NULL);
 }
 
 CCEGLView::~CCEGLView()
@@ -168,7 +169,6 @@ void CCEGLView::swapBuffers()
     if (!bIsInit)
         return;
 
-    /* Swap buffers */
     m_context->FlushContext();
 }
 
@@ -208,6 +208,61 @@ CCEGLView* CCEGLView::sharedOpenGLView()
         s_pEglView = new CCEGLView();
     }
     return s_pEglView;
+}
+
+
+void CCEGLView::ProcessEventQueue()
+{
+    pthread_mutex_lock(&m_mutex);
+    while (m_event_queue.size())
+    {
+        pp::InputEvent event = m_event_queue.front();
+        m_event_queue.pop();
+        PP_InputEvent_Type type = event.GetType();
+        switch (type)
+        {
+            case PP_INPUTEVENT_TYPE_MOUSEDOWN:
+            case PP_INPUTEVENT_TYPE_MOUSEUP:
+            case PP_INPUTEVENT_TYPE_MOUSEMOVE:
+                {
+                    pp::MouseInputEvent* mouse_event = reinterpret_cast<pp::MouseInputEvent*>(&event);
+                    pp::Point pos = mouse_event->GetPosition();
+                    float x = pos.x();
+                    float y = pos.y();
+                    int touchID = 1;
+                    //CCLOG("touchevent at: %.0f %.0f", x, y);
+                    switch (type)
+                    {
+                        case PP_INPUTEVENT_TYPE_MOUSEDOWN:
+                            handleTouchesBegin(1, &touchID, &x, &y);
+                            bIsMouseDown = true;
+                            break;
+                        case PP_INPUTEVENT_TYPE_MOUSEUP:
+                            handleTouchesEnd(1, &touchID, &x, &y);
+                            bIsMouseDown = false;
+                            break;
+                        case PP_INPUTEVENT_TYPE_MOUSEMOVE:
+                            if (bIsMouseDown)
+                                handleTouchesMove(1, &touchID, &x, &y);
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                }
+            default:
+                CCLOG("unhandled event type: %d", type);
+                break;
+        }
+    }
+    pthread_mutex_unlock(&m_mutex);
+}
+
+void CCEGLView::AddEvent(const pp::InputEvent& event)
+{
+    pthread_mutex_lock(&m_mutex);
+    m_event_queue.push(event);
+    pthread_mutex_unlock(&m_mutex);
 }
 
 CocosPepperInstance* CCEGLView::g_instance;

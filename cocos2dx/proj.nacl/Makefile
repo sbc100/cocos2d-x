@@ -1,9 +1,8 @@
-NACL_ARCH = x86_64
+NACL_ARCH ?= x86_64
 NACL_LIBC = newlib
 AR      = $(NACL_ARCH)-nacl-ar
 CC      = $(NACL_ARCH)-nacl-gcc
-CXX     = i686-nacl-g++
-TARGET	= libcocos2d.a
+CXX     = $(NACL_ARCH)-nacl-g++
 CCFLAGS = -Wall
 CXXFLAGS = -Wall
 VISIBILITY = 
@@ -23,13 +22,8 @@ INCLUDES = -I.. \
 			-I../../extensions/GUI/CCControlExtension \
                         -I../../external/chipmunk/include/chipmunk \
 			-I../../extensions/network \
-			-I../platform/nacl/
-			#-I../platform/third_party/linux/libxml2 \
-			#-I../platform/third_party/linux/libpng \
-			#-I../platform/third_party/linux/libjpeg \
-			#-I../platform/third_party/linux/libtiff/include
+			-I../platform/nacl
 
-NACL_ARCH ?= 'i686'
 INCLUDES += -I$(COCOS2DX_PATH)/platform/third_party/nacl -I$(NACL_SDK_ROOT)/include -I$(NACL_SDK_ROOT)/toolchain/linux_x86_$(NACL_LIBC)/$(NACL_ARCH)-nacl/usr/include/libxml2
 
 OBJECTS = ../actions/CCAction.o \
@@ -151,33 +145,30 @@ OBJECTS = ../actions/CCAction.o \
 ../cocos2d.o 
 
 
-STATICLIBS_DIR = ../platform/third_party/nacl/libraries/$(NACL_ARCH)
 STATICLIBS = 
-#STATICLIBS = $(STATICLIBS_DIR)/libfreetype.a \
-#			$(STATICLIBS_DIR)/libxml2.a \
-#			$(STATICLIBS_DIR)/libpng.a \
-#			$(STATICLIBS_DIR)/libjpeg.a \
-#			$(STATICLIBS_DIR)/libtiff.a 
+STATICLIBS_DIR = ../platform/third_party/nacl/libraries/$(NACL_ARCH)
 
-SHAREDLIBS = 
-SHAREDLIBS += -lfontconfig
+DEFINES += -DCC_ENABLE_CHIPMUNK_INTEGRATION
 
-debug: CCFLAGS += -g3 -O0
-debug: CXXFLAGS += -g3 -O0
-debug: DEFINES += -DDEBUG -DCC_ENABLE_CHIPMUNK_INTEGRATION -DCOCOS2D_DEBUG=1
-debug: $(TARGET)
+ifdef DEBUG
+CCFLAGS += -g3 -O0
+CXXFLAGS += -g3 -O0
+DEFINES += -DDEBUG -DCOCOS2D_DEBUG=1
+LIB_DIR = ../../lib/nacl/Debug
+else
+CCFLAGS += -O3
+CXXFLAGS += -O3
+DEFINES += -DNDEBUG
+LIB_DIR = ../../lib/nacl/Release
+endif
 
-release: CCFLAGS += -O3
-release: CXXFLAGS += -O3
-release: DEFINES += -DNDEBUG -DCC_ENABLE_CHIPMUNK_INTEGRATION
-release: $(TARGET)
+TARGET = $(LIB_DIR)/libcocos2d.a
+
+all: $(TARGET)
 
 ####### Build rules
-#$(TARGET): $(OBJECTS) 
-#	$(CXX) $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(OBJECTS) -shared -o $(TARGET) $(SHAREDLIBS) $(STATICLIBS) $(LIBS)
-
 $(TARGET): $(OBJECTS) 
-	$(AR) $(ARFLAGS) $(TARGET) $(OBJECTS)
+	$(AR) $(ARFLAGS) $@ $^
 
 ####### Compile
 %.o: %.cpp

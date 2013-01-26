@@ -1,47 +1,36 @@
 #!/bin/bash
 
-MAKEFLAGS="-j10 CC=x86_64-nacl-gcc CXX=x86_64-nacl-g++"
+MAKEFLAGS=-j10
 TXTCOLOR_DEFAULT="\033[0;m"
 TXTCOLOR_RED="\033[0;31m"
 TXTCOLOR_GREEN="\033[0;32m"
 
 COCOS2DX20_TRUNK=`pwd`
-OUTPUT_DEBUG=$COCOS2DX20_TRUNK/lib/nacl/Debug/
-OUTPUT_RELEASE=$COCOS2DX20_TRUNK/lib/nacl/Release/
+OUTPUT_DEBUG=lib/nacl/Debug/
+OUTPUT_RELEASE=lib/nacl/Release/
 
-check_make_result()
-{
-  if [ 0 != $? ]; then
-    exit 1
-  fi
-}
+set -e
 
 mkdir -p $OUTPUT_DEBUG
 mkdir -p $OUTPUT_RELEASE
 
-#make $MAKEFLAGS -C $COCOS2DX20_TRUNK/cocos2dx/proj.nacl clean
-make $MAKEFLAGS -C $COCOS2DX20_TRUNK/cocos2dx/proj.nacl debug
-check_make_result
-cp $COCOS2DX20_TRUNK/cocos2dx/proj.nacl/libcocos2d.a $OUTPUT_DEBUG
-rm $COCOS2DX20_TRUNK/cocos2dx/proj.nacl/libcocos2d.a
+cd $COCOS2DX20_TRUNK
 
-#make $MAKEFLAGS -C $COCOS2DX20_TRUNK/cocos2dx/proj.nacl clean
-#make $MAKEFLAGS -C $COCOS2DX20_TRUNK/cocos2dx/proj.nacl release
-#check_make_result
-#cp $COCOS2DX20_TRUNK/cocos2dx/proj.nacl/libcocos2d.a $OUTPUT_RELEASE
-#rm $COCOS2DX20_TRUNK/cocos2dx/proj.nacl/libcocos2d.a
+make $MAKEFLAGS -C cocos2dx/proj.nacl DEBUG=1 clean
+make $MAKEFLAGS -C cocos2dx/proj.nacl DEBUG=1
 
-make $MAKEFLAGS -C $COCOS2DX20_TRUNK/samples/Cpp/HelloCpp/proj.nacl DEBUG=1 clean
-make $MAKEFLAGS -C $COCOS2DX20_TRUNK/samples/Cpp/HelloCpp/proj.nacl DEBUG=1
-check_make_result
-#make $MAKEFLAGS -C $COCOS2DX20_TRUNK/samples/Cpp/HelloCpp/proj.nacl clean
-#make $MAKEFLAGS -C $COCOS2DX20_TRUNK/samples/Cpp/HelloCpp/proj.nacl
-#check_make_result
+make $MAKEFLAGS -C CocosDenshion/proj.nacl DEBUG=1 clean
+make $MAKEFLAGS -C CocosDenshion/proj.nacl DEBUG=1
 
-#make $MAKEFLAGS -C $COCOS2DX20_TRUNK/samples/Cpp/TestCpp/proj.nacl clean
-#make $MAKEFLAGS -C $COCOS2DX20_TRUNK/samples/Cpp/TestCpp/proj.nacl debug
-#check_make_result
-#make $MAKEFLAGS -C $COCOS2DX20_TRUNK/samples/Cpp/TestCpp/proj.nacl clean
-#make $MAKEFLAGS -C $COCOS2DX20_TRUNK/samples/Cpp/TestCpp/proj.nacl release
-#check_make_result
+make $MAKEFLAGS -C external/chipmunk/proj.nacl DEBUG=1 clean
+make $MAKEFLAGS -C external/chipmunk/proj.nacl DEBUG=1
+
+make $MAKEFLAGS -C external/Box2D/proj.nacl DEBUG=1 clean
+make $MAKEFLAGS -C external/Box2D/proj.nacl DEBUG=1
+
+make $MAKEFLAGS -C samples/Cpp/HelloCpp/proj.nacl DEBUG=1 clean
+make $MAKEFLAGS -C samples/Cpp/HelloCpp/proj.nacl DEBUG=1
+
+make $MAKEFLAGS -C samples/Cpp/TestCpp/proj.nacl DEBUG=1 clean
+make $MAKEFLAGS -C samples/Cpp/TestCpp/proj.nacl DEBUG=1
 

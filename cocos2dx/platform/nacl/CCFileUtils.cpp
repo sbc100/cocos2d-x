@@ -45,7 +45,6 @@ void CCFileUtils::purgeCachedEntries()
 
 const char* CCFileUtils::fullPathFromRelativePath(const char *pszRelativePath)
 {
-    CCLOG("fullPathFromRelativePath: %s (%s)", pszRelativePath, m_obDirectory.c_str());
     if (pszRelativePath && pszRelativePath[0] == '/')
     {
         return pszRelativePath;
@@ -65,7 +64,6 @@ const char* CCFileUtils::fullPathFromRelativePath(const char *pszRelativePath)
     }
 
     // check if file or path exist
-    CCLOG("stat: %s", pRet->getCString());
     struct stat sts;
     if (stat(pRet->getCString(), &sts) == -1 && errno == ENOENT)
     {
@@ -95,7 +93,6 @@ const char *CCFileUtils::fullPathFromRelativeFile(const char *pszFilename, const
 
 unsigned char* CCFileUtils::getFileData(const char* pszFileName, const char* pszMode, unsigned long * pSize)
 {
-    CCLOG("getFileData: %s", pszFileName);
     string fullPath = pszFileName;
     unsigned char * pData = 0;
 

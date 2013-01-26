@@ -3,6 +3,7 @@
 
 #include <ppapi/cpp/instance.h>
 #include <ppapi/cpp/input_event.h>
+#include <queue>
 
 #define OLD_NACL_MOUNTS 1
 
@@ -28,14 +29,12 @@ public:
 
     void DidChangeView(const pp::View& view);
 
-    bool HandleInputEvent(const pp::InputEvent& event)
-    {
-        return false;
-    }
+    bool HandleInputEvent(const pp::InputEvent& event);
 
     bool quit() const { return quit_; }
 
     pp::Size m_size;
+
 #ifdef OLD_NACL_MOUNTS
     MainThreadRunner* m_runner;
 #endif

@@ -47,16 +47,17 @@ int CCApplication::run()
 
     for (;;)
     {
-        //CCLOG("looping");
-        long iLastTime = getCurrentMillSecond();
+        //long iLastTime = getCurrentMillSecond();
         CCDirector::sharedDirector()->mainLoop();
-        long iCurTime = getCurrentMillSecond();
+        CCEGLView::sharedOpenGLView()->ProcessEventQueue();
+
+        //long iCurTime = getCurrentMillSecond();
+        /*
         if (iCurTime-iLastTime<m_nAnimationInterval)
         {
-            //CCLOG("sleeping");
             usleep((m_nAnimationInterval - iCurTime+iLastTime)*1000);
         }
-
+        */
     }
 
     return -1;
