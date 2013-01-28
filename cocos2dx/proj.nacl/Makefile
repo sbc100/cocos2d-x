@@ -150,7 +150,7 @@ STATICLIBS_DIR = ../platform/third_party/nacl/libraries/$(NACL_ARCH)
 
 DEFINES += -DCC_ENABLE_CHIPMUNK_INTEGRATION
 
-ifdef DEBUG
+ifeq ($(DEBUG), 1)
 CCFLAGS += -g3 -O0
 CXXFLAGS += -g3 -O0
 DEFINES += -DDEBUG -DCOCOS2D_DEBUG=1

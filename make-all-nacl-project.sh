@@ -18,19 +18,30 @@ cd $COCOS2DX20_TRUNK
 
 make $MAKEFLAGS -C cocos2dx/proj.nacl DEBUG=1 clean
 make $MAKEFLAGS -C cocos2dx/proj.nacl DEBUG=1
+make $MAKEFLAGS -C cocos2dx/proj.nacl DEBUG=0 clean
+make $MAKEFLAGS -C cocos2dx/proj.nacl DEBUG=0
 
 make $MAKEFLAGS -C CocosDenshion/proj.nacl DEBUG=1 clean
 make $MAKEFLAGS -C CocosDenshion/proj.nacl DEBUG=1
+make $MAKEFLAGS -C CocosDenshion/proj.nacl DEBUG=0 clean
+make $MAKEFLAGS -C CocosDenshion/proj.nacl DEBUG=0
 
 make $MAKEFLAGS -C external/chipmunk/proj.nacl DEBUG=1 clean
 make $MAKEFLAGS -C external/chipmunk/proj.nacl DEBUG=1
+make $MAKEFLAGS -C external/chipmunk/proj.nacl DEBUG=0 clean
+make $MAKEFLAGS -C external/chipmunk/proj.nacl DEBUG=0
 
 make $MAKEFLAGS -C external/Box2D/proj.nacl DEBUG=1 clean
 make $MAKEFLAGS -C external/Box2D/proj.nacl DEBUG=1
+make $MAKEFLAGS -C external/Box2D/proj.nacl DEBUG=0 clean
+make $MAKEFLAGS -C external/Box2D/proj.nacl DEBUG=0
 
 make $MAKEFLAGS -C samples/Cpp/HelloCpp/proj.nacl DEBUG=1 clean
 make $MAKEFLAGS -C samples/Cpp/HelloCpp/proj.nacl DEBUG=1
+make $MAKEFLAGS -C samples/Cpp/HelloCpp/proj.nacl DEBUG=0 clean
+make $MAKEFLAGS -C samples/Cpp/HelloCpp/proj.nacl DEBUG=0
 
 make $MAKEFLAGS -C samples/Cpp/TestCpp/proj.nacl DEBUG=1 clean
 make $MAKEFLAGS -C samples/Cpp/TestCpp/proj.nacl DEBUG=1
-
+make $MAKEFLAGS -C samples/Cpp/TestCpp/proj.nacl DEBUG=0 clean
+make $MAKEFLAGS -C samples/Cpp/TestCpp/proj.nacl DEBUG=0

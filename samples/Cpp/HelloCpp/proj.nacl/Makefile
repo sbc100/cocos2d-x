@@ -26,7 +26,7 @@ OBJECTS = ./main.o \
 
 SHAREDLIBS = -pthread
  
-ifdef DEBUG
+ifeq ($(DEBUG), 1)
 BIN_DIR = bin/debug
 CCFLAGS += -g3 -O0
 CXXFLAGS += -g3 -O0

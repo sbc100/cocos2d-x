@@ -58,7 +58,7 @@ OBJECTS = ../Collision/Shapes/b2ChainShape.o \
 ../Dynamics/b2WorldCallbacks.o \
 ../Rope/b2Rope.o
 
-ifdef DEBUG
+ifeq ($(DEBUG), 1)
 CCFLAGS += -g3 -O0
 CXXFLAGS += -g3 -O0
 DEFINES += -DDEBUG -DCC_ENABLE_CHIPMUNK_INTEGRATION -DCOCOS2D_DEBUG=1
