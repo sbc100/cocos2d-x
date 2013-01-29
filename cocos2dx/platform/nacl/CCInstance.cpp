@@ -18,9 +18,7 @@ CocosPepperInstance::CocosPepperInstance(PP_Instance instance) : pp::Instance(in
 #ifdef OLD_NACL_MOUNTS
     m_runner(NULL),
 #endif
-    width_(0),
-    height_(0),
-    quit_(false)
+    m_running(false)
 {
     RequestInputEvents(PP_INPUTEVENT_CLASS_MOUSE);
     RequestFilteringInputEvents(PP_INPUTEVENT_CLASS_KEYBOARD);
@@ -38,10 +36,23 @@ CocosPepperInstance::CocosPepperInstance(PP_Instance instance) : pp::Instance(in
 void CocosPepperInstance::DidChangeView(const pp::View& view)
 {
     pp::Rect position = view.GetRect();
-    m_size = position.size();
+    if (m_size == position.size())
+    {
+        // Size did not change.
+        return;
+    }
+
+    if (m_running)
+    {
+        CCLOG("DidChangeView (%dx%d) while cocos thread already running",
+               m_size.width(), m_size.height());
+        return;
+    }
 
     CCLOG("DidChangeView %dx%d", m_size.width(), m_size.height());
+    m_size = position.size();
     pthread_create(&m_cocos_thread, NULL, cocos_main, this);
+    m_running = true;
 }
 
 

@@ -30,17 +30,19 @@ ifeq ($(DEBUG), 1)
 BIN_DIR = bin/debug
 CCFLAGS += -g3 -O0
 CXXFLAGS += -g3 -O0
-SHAREDLIBS += -L../../../../lib/nacl/Debug -lcocos2d -lz
+LIB_DIR = ../../../../lib/nacl/Debug
 DEFINES += -DDEBUG -DCOCOS2D_DEBUG=1
 STATICLIBS = -L$(NACL_SDK_ROOT)/lib/$(NACL_LIBC)_$(NACL_ARCH)/Debug 
 else
 BIN_DIR = bin/release
 CCFLAGS += -O3
 CXXFLAGS += -O3
-SHAREDLIBS += -L../../../../lib/nacl/Release
+LIB_DIR = ../../../../lib/nacl/Release
 DEFINES += -DNDEBUG
 STATICLIBS = -L$(NACL_SDK_ROOT)/lib/$(NACL_LIBC)_$(NACL_ARCH)/Release 
 endif
+
+SHAREDLIBS += -L$(LIB_DIR)
 
 STATICLIBS += -lfontconfig -lfreetype -lexpat -lxml2 -lpng -ljpeg -ltiff -lppapi_gles2 -lnacl-mounts -lppapi -lppapi_cpp 
 SHAREDLIBS += -lcocos2d -lz
@@ -51,7 +53,7 @@ NMF = $(basename $(TARGET)).nmf
 all: $(TARGET) $(NMF)
 	
 ####### Build rules
-$(TARGET): $(OBJECTS) 
+$(TARGET): $(OBJECTS) $(LIB_DIR)/libcocos2d.a
 	mkdir -p $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(OBJECTS) -o $@ $(SHAREDLIBS) $(STATICLIBS)
 

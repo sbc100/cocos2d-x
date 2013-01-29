@@ -31,18 +31,15 @@ public:
 
     bool HandleInputEvent(const pp::InputEvent& event);
 
-    bool quit() const { return quit_; }
-
-    pp::Size m_size;
+    pp::Size Size() { return m_size; }
 
 #ifdef OLD_NACL_MOUNTS
     MainThreadRunner* m_runner;
 #endif
 private:
+    pp::Size m_size;
     pthread_t m_cocos_thread;
-    int width_;
-    int height_;
-    bool quit_;
+    bool m_running;
 };
 
 #endif /* !CC_INSTANCE_H */
