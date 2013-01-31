@@ -8,10 +8,11 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <AL/alc.h>
 
 #include "nacl-mounts/base/UrlLoaderJob.h"
-#include "fcntl.h"
-#include "sys/stat.h"
 
 USING_NS_CC;
 
@@ -51,6 +52,8 @@ void* cocos_main(void* arg)
 {
     CocosPepperInstance* instance = (CocosPepperInstance*)arg;
     fprintf(stderr, "in cocos_main\n");
+
+    alSetPpapiInfo(instance->pp_instance(), pp::Module::Get()->get_browser_interface());
 
     // TODO(sbc): remove this hack an replace with some kind of URL mount
     const char* dirnames[] = { "Images", "extensions", "fonts", "ccb",
@@ -106,6 +109,8 @@ void* cocos_main(void* arg)
                                 "fonts/Marker Felt.ttf",
                                 "ccb/HelloCocosBuilder.ccbi",
                                 "ccb/burst.png",
+                                "effect1.wav",
+                                "background.mp3",
                                 "extensions/sliderTrack.png",
                                 "extensions/sliderProgress.png",
                                 "extensions/sliderThumb.png",

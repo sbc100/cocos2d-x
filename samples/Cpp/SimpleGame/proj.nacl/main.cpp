@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string>
+#include "AL/alc.h"
 
 #include "nacl-mounts/base/UrlLoaderJob.h"
 #include "fcntl.h"
@@ -51,6 +52,8 @@ void* cocos_main(void* arg)
     CocosPepperInstance* instance = (CocosPepperInstance*)arg;
     fprintf(stderr, "in cocos_main\n");
 
+    alSetPpapiInfo(instance->pp_instance(), pp::Module::Get()->get_browser_interface());
+
     // TODO(sbc): remove this hack an replace with some kind of URL mount
     mkdir("hd", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     mkdir("sd", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
@@ -65,6 +68,7 @@ void* cocos_main(void* arg)
                                 "sd/Player.png",
                                 "hd/Projectile.png",
                                 "sd/Projectile.png",
+                                "pew-pew-lei.wav",
                                 "fonts/Marker Felt.ttf" };
 
     downloadFiles(instance->m_runner, filenames, sizeof(filenames)/sizeof(char*));

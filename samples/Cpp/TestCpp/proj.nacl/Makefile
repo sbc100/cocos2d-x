@@ -131,8 +131,8 @@ endif
 
 SHAREDLIBS += -L$(LIB_DIR)
 
-STATICLIBS += -lfontconfig -lfreetype -lexpat -lxml2 -lpng -ljpeg -ltiff -lppapi_gles2 -lnacl-mounts -lppapi -lppapi_cpp
-SHAREDLIBS += -lcocos2d -lcocosdenshion  -lchipmunk -lbox2d -lz
+STATICLIBS += -lopenal -lvorbisfile -lvorbis -logg  -lalut -lfontconfig -lfreetype -lexpat -lxml2 -lpng -ljpeg -ltiff -lppapi_gles2 -lnacl-mounts -lppapi -lppapi_cpp
+SHAREDLIBS += -lcocos2d -lcocosdenshion -lchipmunk -lbox2d -lz
 
 TARGET = $(BIN_DIR)/TestCpp.nexe
 NMF = $(basename $(TARGET)).nmf
@@ -140,7 +140,7 @@ NMF = $(basename $(TARGET)).nmf
 all: $(TARGET) $(NMF)
 
 ####### Build rules
-$(TARGET): $(OBJECTS) $(LIB_DIR)/libcocos2d.a
+$(TARGET): $(OBJECTS) $(LIB_DIR)/libcocos2d.a $(LIB_DIR)/libcocosdenshion.a
 	mkdir -p $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(OBJECTS) -o $@ $(SHAREDLIBS) $(STATICLIBS)
 

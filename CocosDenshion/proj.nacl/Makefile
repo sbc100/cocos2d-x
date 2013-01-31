@@ -25,10 +25,9 @@ INCLUDES = -I.. \
 	-I../platform/nacl/
 
 
-NACL_ARCH ?= 'i686'
 INCLUDES += -I$(COCOS2DX_PATH)/platform/third_party/nacl -I$(NACL_SDK_ROOT)/include -I$(NACL_SDK_ROOT)/toolchain/linux_x86_$(NACL_LIBC)/$(NACL_ARCH)-nacl/usr/include/libxml2
 
-OBJECTS =  ../nacl/SimpleAudioEngine.o
+OBJECTS = ../blackberry/SimpleAudioEngine.o
 
 ifeq ($(DEBUG), 1)
 CCFLAGS += -g3 -O0

@@ -29,6 +29,7 @@ clean()
     make $MAKEFLAGS -C external/Box2D/proj.nacl $1 clean
     make $MAKEFLAGS -C samples/Cpp/HelloCpp/proj.nacl $1 clean
     make $MAKEFLAGS -C samples/Cpp/TestCpp/proj.nacl $1 clean
+    make $MAKEFLAGS -C samples/Cpp/SimpleGame/proj.nacl $1 clean
 }
 
 if [ "$1" = "all" ]; then
@@ -40,7 +41,7 @@ make $MAKEFLAGS -C CocosDenshion/proj.nacl DEBUG=1
 make $MAKEFLAGS -C external/chipmunk/proj.nacl DEBUG=1
 make $MAKEFLAGS -C external/Box2D/proj.nacl DEBUG=1
 make $MAKEFLAGS -C samples/Cpp/HelloCpp/proj.nacl DEBUG=1
-make $MAKEFLAGS -C samples/Cpp/TestCpp/proj.nacl DEBUG=1
+make $MAKEFLAGS -C samples/Cpp/SimpleGame/proj.nacl DEBUG=1
 
 if [ "$1" = "all" ]; then
     clean DEBUG=0
@@ -49,5 +50,5 @@ if [ "$1" = "all" ]; then
     make $MAKEFLAGS -C external/chipmunk/proj.nacl DEBUG=0
     make $MAKEFLAGS -C external/Box2D/proj.nacl DEBUG=0
     make $MAKEFLAGS -C samples/Cpp/HelloCpp/proj.nacl DEBUG=0
-    make $MAKEFLAGS -C samples/Cpp/TestCpp/proj.nacl DEBUG=0
+    make $MAKEFLAGS -C samples/Cpp/SimpleGame/proj.nacl DEBUG=0
 fi

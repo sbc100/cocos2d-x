@@ -43,8 +43,11 @@ endif
 
 SHAREDLIBS += -L$(LIB_DIR)
 
-STATICLIBS += -lfontconfig -lfreetype -lexpat -lxml2 -lpng -ljpeg -ltiff -lppapi_gles2 -lnacl-mounts -lppapi -lppapi_cpp
-SHAREDLIBS += -lcocos2d -lcocosdenshion  -lchipmunk -lbox2d -lz
+SOUNDLIBS = -lalut -lopenal -lvorbisfile -lvorbis -logg
+FONTLIBS = -lfontconfig -lfreetype -lexpat 
+
+STATICLIBS += $(SOUNDLIBS) $(FONTLIBS) -lxml2 -lpng -ljpeg -ltiff -lppapi_gles2 -lnacl-mounts -lppapi -lppapi_cpp
+SHAREDLIBS += -lcocos2d -lcocosdenshion -lchipmunk -lbox2d -lz
 
 TARGET = $(BIN_DIR)/SimpleGame.nexe
 NMF = $(basename $(TARGET)).nmf
