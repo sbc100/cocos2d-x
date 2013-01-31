@@ -1,14 +1,14 @@
 NACL_ARCH ?= x86_64
 NACL_LIBC = newlib
-AR      = $(NACL_ARCH)-nacl-ar
-CC      = $(NACL_ARCH)-nacl-gcc
-CXX     = $(NACL_ARCH)-nacl-g++
+AR      ?= $(NACL_ARCH)-nacl-ar
+CC      ?= $(NACL_ARCH)-nacl-gcc
+CXX     ?= $(NACL_ARCH)-nacl-g++
 CCFLAGS = -Wall
 CXXFLAGS = -Wall
-VISIBILITY = 
+VISIBILITY =
 ARFLAGS = cr
 
-LIBS = 
+LIBS =
 
 INCLUDES = -I.. \
 			-I../platform/third_party/linux/libfreetype2 \
@@ -24,7 +24,11 @@ INCLUDES = -I.. \
 			-I../../extensions/network \
 			-I../platform/nacl
 
-INCLUDES += -I$(COCOS2DX_PATH)/platform/third_party/nacl -I$(NACL_SDK_ROOT)/include -I$(NACL_SDK_ROOT)/toolchain/linux_x86_$(NACL_LIBC)/$(NACL_ARCH)-nacl/usr/include/libxml2
+NACLPORTS_INCLUDE ?= $(NACL_SDK_ROOT)/toolchain/linux_x86_$(NACL_LIBC)/$(NACL_ARCH)-nacl/usr/include
+INCLUDES += -I$(COCOS2DX_PATH)/platform/third_party/nacl
+INCLUDES += -I$(NACL_SDK_ROOT)/include
+INCLUDES += -I$(NACLPORTS_INCLUDE)
+INCLUDES += -I$(NACLPORTS_INCLUDE)/libxml2
 
 OBJECTS = ../actions/CCAction.o \
 ../actions/CCActionCamera.o \
@@ -142,24 +146,23 @@ OBJECTS = ../actions/CCAction.o \
 ../CCConfiguration.o \
 ../CCDirector.o \
 ../CCScheduler.o \
-../cocos2d.o 
+../cocos2d.o
 
-
-STATICLIBS = 
-STATICLIBS_DIR = ../platform/third_party/nacl/libraries/$(NACL_ARCH)
 
 DEFINES += -DCC_ENABLE_CHIPMUNK_INTEGRATION
+
+LIB_DIR_ROOT ?= ../../lib/nacl
 
 ifeq ($(DEBUG), 1)
 CCFLAGS += -g3 -O0
 CXXFLAGS += -g3 -O0
 DEFINES += -DDEBUG -DCOCOS2D_DEBUG=1
-LIB_DIR = ../../lib/nacl/Debug
+LIB_DIR = $(LIB_DIR_ROOT)/Debug
 else
 CCFLAGS += -O3
 CXXFLAGS += -O3
 DEFINES += -DNDEBUG
-LIB_DIR = ../../lib/nacl/Release
+LIB_DIR = $(LIB_DIR_ROOT)/Release
 endif
 
 TARGET = $(LIB_DIR)/libcocos2d.a
@@ -167,7 +170,7 @@ TARGET = $(LIB_DIR)/libcocos2d.a
 all: $(TARGET)
 
 ####### Build rules
-$(TARGET): $(OBJECTS) 
+$(TARGET): $(OBJECTS)
 	$(AR) $(ARFLAGS) $@ $^
 
 ####### Compile
@@ -177,5 +180,5 @@ $(TARGET): $(OBJECTS)
 %.o: %.c
 	$(CC) $(CCFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
 
-clean: 
+clean:
 	rm -f $(OBJECTS) $(TARGET) core

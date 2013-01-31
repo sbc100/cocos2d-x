@@ -12,6 +12,7 @@
 #include "cocoa/CCGeometry.h"
 #include "platform/CCEGLViewProtocol.h"
 #include "ppapi/cpp/input_event.h"
+#include <pthread.h>
 #include <queue>
 
 
