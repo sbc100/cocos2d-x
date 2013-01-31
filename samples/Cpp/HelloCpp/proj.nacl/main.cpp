@@ -17,6 +17,7 @@ USING_NS_CC;
 
 AppDelegate g_app;
 
+#ifdef OLD_NACL_MOUNTS
 void downloadFiles(MainThreadRunner* runner, const char** filenames, int num_files)
 {
     CCLOG("Downloading %d files...", num_files);
@@ -45,12 +46,14 @@ void downloadFiles(MainThreadRunner* runner, const char** filenames, int num_fil
         close(fd);
     }
 }
+#endif
 
 void* cocos_main(void* arg)
 {
     CocosPepperInstance* instance = (CocosPepperInstance*)arg;
     fprintf(stderr, "in cocos_main\n");
 
+#ifdef OLD_NACL_MOUNTS
     // TODO(sbc): remove this hack an replace with some kind of URL mount
     mkdir("ipad", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     mkdir("iphone", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
@@ -64,6 +67,7 @@ void* cocos_main(void* arg)
                                 "fonts/Marker Felt.ttf" };
 
     downloadFiles(instance->m_runner, filenames, sizeof(filenames)/sizeof(char*));
+#endif
 
     CCEGLView::g_instance = instance;
     CCEGLView* eglView = CCEGLView::sharedOpenGLView();

@@ -34,25 +34,25 @@ NS_CC_BEGIN
 class BitmapDC
 {
 public:
-    BitmapDC() {
-        libError = FT_Init_FreeType(&library);
+    BitmapDC() : m_pData(NULL), m_cachedSize(0), m_cachedFont(NULL)
+    {
+        libError = FT_Init_FreeType(&m_library);
         FcInit();
         iInterval = szFont_kenning;
-        m_pData = NULL;
         reset();
     }
 
-    ~BitmapDC() {
-        FT_Done_FreeType(library);
+    ~BitmapDC()
+    {
+        if (m_cachedFont)
+            FT_Done_Face(m_cachedFont);
+        FT_Done_FreeType(m_library);
         FcFini();
-        //data will be deleted by CCImage
-//      if (m_pData) {
-//          delete m_pData;
-//      }
         reset();
     }
 
-    void reset() {
+    void reset()
+    {
         iMaxLineWidth = 0;
         iMaxLineHeight = 0;
         //Free all text lines
@@ -124,9 +124,9 @@ public:
 
         FT_UInt unicode = utf8((char**)&pText);
         iError = FT_Load_Char(face, unicode, FT_LOAD_DEFAULT);
-        if (iError) {
+        if (iError)
             return false;
-        }
+
         iCurXCursor = -SHIFT6(face->glyph->metrics.horiBearingX);
 
         FT_UInt cLastCh = 0;
@@ -134,7 +134,8 @@ public:
         pText = sText;
         size_t text_len = 0;
         wchar_t* text_buf = (wchar_t*) malloc(sizeof(wchar_t) * strlen(sText));
-        while ((unicode=utf8((char**)&pText))) {
+        while ((unicode=utf8((char**)&pText)))
+        {
             if (unicode == '\n') {
                 buildLine(text_buf, text_len, face, iCurXCursor, cLastCh);
                 text_len = 0;
@@ -172,7 +173,8 @@ public:
             iCurXCursor += SHIFT6(face->glyph->metrics.horiAdvance) + iInterval;
         }
 
-        if (iError) {
+        if (iError)
+        {
             free(text_buf);
             return false;
         }
@@ -191,7 +193,8 @@ public:
      *
      */
     int computeLineStart(FT_Face face, CCImage::ETextAlign eAlignMask, FT_UInt unicode,
-            int iLineIndex) {
+            int iLineIndex)
+    {
         int iRet;
         int iError = FT_Load_Char(face, unicode, FT_LOAD_DEFAULT);
         if (iError) {
@@ -277,7 +280,6 @@ public:
 
     bool getBitmap(const char *text, int nWidth, int nHeight, CCImage::ETextAlign eAlignMask, const char * pFontName, float fontSize)
     {
-        FT_Face face;
         FT_Error iError;
 
         int iCurXCursor, iCurYCursor;
@@ -288,37 +290,39 @@ public:
         do
         {
             std::string fontfile = getFontFile(pFontName);
-            std::string fontfile_orig = std::string(fontfile);
+            std::string fontfileOrig = std::string(fontfile);
 
-            std::string ext = fileNameExtension(fontfile) ;
+            std::string ext = fileNameExtension(fontfile);
             if (ext.empty() || (ext != "ttf" && ext != "TTF"))
             {
                 fontfile += ".ttf" ;
             }
 
-            iError = FT_New_Face(library, fontfile.c_str(), 0, &face);
+            iError = openFont(fontfile, fontSize, fontfileOrig);
             // try with fonts prefixed
             if (iError && !startsWith(fontfile,"fonts/") )
             {
                 fontfile = std::string("fonts/") + fontfile;
-                iError = FT_New_Face(library, fontfile.c_str(), 0, &face);
+                iError = openFont(fontfile, fontSize, fontfileOrig);
             }
 
             if (iError)
             {
                 // try lowercase version
                 std::transform(fontfile.begin(), fontfile.end(), fontfile.begin(), ::tolower);
-                iError = FT_New_Face(library, fontfile.c_str(), 0, &face);
+                iError = openFont(fontfile, fontSize, fontfileOrig);
                 if (iError)
                 {
                     // try default font
-                    CCLOG("font missing (%s) falling back to default font", fontfile_orig.c_str());
-                    iError = FT_New_Face(library, "fonts/Marker Felt.ttf", 0, &face);
+                    CCLOG("font missing (%s) falling back to default font", fontfileOrig.c_str());
+                    iError = openFont("fonts/Marker Felt.ttf", fontSize, fontfileOrig);
                     if (iError)
                         CCLOG("default font missing (fonts/Marker Felt.ttf)");
                 }
             }
             CC_BREAK_IF(iError);
+
+            FT_Face face = m_cachedFont;
 
             //select utf8 charmap
             iError = FT_Select_Charmap(face,FT_ENCODING_UNICODE);
@@ -346,14 +350,16 @@ public:
             memset(m_pData,0, iMaxLineWidth * iMaxLineHeight*4);
 
             size_t lines = vLines.size();
-            for (size_t i = 0; i < lines; i++) {
+            for (size_t i = 0; i < lines; i++)
+            {
                 const wchar_t* text_ptr = vLines[i].text;
 
                 //initialize the origin cursor
                 iCurXCursor = computeLineStart(face, eAlignMask, text_ptr[0], i);
 
                 size_t text_len = wcslen(text_ptr);
-                for (size_t i=0; i<text_len; ++i) {
+                for (size_t i=0; i<text_len; ++i)
+                {
                     int iError = FT_Load_Char(face, text_ptr[i], FT_LOAD_RENDER);
                     if (iError) {
                         break;
@@ -365,8 +371,10 @@ public:
 
                     int yoffset = iCurYCursor - (face->glyph->metrics.horiBearingY >> 6);
                     int xoffset = iCurXCursor + (face->glyph->metrics.horiBearingX >> 6);
-                    for (int i = 0; i < bitmap.rows; ++i) {
-                        for (int j = 0; j < bitmap.width; ++j) {
+                    for (int i = 0; i < bitmap.rows; ++i)
+                    {
+                        for (int j = 0; j < bitmap.width; ++j)
+                        {
                             unsigned char cTemp = bitmap.buffer[i * bitmap.width + j];
                             if (cTemp == 0) continue;
 
@@ -391,10 +399,6 @@ public:
                 - (face->size->metrics.descender >> 6);
             }
 
-            //  free face
-            FT_Done_Face(face);
-            face = NULL;
-
             //success;
             if (iError)
                 bRet = false;
@@ -404,9 +408,9 @@ public:
 
         return bRet;
     }
-public:
 
-    FT_Library library;
+public:
+    FT_Library m_library;
 
     unsigned char *m_pData;
     int libError;
@@ -416,7 +420,16 @@ public:
     int iMaxLineHeight;
 private:
     bool startsWith(const std::string& str, const std::string& what);
+    /**
+     * Attempt to open font file, and cache it if successful.
+     */
+    int openFont(const std::string& fontName, uint fontSize, const std::string& fontNameOrig);
     std::string fileNameExtension(const std::string& pathName);
+
+    int m_cachedSize;
+    FT_Face m_cachedFont;
+    std::string m_cachedFontname;
+    std::string m_cachedFontnameOrig;
 };
 
 static BitmapDC& sharedBitmapDC()
@@ -486,6 +499,35 @@ bool BitmapDC::startsWith(const std::string& str, const std::string& what)
         result = (str.substr(0, what.size()) == what);
     }
     return result ;
+}
+
+int BitmapDC::openFont(const std::string& fontName, uint fontSize, const std::string& fontNameOrig)
+{
+    // try to satisfy request based on currently cached font.
+    if (m_cachedSize == fontSize)
+    {
+        if (fontNameOrig == m_cachedFontnameOrig)
+          return 0;
+
+        if (fontName == m_cachedFontname)
+          return 0;
+    }
+
+    FT_Face face;
+    int iError = FT_New_Face(m_library, fontName.c_str(), 0, &face);
+    if (iError)
+      return iError;
+
+    // free existing cached font
+    if (m_cachedFont)
+      FT_Done_Face(m_cachedFont);
+
+    // cache newly loaded font
+    m_cachedFontnameOrig = fontNameOrig;
+    m_cachedFontname = fontName;
+    m_cachedFont = face;
+    m_cachedSize = fontSize;
+    return 0;
 }
 
 NS_CC_END

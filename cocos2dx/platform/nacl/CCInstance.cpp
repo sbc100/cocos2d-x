@@ -9,7 +9,9 @@
 
 #include <sys/stat.h>
 #include <unistd.h>
+#include <stdio.h>
 #include <fcntl.h>
+#include <errno.h>
 #include <pthread.h>
 
 USING_NS_CC;
@@ -22,15 +24,6 @@ CocosPepperInstance::CocosPepperInstance(PP_Instance instance) : pp::Instance(in
 {
     RequestInputEvents(PP_INPUTEVENT_CLASS_MOUSE);
     RequestFilteringInputEvents(PP_INPUTEVENT_CLASS_KEYBOARD);
-
-#ifndef OLD_NACL_MOUNTS
-    CCLOG("%p %p", pp_instance(), pp::Module::Get()->get_browser_interface());
-    nacl_mounts_init_ppapi(pp_instance(), pp::Module::Get()->get_browser_interface());
-    open("/dev/null", O_RDONLY);  // should return 0==STDIN
-    open("/dev/console0", O_WRONLY);  // should return 1==STDOUT
-    open("/dev/console3", O_WRONLY);  // should return 2==STDERR
-    CCLOG("done nacl_mounts_init_ppapi");
-#endif
 }
 
 void CocosPepperInstance::DidChangeView(const pp::View& view)
@@ -45,12 +38,12 @@ void CocosPepperInstance::DidChangeView(const pp::View& view)
     if (m_running)
     {
         CCLOG("DidChangeView (%dx%d) while cocos thread already running",
-               m_size.width(), m_size.height());
+               position.size().width(), position.size().height());
         return;
     }
 
-    CCLOG("DidChangeView %dx%d", m_size.width(), m_size.height());
     m_size = position.size();
+    CCLOG("DidChangeView %dx%d", m_size.width(), m_size.height());
     pthread_create(&m_cocos_thread, NULL, cocos_main, this);
     m_running = true;
 }
@@ -58,11 +51,34 @@ void CocosPepperInstance::DidChangeView(const pp::View& view)
 
 bool CocosPepperInstance::Init(uint32_t argc, const char* argn[], const char* argv[])
 {
+    CCLOG("CocosPepperInstance::Init");
 #ifdef OLD_NACL_MOUNTS
     m_runner = new MainThreadRunner(this);
-#endif
+#else
+    CCLOG("%p %p", pp_instance(), pp::Module::Get()->get_browser_interface());
+    nacl_mounts_init_ppapi(pp_instance(), pp::Module::Get()->get_browser_interface());
+    open("/dev/null", O_RDONLY);  // should return 0==STDIN
+    open("/dev/console0", O_WRONLY);  // should return 1==STDOUT
+    open("/dev/console3", O_WRONLY);  // should return 2==STDERR
+    setvbuf(stdout, NULL, _IOLBF, 0);
+    setvbuf(stderr, NULL, _IOLBF, 0);
+    CCLOG("done nacl_mounts_init_ppapi");
 
-    CCLOG("CocosPepperInstance::Init");
+
+    umount("/");
+    int rtn = mount("Resources",  /* source. Use relative URL */
+          "/",  /* target */
+          "httpfs",  /* filesystemtype */
+          0,  /* mountflags */
+          "");  /* data */
+
+    if (rtn != 0)
+    {
+        CCLOG("mount failed: %d %s", errno, strerror(errno));
+        return false;
+    }
+
+#endif
     return true;
 }
 

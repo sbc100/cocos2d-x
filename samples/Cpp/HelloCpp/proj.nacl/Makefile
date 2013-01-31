@@ -44,7 +44,7 @@ endif
 
 SHAREDLIBS += -L$(LIB_DIR)
 
-STATICLIBS += -lfontconfig -lfreetype -lexpat -lxml2 -lpng -ljpeg -ltiff -lppapi_gles2 -lnacl-mounts -lppapi -lppapi_cpp 
+STATICLIBS += -lfontconfig -lfreetype -lexpat -lxml2 -lpng -ljpeg -ltiff -lppapi_gles2 -lnacl-mounts -lppapi -lppapi_cpp
 SHAREDLIBS += -lcocos2d -lz
 
 TARGET = $(BIN_DIR)/HelloCpp.nexe
