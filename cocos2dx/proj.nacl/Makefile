@@ -151,18 +151,18 @@ OBJECTS = ../actions/CCAction.o \
 
 DEFINES += -DCC_ENABLE_CHIPMUNK_INTEGRATION
 
-LIB_DIR_ROOT ?= ../../lib/nacl
+LIB_DIR ?= ../../lib/nacl
 
 ifeq ($(DEBUG), 1)
 CCFLAGS += -g3 -O0
 CXXFLAGS += -g3 -O0
 DEFINES += -DDEBUG -DCOCOS2D_DEBUG=1
-LIB_DIR = $(LIB_DIR_ROOT)/Debug
+LIB_DIR := $(LIB_DIR)/Debug
 else
 CCFLAGS += -O3
 CXXFLAGS += -O3
 DEFINES += -DNDEBUG
-LIB_DIR = $(LIB_DIR_ROOT)/Release
+LIB_DIR := $(LIB_DIR)/Release
 endif
 
 TARGET = $(LIB_DIR)/libcocos2d.a

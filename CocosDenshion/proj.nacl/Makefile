@@ -29,16 +29,18 @@ INCLUDES += -I$(COCOS2DX_PATH)/platform/third_party/nacl -I$(NACL_SDK_ROOT)/incl
 
 OBJECTS = ../blackberry/SimpleAudioEngine.o
 
+LIB_DIR ?= ../../lib/nacl
+
 ifeq ($(DEBUG), 1)
 CCFLAGS += -g3 -O0
 CXXFLAGS += -g3 -O0
 DEFINES += -DDEBUG -DCC_ENABLE_CHIPMUNK_INTEGRATION -DCOCOS2D_DEBUG=1
-LIB_DIR = ../../lib/nacl/Debug
+LIB_DIR := $(LIB_DIR)/Debug
 else
 CCFLAGS += -O3
 CXXFLAGS += -O3
 DEFINES += -DNDEBUG -DCC_ENABLE_CHIPMUNK_INTEGRATION
-LIB_DIR = ../../lib/nacl/Release
+LIB_DIR := $(LIB_DIR)/Release
 endif
 
 TARGET	= $(LIB_DIR)/libcocosdenshion.a
