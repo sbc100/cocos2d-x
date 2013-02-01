@@ -1,8 +1,8 @@
 NACL_ARCH ?= x86_64
 NACL_LIBC = newlib
-AR      = $(NACL_ARCH)-nacl-ar
-CC      = $(NACL_ARCH)-nacl-gcc
-CXX     = $(NACL_ARCH)-nacl-g++
+NACL_AR ?= $(NACL_ARCH)-nacl-ar
+NACL_CC ?= $(NACL_ARCH)-nacl-gcc
+NACL_CXX ?= $(NACL_ARCH)-nacl-g++
 CCFLAGS = -Wall -std=gnu99
 CXXFLAGS = -Wall
 VISIBILITY =
@@ -74,14 +74,14 @@ TARGET = $(LIB_DIR)/libbox2d.a
 
 ####### Build rules
 $(TARGET): $(OBJECTS)
-	$(AR) $(ARFLAGS) $(TARGET) $(OBJECTS)
+	$(NACL_AR) $(ARFLAGS) $(TARGET) $(OBJECTS)
 
 ####### Compile
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+	$(NACL_CXX) $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
 
 %.o: %.c
-	$(CC) $(CCFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+	$(NALC_CC) $(CCFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
 
 clean:
 	rm -f $(OBJECTS) $(TARGET) core
