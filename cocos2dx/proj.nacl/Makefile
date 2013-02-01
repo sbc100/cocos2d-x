@@ -1,8 +1,8 @@
 NACL_ARCH ?= x86_64
 NACL_LIBC = newlib
-AR      ?= $(NACL_ARCH)-nacl-ar
-CC      ?= $(NACL_ARCH)-nacl-gcc
-CXX     ?= $(NACL_ARCH)-nacl-g++
+NACL_AR ?= $(NACL_ARCH)-nacl-ar
+NACL_CC ?= $(NACL_ARCH)-nacl-gcc
+NACL_CXX ?= $(NACL_ARCH)-nacl-g++
 CCFLAGS = -Wall
 CXXFLAGS = -Wall
 VISIBILITY =
@@ -171,14 +171,14 @@ all: $(TARGET)
 
 ####### Build rules
 $(TARGET): $(OBJECTS)
-	$(AR) $(ARFLAGS) $@ $^
+	$(NACL_AR) $(ARFLAGS) $@ $^
 
 ####### Compile
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+	$(NACL_CXX) $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
 
 %.o: %.c
-	$(CC) $(CCFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+	$(NACL_CC) $(CCFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
 
 clean:
 	rm -f $(OBJECTS) $(TARGET) core

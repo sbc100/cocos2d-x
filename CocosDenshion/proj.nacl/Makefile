@@ -1,8 +1,8 @@
 NACL_ARCH ?= x86_64
 NACL_LIBC = newlib
-AR      = $(NACL_ARCH)-nacl-ar
-CC      = $(NACL_ARCH)-nacl-gcc
-CXX     = $(NACL_ARCH)-nacl-g++
+NACL_AR ?= $(NACL_ARCH)-nacl-ar
+NACL_CC ?= $(NACL_ARCH)-nacl-gcc
+NACL_CXX ?= $(NACL_ARCH)-nacl-g++
 CCFLAGS = -Wall
 CXXFLAGS = -Wall
 VISIBILITY = 
@@ -25,7 +25,11 @@ INCLUDES = -I.. \
 	-I../platform/nacl/
 
 
-INCLUDES += -I$(COCOS2DX_PATH)/platform/third_party/nacl -I$(NACL_SDK_ROOT)/include -I$(NACL_SDK_ROOT)/toolchain/linux_x86_$(NACL_LIBC)/$(NACL_ARCH)-nacl/usr/include/libxml2
+NACLPORTS_INCLUDE ?= $(NACL_SDK_ROOT)/toolchain/linux_x86_$(NACL_LIBC)/$(NACL_ARCH)-nacl/usr/include
+INCLUDES += -I$(COCOS2DX_PATH)/platform/third_party/nacl -I$(NACL_SDK_ROOT)/include 
+INCLUDES += -I$(NACLPORTS_INCLUDE)
+INCLUDES += -I$(NACLPORTS_INCLUDE)/libxml2
+
 
 OBJECTS = ../blackberry/SimpleAudioEngine.o
 
@@ -47,14 +51,14 @@ TARGET	= $(LIB_DIR)/libcocosdenshion.a
 
 ####### Build rules
 $(TARGET): $(OBJECTS) 
-	$(AR) $(ARFLAGS) $(TARGET) $(OBJECTS)
+	$(NACL_AR) $(ARFLAGS) $(TARGET) $(OBJECTS)
 
 ####### Compile
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+	$(NACL_CXX) $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
 
 %.o: %.c
-	$(CC) $(CCFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+	$(NACL_CC) $(CCFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
 
 clean: 
 	rm -f $(OBJECTS) $(TARGET) core
