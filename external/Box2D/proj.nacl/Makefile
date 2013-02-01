@@ -10,7 +10,7 @@ ARFLAGS = cr
 
 LIBS =
 
-INCLUDES = -I../include/chipmunk
+INCLUDES = -I../..
 
 OBJECTS = ../Collision/Shapes/b2ChainShape.o \
 ../Collision/Shapes/b2CircleShape.o \
@@ -61,12 +61,12 @@ OBJECTS = ../Collision/Shapes/b2ChainShape.o \
 ifeq ($(DEBUG), 1)
 CCFLAGS += -g3 -O0
 CXXFLAGS += -g3 -O0
-DEFINES += -DDEBUG -DCC_ENABLE_CHIPMUNK_INTEGRATION -DCOCOS2D_DEBUG=1
+DEFINES += -DDEBUG -DCOCOS2D_DEBUG=1
 LIB_DIR = ../../../lib/nacl/Debug
 else
 CCFLAGS += -O3
 CXXFLAGS += -O3
-DEFINES += -DNDEBUG -DCC_ENABLE_CHIPMUNK_INTEGRATION
+DEFINES += -DNDEBUG
 LIB_DIR = ../../../lib/nacl/Release
 endif
 
