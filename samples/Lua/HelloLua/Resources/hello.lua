@@ -186,7 +186,7 @@ local function main()
 
     -- play background music, preload effect
 
-    -- uncomment below for the BlackBerry version
+    -- uncomment below for the BlackBerry or NaCl versions
     -- local bgMusicPath = CCFileUtils:sharedFileUtils():fullPathFromRelativePath("background.ogg")
     local bgMusicPath = CCFileUtils:sharedFileUtils():fullPathFromRelativePath("background.mp3")
     SimpleAudioEngine:sharedEngine():playBackgroundMusic(bgMusicPath, true)

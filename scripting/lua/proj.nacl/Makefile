@@ -1,0 +1,101 @@
+NACL_ARCH ?= x86_64
+NACL_LIBC = newlib
+NACL_AR ?= $(NACL_ARCH)-nacl-ar
+NACL_CC ?= $(NACL_ARCH)-nacl-gcc
+NACL_CXX ?= $(NACL_ARCH)-nacl-g++
+CCFLAGS = -Wall
+CXXFLAGS = -Wall
+VISIBILITY =
+ARFLAGS = cr
+
+LIBS =
+
+INCLUDES = -I.. \
+	-I../platform/third_party/linux/libfreetype2 \
+	-I../cocoa \
+	-I../include \
+	-I../kazmath/include \
+	-I../platform \
+	-I../../../extensions \
+	-I../../../extensions/CCBReader \
+	-I../../../extensions/GUI/CCControlExtension \
+	-I../../../extensions/GUI/CCControlExtension \
+	-I../../../external/chipmunk/include/chipmunk \
+	-I../../../extensions/network \
+
+
+NACLPORTS_INCLUDE ?= $(NACL_SDK_ROOT)/toolchain/linux_x86_$(NACL_LIBC)/$(NACL_ARCH)-nacl/usr/include
+INCLUDES += -I$(COCOS2DX_PATH)/platform/third_party/nacl -I$(NACL_SDK_ROOT)/include
+INCLUDES += -I$(NACLPORTS_INCLUDE)
+INCLUDES += -I$(NACLPORTS_INCLUDE)/libxml2
+
+
+OBJECTS = ../lua/lapi.o \
+          ../lua/lauxlib.o \
+          ../lua/lbaselib.o \
+          ../lua/lcode.o \
+          ../lua/ldblib.o \
+          ../lua/ldebug.o \
+          ../lua/ldo.o \
+          ../lua/ldump.o \
+          ../lua/lfunc.o \
+          ../lua/lgc.o \
+          ../lua/linit.o \
+          ../lua/liolib.o \
+          ../lua/llex.o \
+          ../lua/lmathlib.o \
+          ../lua/lmem.o \
+          ../lua/loadlib.o \
+          ../lua/lobject.o \
+          ../lua/lopcodes.o \
+          ../lua/loslib.o \
+          ../lua/lparser.o \
+          ../lua/lstate.o \
+          ../lua/lstring.o \
+          ../lua/lstrlib.o \
+          ../lua/ltable.o \
+          ../lua/ltablib.o \
+          ../lua/ltm.o \
+          ../lua/lua.o \
+          ../lua/lundump.o \
+          ../lua/lvm.o \
+          ../lua/lzio.o \
+          ../lua/print.o \
+          ../tolua/tolua_event.o \
+          ../tolua/tolua_is.o \
+          ../tolua/tolua_map.o \
+          ../tolua/tolua_push.o \
+          ../tolua/tolua_to.o
+DEPS = $(OBJECTS:.o=.d)
+
+LIB_DIR ?= ../../../lib/nacl
+
+ifeq ($(DEBUG), 1)
+CCFLAGS += -g3 -O0
+CXXFLAGS += -g3 -O0
+DEFINES += -DDEBUG -DCC_ENABLE_CHIPMUNK_INTEGRATION -DCOCOS2D_DEBUG=1
+LIB_DIR := $(LIB_DIR)/Debug
+else
+CCFLAGS += -O3
+CXXFLAGS += -O3
+DEFINES += -DNDEBUG -DCC_ENABLE_CHIPMUNK_INTEGRATION
+LIB_DIR := $(LIB_DIR)/Release
+endif
+
+TARGET	= $(LIB_DIR)/liblua.a
+
+####### Build rules
+$(TARGET): $(OBJECTS)
+	$(NACL_AR) $(ARFLAGS) $(TARGET) $(OBJECTS)
+
+####### Compile
+%.o: %.cpp
+	$(NACL_CXX) -MMD $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+
+%.o: %.c
+	$(NACL_CC) -MMD $(CCFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+
+clean:
+	rm -f $(OBJECTS) $(TARGET) $(DEPS) core
+
+-include $(DEPS)

@@ -27,7 +27,9 @@ clean()
     make $MAKEFLAGS -C CocosDenshion/proj.nacl $1 clean
     make $MAKEFLAGS -C external/chipmunk/proj.nacl $1 clean
     make $MAKEFLAGS -C external/Box2D/proj.nacl $1 clean
+    make $MAKEFLAGS -C scripting/lua/proj.nacl $1 clean
     make $MAKEFLAGS -C samples/Cpp/HelloCpp/proj.nacl $1 clean
+    make $MAKEFLAGS -C samples/Lua/HelloLua/proj.nacl $1 clean
     make $MAKEFLAGS -C samples/Cpp/TestCpp/proj.nacl $1 clean
     make $MAKEFLAGS -C samples/Cpp/SimpleGame/proj.nacl $1 clean
 }
@@ -40,7 +42,10 @@ make $MAKEFLAGS -C cocos2dx/proj.nacl DEBUG=1
 make $MAKEFLAGS -C CocosDenshion/proj.nacl DEBUG=1
 make $MAKEFLAGS -C external/chipmunk/proj.nacl DEBUG=1
 make $MAKEFLAGS -C external/Box2D/proj.nacl DEBUG=1
+make $MAKEFLAGS -C scripting/lua/proj.nacl DEBUG=1
 make $MAKEFLAGS -C samples/Cpp/HelloCpp/proj.nacl DEBUG=1
+make $MAKEFLAGS -C samples/Lua/HelloLua/proj.nacl DEBUG=1
+make $MAKEFLAGS -C samples/Cpp/TestCpp/proj.nacl DEBUG=1
 make $MAKEFLAGS -C samples/Cpp/SimpleGame/proj.nacl DEBUG=1
 
 if [ "$1" = "all" ]; then
@@ -49,6 +54,9 @@ if [ "$1" = "all" ]; then
     make $MAKEFLAGS -C CocosDenshion/proj.nacl DEBUG=0
     make $MAKEFLAGS -C external/chipmunk/proj.nacl DEBUG=0
     make $MAKEFLAGS -C external/Box2D/proj.nacl DEBUG=0
+    make $MAKEFLAGS -C scripting/lua/proj.nacl DEBUG=0
     make $MAKEFLAGS -C samples/Cpp/HelloCpp/proj.nacl DEBUG=0
+    make $MAKEFLAGS -C samples/Lua/HelloLua/proj.nacl DEBUG=0
+    make $MAKEFLAGS -C samples/Cpp/TestCpp/proj.nacl DEBUG=0
     make $MAKEFLAGS -C samples/Cpp/SimpleGame/proj.nacl DEBUG=0
 fi
