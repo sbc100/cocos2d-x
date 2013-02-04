@@ -10,24 +10,11 @@ ARFLAGS = cr
 
 LIBS =
 
-INCLUDES = -I.. \
-	-I../platform/third_party/linux/libfreetype2 \
-	-I../cocoa \
-	-I../include \
-	-I../kazmath/include \
-	-I../platform \
-	-I../../../extensions \
-	-I../../../extensions/CCBReader \
-	-I../../../extensions/GUI/CCControlExtension \
-	-I../../../extensions/GUI/CCControlExtension \
-	-I../../../external/chipmunk/include/chipmunk \
-	-I../../../extensions/network \
-
+INCLUDES = -I.. -I../lua
 
 NACLPORTS_INCLUDE ?= $(NACL_SDK_ROOT)/toolchain/linux_x86_$(NACL_LIBC)/$(NACL_ARCH)-nacl/usr/include
-INCLUDES += -I$(COCOS2DX_PATH)/platform/third_party/nacl -I$(NACL_SDK_ROOT)/include
+INCLUDES += -I$(NACL_SDK_ROOT)/include
 INCLUDES += -I$(NACLPORTS_INCLUDE)
-INCLUDES += -I$(NACLPORTS_INCLUDE)/libxml2
 
 
 OBJECTS = ../lua/lapi.o \
@@ -73,12 +60,12 @@ LIB_DIR ?= ../../../lib/nacl
 ifeq ($(DEBUG), 1)
 CCFLAGS += -g3 -O0
 CXXFLAGS += -g3 -O0
-DEFINES += -DDEBUG -DCC_ENABLE_CHIPMUNK_INTEGRATION -DCOCOS2D_DEBUG=1
+DEFINES += -DDEBUG -DCOCOS2D_DEBUG=1
 LIB_DIR := $(LIB_DIR)/Debug
 else
 CCFLAGS += -O3
 CXXFLAGS += -O3
-DEFINES += -DNDEBUG -DCC_ENABLE_CHIPMUNK_INTEGRATION
+DEFINES += -DNDEBUG
 LIB_DIR := $(LIB_DIR)/Release
 endif
 
