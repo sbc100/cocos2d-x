@@ -1,8 +1,7 @@
 NACL_ARCH ?= x86_64
-NACL_LIBC = newlib
-AR      = $(NACL_ARCH)-nacl-ar
-CC      = $(NACL_ARCH)-nacl-gcc
-CXX     = $(NACL_ARCH)-nacl-g++
+NACL_AR ?= $(NACL_ARCH)-nacl-ar
+NACL_CC ?= $(NACL_ARCH)-nacl-gcc
+NACL_CXX ?= $(NACL_ARCH)-nacl-g++
 CCFLAGS = -Wall -std=gnu99
 CXXFLAGS = -Wall
 VISIBILITY =
@@ -40,7 +39,9 @@ OBJECTS = ../src/chipmunk.o \
 ../src/constraints/cpSimpleMotor.o \
 ../src/constraints/cpGrooveJoint.o \
 ../src/constraints/cpSlideJoint.o \
-../src/constraints/cpPinJoint.o \
+../src/constraints/cpPinJoint.o
+
+DEPS = $(OBJECTS:.o=.d)
 
 ifeq ($(DEBUG), 1)
 CCFLAGS += -g3 -O0
@@ -60,14 +61,16 @@ all: $(TARGET)
 
 ####### Build rules
 $(TARGET): $(OBJECTS)
-	$(AR) $(ARFLAGS) $(TARGET) $(OBJECTS)
+	$(NACL_AR) $(ARFLAGS) $(TARGET) $(OBJECTS)
 
 ####### Compile
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+	$(NACL_CXX) -MMD $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
 
 %.o: %.c
-	$(CC) $(CCFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+	$(NACL_CC) -MMD $(CCFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
 
 clean:
-	rm -f $(OBJECTS) $(TARGET) core
+	rm -f $(OBJECTS) $(TARGET) $(DEPS) core
+
+-include $(DEPS)

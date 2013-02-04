@@ -40,10 +40,12 @@ local.properties
 
 # Ignore files build by linux
 *.o
+*.d
 
 # Ignore files built by NaCl
 samples/Cpp/HelloCpp/proj.nacl/Resources/
 samples/Cpp/TestCpp/proj.nacl/Resources/
+samples/Cpp/SimpleGame/proj.nacl/Resources/
 
 # Ignore python compiled files
 *.pyc

@@ -58,6 +58,8 @@ OBJECTS = ../Collision/Shapes/b2ChainShape.o \
 ../Dynamics/b2WorldCallbacks.o \
 ../Rope/b2Rope.o
 
+DEPS = $(OBJECTS:.o=.d)
+
 LIB_DIR?=../../../lib/nacl
 ifeq ($(DEBUG), 1)
 CCFLAGS += -g3 -O0
@@ -79,10 +81,12 @@ $(TARGET): $(OBJECTS)
 
 ####### Compile
 %.o: %.cpp
-	$(NACL_CXX) $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+	$(NACL_CXX) -MMD $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
 
 %.o: %.c
-	$(NALC_CC) $(CCFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+	$(NALC_CC) -MMD $(CCFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
 
 clean:
-	rm -f $(OBJECTS) $(TARGET) core
+	rm -f $(OBJECTS) $(TARGET) $(DEPS) core
+
+-include $(DEPS)

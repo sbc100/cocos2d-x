@@ -148,7 +148,7 @@ OBJECTS = ../actions/CCAction.o \
 ../CCScheduler.o \
 ../cocos2d.o
 
-
+DEPS = $(OBJECTS:.o=.d)
 DEFINES += -DCC_ENABLE_CHIPMUNK_INTEGRATION
 
 LIB_DIR ?= ../../lib/nacl
@@ -175,10 +175,12 @@ $(TARGET): $(OBJECTS)
 
 ####### Compile
 %.o: %.cpp
-	$(NACL_CXX) $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+	$(NACL_CXX) -MMD $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
 
 %.o: %.c
-	$(NACL_CC) $(CCFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+	$(NACL_CC) -MMD $(CCFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
 
 clean:
-	rm -f $(OBJECTS) $(TARGET) core
+	rm -f $(OBJECTS) $(TARGET) $(DEPS) core
+
+-include $(DEPS)
