@@ -34,8 +34,10 @@ clean()
     make $MAKEFLAGS -C samples/Cpp/SimpleGame/proj.nacl $1 clean
 }
 
-if [ "$1" = "all" ]; then
+if [ "$1" = "clean" ]; then
     clean DEBUG=1
+    clean DEBUG=0
+    exit 0
 fi
 
 make $MAKEFLAGS -C cocos2dx/proj.nacl DEBUG=1
@@ -48,15 +50,12 @@ make $MAKEFLAGS -C samples/Lua/HelloLua/proj.nacl DEBUG=1
 make $MAKEFLAGS -C samples/Cpp/TestCpp/proj.nacl DEBUG=1
 make $MAKEFLAGS -C samples/Cpp/SimpleGame/proj.nacl DEBUG=1
 
-if [ "$1" = "all" ]; then
-    clean DEBUG=0
-    make $MAKEFLAGS -C cocos2dx/proj.nacl DEBUG=0
-    make $MAKEFLAGS -C CocosDenshion/proj.nacl DEBUG=0
-    make $MAKEFLAGS -C external/chipmunk/proj.nacl DEBUG=0
-    make $MAKEFLAGS -C external/Box2D/proj.nacl DEBUG=0
-    make $MAKEFLAGS -C scripting/lua/proj.nacl DEBUG=0
-    make $MAKEFLAGS -C samples/Cpp/HelloCpp/proj.nacl DEBUG=0
-    make $MAKEFLAGS -C samples/Lua/HelloLua/proj.nacl DEBUG=0
-    make $MAKEFLAGS -C samples/Cpp/TestCpp/proj.nacl DEBUG=0
-    make $MAKEFLAGS -C samples/Cpp/SimpleGame/proj.nacl DEBUG=0
-fi
+make $MAKEFLAGS -C cocos2dx/proj.nacl DEBUG=0
+make $MAKEFLAGS -C CocosDenshion/proj.nacl DEBUG=0
+make $MAKEFLAGS -C external/chipmunk/proj.nacl DEBUG=0
+make $MAKEFLAGS -C external/Box2D/proj.nacl DEBUG=0
+make $MAKEFLAGS -C scripting/lua/proj.nacl DEBUG=0
+make $MAKEFLAGS -C samples/Cpp/HelloCpp/proj.nacl DEBUG=0
+make $MAKEFLAGS -C samples/Lua/HelloLua/proj.nacl DEBUG=0
+make $MAKEFLAGS -C samples/Cpp/TestCpp/proj.nacl DEBUG=0
+make $MAKEFLAGS -C samples/Cpp/SimpleGame/proj.nacl DEBUG=0

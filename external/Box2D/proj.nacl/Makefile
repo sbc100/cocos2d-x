@@ -12,81 +12,93 @@ LIBS =
 
 INCLUDES = -I../..
 
-OBJECTS = ../Collision/Shapes/b2ChainShape.o \
-../Collision/Shapes/b2CircleShape.o \
-../Collision/Shapes/b2EdgeShape.o \
-../Collision/Shapes/b2PolygonShape.o \
-../Collision/b2BroadPhase.o \
-../Collision/b2CollideCircle.o \
-../Collision/b2CollideEdge.o \
-../Collision/b2CollidePolygon.o \
-../Collision/b2Collision.o \
-../Collision/b2Distance.o \
-../Collision/b2DynamicTree.o \
-../Collision/b2TimeOfImpact.o \
-../Common/b2BlockAllocator.o \
-../Common/b2Draw.o \
-../Common/b2Math.o \
-../Common/b2Settings.o \
-../Common/b2StackAllocator.o \
-../Common/b2Timer.o \
-../Dynamics/Contacts/b2ChainAndCircleContact.o \
-../Dynamics/Contacts/b2ChainAndPolygonContact.o \
-../Dynamics/Contacts/b2CircleContact.o \
-../Dynamics/Contacts/b2Contact.o \
-../Dynamics/Contacts/b2ContactSolver.o \
-../Dynamics/Contacts/b2EdgeAndCircleContact.o \
-../Dynamics/Contacts/b2EdgeAndPolygonContact.o \
-../Dynamics/Contacts/b2PolygonAndCircleContact.o \
-../Dynamics/Contacts/b2PolygonContact.o \
-../Dynamics/Joints/b2DistanceJoint.o \
-../Dynamics/Joints/b2FrictionJoint.o \
-../Dynamics/Joints/b2GearJoint.o \
-../Dynamics/Joints/b2Joint.o \
-../Dynamics/Joints/b2MouseJoint.o \
-../Dynamics/Joints/b2PrismaticJoint.o \
-../Dynamics/Joints/b2PulleyJoint.o \
-../Dynamics/Joints/b2RevoluteJoint.o \
-../Dynamics/Joints/b2RopeJoint.o \
-../Dynamics/Joints/b2WeldJoint.o \
-../Dynamics/Joints/b2WheelJoint.o \
-../Dynamics/b2Body.o \
-../Dynamics/b2ContactManager.o \
-../Dynamics/b2Fixture.o \
-../Dynamics/b2Island.o \
-../Dynamics/b2World.o \
-../Dynamics/b2WorldCallbacks.o \
-../Rope/b2Rope.o
+SOURCES = ../Collision/Shapes/b2ChainShape.cpp \
+../Collision/Shapes/b2CircleShape.cpp \
+../Collision/Shapes/b2EdgeShape.cpp \
+../Collision/Shapes/b2PolygonShape.cpp \
+../Collision/b2BroadPhase.cpp \
+../Collision/b2CollideCircle.cpp \
+../Collision/b2CollideEdge.cpp \
+../Collision/b2CollidePolygon.cpp \
+../Collision/b2Collision.cpp \
+../Collision/b2Distance.cpp \
+../Collision/b2DynamicTree.cpp \
+../Collision/b2TimeOfImpact.cpp \
+../Common/b2BlockAllocator.cpp \
+../Common/b2Draw.cpp \
+../Common/b2Math.cpp \
+../Common/b2Settings.cpp \
+../Common/b2StackAllocator.cpp \
+../Common/b2Timer.cpp \
+../Dynamics/Contacts/b2ChainAndCircleContact.cpp \
+../Dynamics/Contacts/b2ChainAndPolygonContact.cpp \
+../Dynamics/Contacts/b2CircleContact.cpp \
+../Dynamics/Contacts/b2Contact.cpp \
+../Dynamics/Contacts/b2ContactSolver.cpp \
+../Dynamics/Contacts/b2EdgeAndCircleContact.cpp \
+../Dynamics/Contacts/b2EdgeAndPolygonContact.cpp \
+../Dynamics/Contacts/b2PolygonAndCircleContact.cpp \
+../Dynamics/Contacts/b2PolygonContact.cpp \
+../Dynamics/Joints/b2DistanceJoint.cpp \
+../Dynamics/Joints/b2FrictionJoint.cpp \
+../Dynamics/Joints/b2GearJoint.cpp \
+../Dynamics/Joints/b2Joint.cpp \
+../Dynamics/Joints/b2MouseJoint.cpp \
+../Dynamics/Joints/b2PrismaticJoint.cpp \
+../Dynamics/Joints/b2PulleyJoint.cpp \
+../Dynamics/Joints/b2RevoluteJoint.cpp \
+../Dynamics/Joints/b2RopeJoint.cpp \
+../Dynamics/Joints/b2WeldJoint.cpp \
+../Dynamics/Joints/b2WheelJoint.cpp \
+../Dynamics/b2Body.cpp \
+../Dynamics/b2ContactManager.cpp \
+../Dynamics/b2Fixture.cpp \
+../Dynamics/b2Island.cpp \
+../Dynamics/b2World.cpp \
+../Dynamics/b2WorldCallbacks.cpp \
+../Rope/b2Rope.cpp
 
-DEPS = $(OBJECTS:.o=.d)
+OBJ_DIR ?= out/$(NACL_ARCH)
+LIB_DIR ?= ../../../lib/nacl
 
-LIB_DIR?=../../../lib/nacl
 ifeq ($(DEBUG), 1)
 CCFLAGS += -g3 -O0
 CXXFLAGS += -g3 -O0
 DEFINES += -DDEBUG -DCOCOS2D_DEBUG=1
+OBJ_DIR := $(OBJ_DIR)/Debug
 LIB_DIR := $(LIB_DIR)/Debug
 else
 CCFLAGS += -O3
 CXXFLAGS += -O3
 DEFINES += -DNDEBUG
+OBJ_DIR := $(OBJ_DIR)/Release
 LIB_DIR := $(LIB_DIR)/Release
 endif
+
+OBJECTS := $(SOURCES:.cpp=.o)
+OBJECTS := $(OBJECTS:.c=.o)
+OBJECTS := $(subst ../,,$(OBJECTS))
+OBJECTS := $(addprefix $(OBJ_DIR)/, $(OBJECTS))
+DEPS = $(OBJECTS:.o=.d)
 
 TARGET = $(LIB_DIR)/libbox2d.a
 
 ####### Build rules
 $(TARGET): $(OBJECTS)
+	@mkdir -p $(@D)
 	$(NACL_AR) $(ARFLAGS) $(TARGET) $(OBJECTS)
 
 ####### Compile
-%.o: %.cpp
+$(OBJ_DIR)/%.o: ../%.cpp
+	@mkdir -p $(@D)
 	$(NACL_CXX) -MMD $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
 
-%.o: %.c
+$(OBJ_DIR)/%.o: ../%.c
+	@mkdir -p $(@D)
 	$(NALC_CC) -MMD $(CCFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
 
 clean:
-	rm -f $(OBJECTS) $(TARGET) $(DEPS) core
+	rm -rf $(OBJ_DIR)
+	rm -f $(TARGET) core
 
 -include $(DEPS)

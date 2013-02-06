@@ -17,7 +17,7 @@ INCLUDES += -I$(NACL_SDK_ROOT)/include
 INCLUDES += -I$(NACLPORTS_INCLUDE)
 
 
-OBJECTS = ../lua/lapi.o \
+SOURCES = ../lua/lapi.o \
           ../lua/lauxlib.o \
           ../lua/lbaselib.o \
           ../lua/lcode.o \
@@ -53,21 +53,29 @@ OBJECTS = ../lua/lapi.o \
           ../tolua/tolua_map.o \
           ../tolua/tolua_push.o \
           ../tolua/tolua_to.o
-DEPS = $(OBJECTS:.o=.d)
 
 LIB_DIR ?= ../../../lib/nacl
+OBJ_DIR ?= out/$(NACL_ARCH)
 
 ifeq ($(DEBUG), 1)
 CCFLAGS += -g3 -O0
 CXXFLAGS += -g3 -O0
 DEFINES += -DDEBUG -DCOCOS2D_DEBUG=1
 LIB_DIR := $(LIB_DIR)/Debug
+OBJ_DIR := $(OBJ_DIR)/Debug
 else
 CCFLAGS += -O3
 CXXFLAGS += -O3
 DEFINES += -DNDEBUG
 LIB_DIR := $(LIB_DIR)/Release
+OBJ_DIR := $(OBJ_DIR)/Release
 endif
+
+OBJECTS := $(SOURCES:.cpp=.o)
+OBJECTS := $(OBJECTS:.c=.o)
+OBJECTS := $(subst ../,,$(OBJECTS))
+OBJECTS := $(addprefix $(OBJ_DIR)/, $(OBJECTS))
+DEPS = $(OBJECTS:.o=.d)
 
 TARGET	= $(LIB_DIR)/liblua.a
 
@@ -76,13 +84,16 @@ $(TARGET): $(OBJECTS)
 	$(NACL_AR) $(ARFLAGS) $(TARGET) $(OBJECTS)
 
 ####### Compile
-%.o: %.cpp
+$(OBJ_DIR)/%.o: ../%.cpp
+	@mkdir -p $(@D)
 	$(NACL_CXX) -MMD $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
 
-%.o: %.c
+$(OBJ_DIR)/%.o: ../%.c
+	@mkdir -p $(@D)
 	$(NACL_CC) -MMD $(CCFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
 
 clean:
-	rm -f $(OBJECTS) $(TARGET) $(DEPS) core
+	rm -rf $(OBJ_DIR)
+	rm -f $(TARGET) core
 
 -include $(DEPS)

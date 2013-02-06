@@ -18,18 +18,20 @@ INCLUDES =  -I../ \
 			-I$(NACL_SDK_ROOT)/include
 
 
-OBJECTS = ./main.o \
-        ../Classes/AppDelegate.o \
-        ../Classes/HelloWorldScene.o \
-        ../Classes/GameOverScene.o
+SOURCES = main.cpp \
+        ../Classes/AppDelegate.cpp \
+        ../Classes/HelloWorldScene.cpp \
+        ../Classes/GameOverScene.cpp
 
 SHAREDLIBS = -pthread
+OBJ_DIR ?= out/$(NACL_ARCH)
 
 ifeq ($(DEBUG), 1)
 BIN_DIR = bin/debug
 CCFLAGS += -g3 -O0
 CXXFLAGS += -g3 -O0
 LIB_DIR = ../../../../lib/nacl/Debug
+OBJ_DIR := $(OBJ_DIR)/Debug
 DEFINES += -DDEBUG -DCOCOS2D_DEBUG=1
 STATICLIBS = -L$(NACL_SDK_ROOT)/lib/$(NACL_LIBC)_$(NACL_ARCH)/Debug
 else
@@ -37,6 +39,7 @@ BIN_DIR = bin/release
 CCFLAGS += -O3
 CXXFLAGS += -O3
 LIB_DIR = ../../../../lib/nacl/Release
+OBJ_DIR := $(OBJ_DIR)/Release
 DEFINES += -DNDEBUG
 STATICLIBS = -L$(NACL_SDK_ROOT)/lib/$(NACL_LIBC)_$(NACL_ARCH)/Release
 endif
@@ -49,6 +52,12 @@ FONTLIBS = -lfontconfig -lfreetype -lexpat
 STATICLIBS += $(SOUNDLIBS) $(FONTLIBS) -lxml2 -lpng -ljpeg -ltiff -lppapi_gles2 -lnacl-mounts -lppapi -lppapi_cpp
 SHAREDLIBS += -lcocos2d -lcocosdenshion -lchipmunk -lbox2d -lz
 
+OBJECTS := $(SOURCES:.cpp=.o)
+OBJECTS := $(OBJECTS:.c=.o)
+OBJECTS := $(subst ../,,$(OBJECTS))
+OBJECTS := $(addprefix $(OBJ_DIR)/, $(OBJECTS))
+DEPS = $(OBJECTS:.o=.d)
+
 TARGET = $(BIN_DIR)/SimpleGame.nexe
 NMF = $(basename $(TARGET)).nmf
 
@@ -60,14 +69,21 @@ $(TARGET): $(OBJECTS) $(LIB_DIR)/libcocos2d.a
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(OBJECTS) -o $@ $(SHAREDLIBS) $(STATICLIBS)
 
 ####### Compile
-%.o: %.cpp
+$(OBJ_DIR)/%.o: ../%.cpp
+	@mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
 
-%.o: %.c
+$(OBJ_DIR)/%.o: %.cpp
+	@mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+
+$(OBJ_DIR)/%.o: ../%.c
+	@mkdir -p $(@D)
 	$(CC) $(CCFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
 
 clean:
-	rm -f $(OBJECTS) $(TARGET) core
+	rm -rf $(OBJ_DIR)
+	rm -f $(TARGET) core
 
 
 $(NMF): $(TARGET)

@@ -4,7 +4,7 @@ CC      = $(NACL_ARCH)-nacl-gcc
 CXX     = $(NACL_ARCH)-nacl-g++
 CCFLAGS = -Wall
 CXXFLAGS = -Wall
-VISIBILITY = 
+VISIBILITY =
 
 COCOS2DX_PATH = ../../../../cocos2dx
 INCLUDES =  -I../ \
@@ -20,26 +20,30 @@ INCLUDES =  -I../ \
 			-I$(NACL_SDK_ROOT)/include
 
 
-OBJECTS = ./main.o \
-        ../Classes/AppDelegate.o \
-        ../Classes/HelloWorldScene.o 
+SOURCES = main.cpp \
+        ../Classes/AppDelegate.cpp \
+        ../Classes/HelloWorldScene.cpp
 
 SHAREDLIBS = -pthread
- 
+
+OBJ_DIR ?= out/$(NACL_ARCH)
+
 ifeq ($(DEBUG), 1)
 BIN_DIR = bin/debug
 CCFLAGS += -g3 -O0
 CXXFLAGS += -g3 -O0
 LIB_DIR = ../../../../lib/nacl/Debug
+OBJ_DIR := $(OBJ_DIR)/Debug
 DEFINES += -DDEBUG -DCOCOS2D_DEBUG=1
-STATICLIBS = -L$(NACL_SDK_ROOT)/lib/$(NACL_LIBC)_$(NACL_ARCH)/Debug 
+STATICLIBS = -L$(NACL_SDK_ROOT)/lib/$(NACL_LIBC)_$(NACL_ARCH)/Debug
 else
 BIN_DIR = bin/release
 CCFLAGS += -O3
 CXXFLAGS += -O3
 LIB_DIR = ../../../../lib/nacl/Release
+OBJ_DIR := $(OBJ_DIR)/Release
 DEFINES += -DNDEBUG
-STATICLIBS = -L$(NACL_SDK_ROOT)/lib/$(NACL_LIBC)_$(NACL_ARCH)/Release 
+STATICLIBS = -L$(NACL_SDK_ROOT)/lib/$(NACL_LIBC)_$(NACL_ARCH)/Release
 endif
 
 SHAREDLIBS += -L$(LIB_DIR)
@@ -47,25 +51,38 @@ SHAREDLIBS += -L$(LIB_DIR)
 STATICLIBS += -lfontconfig -lfreetype -lexpat -lxml2 -lpng -ljpeg -ltiff -lppapi_gles2 -lnacl-mounts -lppapi -lppapi_cpp
 SHAREDLIBS += -lcocos2d -lz
 
+OBJECTS := $(SOURCES:.cpp=.o)
+OBJECTS := $(OBJECTS:.c=.o)
+OBJECTS := $(subst ../,,$(OBJECTS))
+OBJECTS := $(addprefix $(OBJ_DIR)/, $(OBJECTS))
+DEPS = $(OBJECTS:.o=.d)
+
 TARGET = $(BIN_DIR)/HelloCpp.nexe
 NMF = $(basename $(TARGET)).nmf
 
 all: $(TARGET) $(NMF)
-	
+
 ####### Build rules
 $(TARGET): $(OBJECTS) $(LIB_DIR)/libcocos2d.a
-	mkdir -p $(BIN_DIR)
+	@mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(OBJECTS) -o $@ $(SHAREDLIBS) $(STATICLIBS)
 
 ####### Compile
-%.o: %.cpp
-	$(CXX) $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+$(OBJ_DIR)/%.o: ../%.cpp
+	@mkdir -p $(@D)
+	$(CXX) -MMD $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
 
-%.o: %.c
-	$(CC) $(CCFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+$(OBJ_DIR)/%.o: %.cpp
+	@mkdir -p $(@D)
+	$(CXX) -MMD $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
 
-clean: 
-	rm -f $(OBJECTS) $(TARGET) core
+$(OBJ_DIR)/%.o: ../%.c
+	@mkdir -p $(@D)
+	$(CC) -MMD $(CCFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+
+clean:
+	rm -rf $(OBJ_DIR)
+	rm -f $(TARGET) core
 
 
 $(NMF): $(TARGET)

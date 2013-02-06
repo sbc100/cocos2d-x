@@ -30,10 +30,9 @@ INCLUDES += -I$(COCOS2DX_PATH)/platform/third_party/nacl -I$(NACL_SDK_ROOT)/incl
 INCLUDES += -I$(NACLPORTS_INCLUDE)
 INCLUDES += -I$(NACLPORTS_INCLUDE)/libxml2
 
+SOURCES = ../blackberry/SimpleAudioEngine.cpp
 
-OBJECTS = ../blackberry/SimpleAudioEngine.o
-DEPS = $(OBJECTS:.o=.d)
-
+OBJ_DIR ?= out/$(NACL_ARCH)
 LIB_DIR ?= ../../lib/nacl
 
 ifeq ($(DEBUG), 1)
@@ -41,24 +40,35 @@ CCFLAGS += -g3 -O0
 CXXFLAGS += -g3 -O0
 DEFINES += -DDEBUG -DCC_ENABLE_CHIPMUNK_INTEGRATION -DCOCOS2D_DEBUG=1
 LIB_DIR := $(LIB_DIR)/Debug
+OBJ_DIR := $(OBJ_DIR)/Debug
 else
 CCFLAGS += -O3
 CXXFLAGS += -O3
 DEFINES += -DNDEBUG -DCC_ENABLE_CHIPMUNK_INTEGRATION
 LIB_DIR := $(LIB_DIR)/Release
+OBJ_DIR := $(OBJ_DIR)/Release
 endif
 
 TARGET	= $(LIB_DIR)/libcocosdenshion.a
 
+OBJECTS := $(SOURCES:.cpp=.o)
+OBJECTS := $(OBJECTS:.c=.o)
+OBJECTS := $(subst ../,,$(OBJECTS))
+OBJECTS := $(addprefix $(OBJ_DIR)/, $(OBJECTS))
+DEPS = $(OBJECTS:.o=.d)
+
 ####### Build rules
 $(TARGET): $(OBJECTS)
+	@mkdir -p $(@D)
 	$(NACL_AR) $(ARFLAGS) $(TARGET) $(OBJECTS)
 
 ####### Compile
-%.o: %.cpp
+$(OBJ_DIR)/%.o: ../%.cpp
+	@mkdir -p $(@D)
 	$(NACL_CXX) -MMD $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
 
-%.o: %.c
+$(OBJ_DIR)/%.o: ../%.c
+	@mkdir -p $(@D)
 	$(NACL_CC) -MMD $(CCFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
 
 clean:
