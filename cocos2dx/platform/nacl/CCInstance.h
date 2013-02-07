@@ -1,11 +1,13 @@
 #ifndef CC_INSTANCE_H
 #define CC_INSTANCE_H
 
-#include <ppapi/cpp/instance.h>
-#include <ppapi/cpp/input_event.h>
+#include <pthread.h>
 #include <queue>
 
-#define OLD_NACL_MOUNTS 1
+#include <ppapi/cpp/instance.h>
+#include <ppapi/cpp/input_event.h>
+
+//#define OLD_NACL_MOUNTS 1
 
 #ifdef OLD_NACL_MOUNTS
 #include "nacl-mounts/base/MainThreadRunner.h"

@@ -4,15 +4,15 @@
 #include <ppapi/cpp/instance.h>
 #include <ppapi/cpp/module.h>
 #ifndef OLD_NACL_MOUNTS
-#include "nacl_mounts/nacl_mounts.h"
+#include "nacl_io/nacl_io.h"
 #endif
 
+#include <errno.h>
+#include <fcntl.h>
+#include <pthread.h>
+#include <stdio.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <stdio.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <pthread.h>
 
 USING_NS_CC;
 
@@ -56,12 +56,7 @@ bool CocosPepperInstance::Init(uint32_t argc, const char* argn[], const char* ar
     m_runner = new MainThreadRunner(this);
 #else
     CCLOG("%p %p", pp_instance(), pp::Module::Get()->get_browser_interface());
-    nacl_mounts_init_ppapi(pp_instance(), pp::Module::Get()->get_browser_interface());
-    open("/dev/null", O_RDONLY);  // should return 0==STDIN
-    open("/dev/console0", O_WRONLY);  // should return 1==STDOUT
-    open("/dev/console3", O_WRONLY);  // should return 2==STDERR
-    setvbuf(stdout, NULL, _IOLBF, 0);
-    setvbuf(stderr, NULL, _IOLBF, 0);
+    nacl_io_init_ppapi(pp_instance(), pp::Module::Get()->get_browser_interface());
     CCLOG("done nacl_mounts_init_ppapi");
 
 
