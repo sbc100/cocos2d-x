@@ -26,8 +26,12 @@ DEFINES += -DNDEBUG
 STATICLIBS = -L$(NACL_SDK_ROOT)/lib/$(NACL_LIBC)_$(NACL_ARCH)/Release
 endif
 
+# Some cococs sources use #pragma mark
+CCFLAGS += -Wno-unknown-pragmas
+CXXFLAGS += -Wno-unknown-pragmas
+
 SOUNDLIBS = -lalut -lopenal -lvorbisfile -lvorbis -logg
-FONTLIBS = -lfontconfig -lfreetype -lexpat
+FONTLIBS = -lfreetype
 
 ifdef NACL_MOUNTS
 DEFINES += -DOLD_NACL_MOUNTS

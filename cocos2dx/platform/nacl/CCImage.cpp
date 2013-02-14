@@ -37,7 +37,6 @@ public:
     BitmapDC() : m_pData(NULL), m_cachedSize(0), m_cachedFont(NULL)
     {
         libError = FT_Init_FreeType(&m_library);
-        FcInit();
         iInterval = szFont_kenning;
         reset();
     }
@@ -47,7 +46,6 @@ public:
         if (m_cachedFont)
             FT_Done_Face(m_cachedFont);
         FT_Done_FreeType(m_library);
-        FcFini();
         reset();
     }
 
@@ -235,49 +233,6 @@ public:
         return iRet;
     }
 
-    std::string getFontFile(const char* family_name)
-    {
-        std::string fontPath = family_name;
-
-        // check if the parameter is a font file shipped with the application
-        if (fontPath.find(".ttf") != std::string::npos)
-        {
-            fontPath = std::string("/") + fontPath;
-
-            FILE *f = fopen(fontPath.c_str(), "r");
-            if (f)
-            {
-                fclose(f);
-                return fontPath;
-            }
-        }
-
-        // use fontconfig to match the parameter against the fonts installed on the system
-        FcPattern *pattern = FcPatternBuild (0, FC_FAMILY, FcTypeString, family_name, (char *) 0);
-        FcConfigSubstitute(0, pattern, FcMatchPattern);
-        FcDefaultSubstitute(pattern);
-
-        FcResult result;
-        FcPattern *font = FcFontMatch(0, pattern, &result);
-        if (font)
-        {
-            FcChar8 *s = NULL;
-            if (FcPatternGetString(font, FC_FILE, 0, &s) == FcResultMatch)
-            {
-                fontPath = (const char*)s;
-
-                FcPatternDestroy(font);
-                FcPatternDestroy(pattern);
-
-                return fontPath;
-            }
-            FcPatternDestroy(font);
-        }
-        FcPatternDestroy(pattern);
-
-        return family_name;
-    }
-
     bool getBitmap(const char *text, int nWidth, int nHeight, CCImage::ETextAlign eAlignMask, const char * pFontName, float fontSize)
     {
         FT_Error iError;
@@ -289,7 +244,7 @@ public:
 
         do
         {
-            std::string fontfile = getFontFile(pFontName);
+            std::string fontfile = pFontName;
             std::string fontfileOrig = std::string(fontfile);
 
             std::string ext = fileNameExtension(fontfile);

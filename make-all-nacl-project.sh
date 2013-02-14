@@ -11,7 +11,7 @@
 # There are several libraries from naclports that are
 # prerequisite for building cocos2dx on NaCl.  The simplest
 # way to build them is to checkout naclports and run:
-# $ make png tiff fontconfig freetype xml2 freealut expat jpeg vorbis ogg
+# $ make png tiff freetype xml2 freealut jpeg vorbis ogg
 
 if [ -z "$NACL_SDK_ROOT" ]; then
    echo "Please set \$NACL_SDK_ROOT"
