@@ -25,7 +25,7 @@
 class OpenGLContext : public pp::Graphics3DClient
 {
 public:
-    OpenGLContext(pp::Instance* instance, int width, int height);
+    OpenGLContext(pp::Instance* instance, pp::Size size);
     ~OpenGLContext();
 
     virtual void Graphics3DContextLost()
@@ -37,16 +37,16 @@ public:
     void InvalidateContext();
     void ResizeContext(int width, int height);
     void FlushContext();
+    pp::Size GetSize() { return m_size; }
 private:
-    pp::Graphics3D m_context;
+    pp::Size m_size;
+    pp::Graphics3D m_graphics3d;
     const struct PPB_OpenGLES2* m_gles2_interface;
     pp::Instance* m_instance;
-    int m_width;
-    int m_height;
 };
 
-OpenGLContext::OpenGLContext(pp::Instance* instance, int width, int height) :
-   pp::Graphics3DClient(instance), m_instance(instance), m_width(width), m_height(height)
+OpenGLContext::OpenGLContext(pp::Instance* instance, pp::Size size) :
+   pp::Graphics3DClient(instance), m_size(size), m_instance(instance)
 {
     pp::Module* module = pp::Module::Get();
     assert(module);
@@ -63,10 +63,11 @@ OpenGLContext::~OpenGLContext()
 
 bool OpenGLContext::MakeContextCurrent()
 {
-    CCLOG("OpenGLContext::MakeContextCurrent %dx%d", m_width, m_height);
+    CCLOG("OpenGLContext::MakeContextCurrent %dx%d",
+          m_size.width(), m_size.height());
 
     // Lazily create the Pepper context.
-    if (m_context.is_null())
+    if (m_graphics3d.is_null())
     {
         int32_t attribs[] = {
             PP_GRAPHICS3DATTRIB_ALPHA_SIZE, 8,
@@ -74,24 +75,24 @@ bool OpenGLContext::MakeContextCurrent()
             PP_GRAPHICS3DATTRIB_STENCIL_SIZE, 8,
             PP_GRAPHICS3DATTRIB_SAMPLES, 0,
             PP_GRAPHICS3DATTRIB_SAMPLE_BUFFERS, 0,
-            PP_GRAPHICS3DATTRIB_WIDTH, m_width,
-            PP_GRAPHICS3DATTRIB_HEIGHT, m_height,
+            PP_GRAPHICS3DATTRIB_WIDTH, m_size.width(),
+            PP_GRAPHICS3DATTRIB_HEIGHT, m_size.height(),
             PP_GRAPHICS3DATTRIB_NONE
         };
-        m_context = pp::Graphics3D(m_instance, pp::Graphics3D(), attribs);
-        if (m_context.is_null())
+        m_graphics3d = pp::Graphics3D(m_instance, pp::Graphics3D(), attribs);
+        if (m_graphics3d.is_null())
         {
             glSetCurrentContextPPAPI(0);
             return false;
         }
-        bool rtn = m_instance->BindGraphics(m_context);
+        bool rtn = m_instance->BindGraphics(m_graphics3d);
         assert(rtn && "BindGraphics failed");
         if (!rtn)
           return false;
     }
 
-    CCLOG("glSetCurrentContextPPAPI: %p", m_context.pp_resource());
-    glSetCurrentContextPPAPI(m_context.pp_resource());
+    CCLOG("glSetCurrentContextPPAPI: %p", m_graphics3d.pp_resource());
+    glSetCurrentContextPPAPI(m_graphics3d.pp_resource());
     return true;
 }
 
@@ -103,17 +104,18 @@ void OpenGLContext::InvalidateContext()
 
 void OpenGLContext::ResizeContext(int width, int height)
 {
-    CCLOG("OpenGLContext::ResizeContext %d %d", width, height);
-    if (!m_context.is_null())
+    CCLOG("OpenGLContext::ResizeContext %dx%d", width, height);
+    m_size.SetSize(width, height);
+    if (!m_graphics3d.is_null())
     {
-        m_context.ResizeBuffers(width, height);
+        m_graphics3d.ResizeBuffers(width, height);
     }
 }
 
 void OpenGLContext::FlushContext()
 {
     //CCLOG("OpenGLContext::FlushContext");
-    m_context.SwapBuffers(pp::BlockUntilComplete());
+    m_graphics3d.SwapBuffers(pp::BlockUntilComplete());
 }
 
 
@@ -123,6 +125,7 @@ CCEGLView::CCEGLView() : bIsInit(false), bIsMouseDown(false), m_fFrameZoomFactor
 {
     CCLOG("CCEGLView::CCEGLView");
     pthread_mutex_init(&m_mutex, NULL);
+    initGL();
 }
 
 CCEGLView::~CCEGLView()
@@ -131,9 +134,9 @@ CCEGLView::~CCEGLView()
 
 void CCEGLView::setFrameSize(float width, float height)
 {
-    CCLOG("CCEGLView::setFrameSize %f %f", width, height);
     CCEGLViewProtocol::setFrameSize(width, height);
-    initGL((int)width, (int)height);
+    if (m_context)
+      m_context->ResizeContext(width, height);
 }
 
 void CCEGLView::setViewPortInPoints(float x , float y , float w , float h)
@@ -176,14 +179,15 @@ void CCEGLView::setIMEKeyboardState(bool bOpen)
 {
 }
 
-bool CCEGLView::initGL(int width, int height)
+bool CCEGLView::initGL()
 {
     CCLOG("initGL: instance=%p", g_instance);
-    if (m_context == NULL)
-      m_context = new OpenGLContext(g_instance, width, height);
+    assert(!m_context);
+    const pp::Size& size = g_instance->Size();
+    setFrameSize(size.width(), size.height());
+    m_context = new OpenGLContext(g_instance, size);
     CCLOG("initGL: m_context=%p", m_context);
     bool rtn = m_context->MakeContextCurrent();
-    m_context->ResizeContext(width, height);
     CCLOG("MakeContextCurrent returned: %d", rtn);
     assert(rtn == true && "MakeContextCurrent failed");
     if (!rtn)
@@ -213,6 +217,14 @@ CCEGLView* CCEGLView::sharedOpenGLView()
 
 void CCEGLView::ProcessEventQueue()
 {
+    const pp::Size& size = g_instance->Size();
+    // If the size of the global instance has changed then
+    // we need to update our GL frame size accordingly
+    if (size != m_context->GetSize())
+    {
+        setFrameSize(size.width(), size.height());
+    }
+
     pthread_mutex_lock(&m_mutex);
     while (m_event_queue.size())
     {
@@ -221,12 +233,28 @@ void CCEGLView::ProcessEventQueue()
         PP_InputEvent_Type type = event.GetType();
         switch (type)
         {
+            case PP_INPUTEVENT_TYPE_KEYDOWN:
+                CCLOG("got KEYDOWN");
+                break;
+            case PP_INPUTEVENT_TYPE_KEYUP:
+                CCLOG("got KEYUP");
+                break;
+            case PP_INPUTEVENT_TYPE_CHAR:
+                CCLOG("got KEYCHAR");
+                break;
+            case PP_INPUTEVENT_TYPE_MOUSEENTER:
+                CCLOG("got MOUSEENTER");
+                break;
+            case PP_INPUTEVENT_TYPE_MOUSELEAVE:
+                CCLOG("got MOUSELEAVE");
+                break;
             case PP_INPUTEVENT_TYPE_MOUSEDOWN:
             case PP_INPUTEVENT_TYPE_MOUSEUP:
             case PP_INPUTEVENT_TYPE_MOUSEMOVE:
                 {
-                    pp::MouseInputEvent* mouse_event = reinterpret_cast<pp::MouseInputEvent*>(&event);
-                    pp::Point pos = mouse_event->GetPosition();
+                    pp::MouseInputEvent* mevent;
+                    mevent = reinterpret_cast<pp::MouseInputEvent*>(&event);
+                    pp::Point pos = mevent->GetPosition();
                     float x = pos.x();
                     float y = pos.y();
                     int touchID = 1;

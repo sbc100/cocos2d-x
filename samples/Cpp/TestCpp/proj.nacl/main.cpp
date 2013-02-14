@@ -53,7 +53,7 @@ void downloadFiles(MainThreadRunner* runner, const char** filenames, int num_fil
 void* cocos_main(void* arg)
 {
     CocosPepperInstance* instance = (CocosPepperInstance*)arg;
-    fprintf(stderr, "in cocos_main\n");
+    fprintf(stderr, "in cocos_main %p\n", instance);
 
     alSetPpapiInfo(instance->pp_instance(), pp::Module::Get()->get_browser_interface());
 
@@ -127,8 +127,6 @@ void* cocos_main(void* arg)
 
     CCEGLView::g_instance = instance;
     CCEGLView* eglView = CCEGLView::sharedOpenGLView();
-    fprintf(stderr, "calling setFrameSize\n");
-    eglView->setFrameSize(instance->Size().width(), instance->Size().height());
     fprintf(stderr, "calling application->run\n");
     int rtn = CCApplication::sharedApplication()->run();
     fprintf(stderr, "app run returned: %d\n", rtn);

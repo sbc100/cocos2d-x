@@ -73,8 +73,6 @@ void* cocos_main(void* arg)
 
     CCEGLView::g_instance = instance;
     CCEGLView* eglView = CCEGLView::sharedOpenGLView();
-    fprintf(stderr, "calling setFrameSize\n");
-    eglView->setFrameSize(instance->Size().width(), instance->Size().height());
     fprintf(stderr, "calling application->run\n");
     int rtn = CCApplication::sharedApplication()->run();
     fprintf(stderr, "app run returned: %d\n", rtn);

@@ -56,7 +56,7 @@ public:
     static CCEGLView* sharedOpenGLView();
     static CocosPepperInstance* g_instance;
 private:
-    bool initGL(int width, int height);
+    bool initGL();
     void destroyGL();
     bool bIsInit;
     bool bIsMouseDown;
