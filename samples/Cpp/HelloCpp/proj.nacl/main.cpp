@@ -9,7 +9,9 @@
 #include <unistd.h>
 #include <string>
 
+#ifdef OLD_NACL_MOUNTS
 #include "nacl-mounts/base/UrlLoaderJob.h"
+#endif
 #include "fcntl.h"
 #include "sys/stat.h"
 

@@ -10,25 +10,25 @@ ARFLAGS = cr
 
 LIBS =
 
-INCLUDES = -I.. \
-			-I../platform/third_party/linux/libfreetype2 \
-			-I../cocoa \
-			-I../include \
-			-I../kazmath/include \
-			-I../platform \
-			-I../../extensions \
-			-I../../extensions/CCBReader \
-			-I../../extensions/GUI/CCControlExtension \
-			-I../../extensions/GUI/CCControlExtension \
-                        -I../../external/chipmunk/include/chipmunk \
-			-I../../extensions/network \
-			-I../platform/nacl
+COCOS_ROOT = ../..
 
 NACLPORTS_INCLUDE ?= $(NACL_SDK_ROOT)/toolchain/linux_x86_$(NACL_LIBC)/$(NACL_ARCH)-nacl/usr/include
-INCLUDES += -I$(COCOS2DX_PATH)/platform/third_party/nacl
-INCLUDES += -I$(NACL_SDK_ROOT)/include
-INCLUDES += -I$(NACLPORTS_INCLUDE)
-INCLUDES += -I$(NACLPORTS_INCLUDE)/libxml2
+
+INCLUDES = -I.. \
+	-I../platform/third_party/linux/libfreetype2 \
+	-I../cocoa \
+	-I../include \
+	-I../kazmath/include \
+	-I../platform \
+	-I../platform/nacl \
+	-I$(COCOS_ROOT)/extensions \
+	-I$(COCOS_ROOT)/extensions/CCBReader \
+	-I$(COCOS_ROOT)/extensions/GUI/CCControlExtension \
+	-I$(COCOS_ROOT)/external/chipmunk/include/chipmunk \
+	-I$(COCOS_ROOT)/extensions/network \
+	-I$(NACL_SDK_ROOT)/include \
+	-I$(NACLPORTS_INCLUDE) \
+	-I$(NACLPORTS_INCLUDE)/libxml2
 
 SOURCES = ../actions/CCAction.cpp \
 ../actions/CCActionCamera.cpp \
@@ -148,30 +148,10 @@ SOURCES = ../actions/CCAction.cpp \
 ../CCScheduler.cpp \
 ../cocos2d.cpp
 
-OBJ_DIR ?= out/$(NACL_ARCH)
-LIB_DIR ?= ../../lib/nacl
-
-ifeq ($(DEBUG), 1)
-CCFLAGS += -g3 -O0
-CXXFLAGS += -g3 -O0
-DEFINES += -DDEBUG -DCOCOS2D_DEBUG=1
-LIB_DIR := $(LIB_DIR)/Debug
-OBJ_DIR := $(OBJ_DIR)/Debug
-else
-CCFLAGS += -O3
-CXXFLAGS += -O3
-DEFINES += -DNDEBUG
-LIB_DIR := $(LIB_DIR)/Release
-OBJ_DIR := $(OBJ_DIR)/Release
-endif
+include cocos2dx.mk
 
 TARGET = $(LIB_DIR)/libcocos2d.a
 
-OBJECTS := $(SOURCES:.cpp=.o)
-OBJECTS := $(OBJECTS:.c=.o)
-OBJECTS := $(subst ../,,$(OBJECTS))
-OBJECTS := $(addprefix $(OBJ_DIR)/, $(OBJECTS))
-DEPS = $(OBJECTS:.o=.d)
 DEFINES += -DCC_ENABLE_CHIPMUNK_INTEGRATION
 
 all: $(TARGET)

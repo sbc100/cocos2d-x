@@ -5,22 +5,24 @@ CXX     = $(NACL_ARCH)-nacl-g++
 CCFLAGS = -Wall
 CXXFLAGS = -Wall
 VISIBILITY =
-
 DEFINES = -DCC_ENABLE_BOX2D_INTEGRATION
 DEFINES = -DCC_ENABLE_CHIPMUNK_INTEGRATION
-COCOS2DX_PATH = ../../../../cocos2dx
-INCLUDES =  -I../ \
-			-I../Classes \
-			-I$(COCOS2DX_PATH) \
-			-I$(COCOS2DX_PATH)/cocoa \
-			-I$(COCOS2DX_PATH)/include \
-			-I$(COCOS2DX_PATH)/platform/nacl \
-			-I$(COCOS2DX_PATH)/kazmath/include \
-			-I../../../../CocosDenshion/include \
-			-I../../../../extensions/ \
-			-I../../../../external/chipmunk/include/chipmunk \
-			-I$(NACL_SDK_ROOT)/include
 
+COCOS_ROOT = ../../../..
+COCOS2DX_PATH = $(COCOS_ROOT)/cocos2dx
+
+INCLUDES =  -I../ \
+	-I../Classes \
+	-I$(COCOS2DX_PATH) \
+	-I$(COCOS2DX_PATH)/cocoa \
+	-I$(COCOS2DX_PATH)/include \
+	-I$(COCOS2DX_PATH)/platform/nacl \
+	-I$(COCOS2DX_PATH)/kazmath/include \
+	-I$(COCOS_ROOT)/CocosDenshion/include \
+	-I$(COCOS_ROOT)/extensions \
+	-I$(COCOS_ROOT)/external \
+	-I$(COCOS_ROOT)/external/chipmunk/include/chipmunk \
+	-I$(NACL_SDK_ROOT)/include
 
 SOURCES = ../Classes/AccelerometerTest/AccelerometerTest.cpp \
 	../Classes/ActionManagerTest/ActionManagerTest.cpp \
@@ -109,39 +111,11 @@ SOURCES = ../Classes/AccelerometerTest/AccelerometerTest.cpp \
 	main.cpp
 
 include $(COCOS2DX_PATH)/../extensions/proj.nacl/Makefile
-SOURCES += $(addprefix ../../../../extensions/, $(EXTENSIONS_SOURCES))
+SOURCES += $(addprefix $(COCOS_ROOT)/extensions/, $(EXTENSIONS_SOURCES))
 
-SHAREDLIBS = -pthread
-OBJ_DIR ?= out/$(NACL_ARCH)
+include $(COCOS_ROOT)/cocos2dx/proj.nacl/cocos2dx.mk
 
-ifeq ($(DEBUG), 1)
-BIN_DIR = bin/debug
-CCFLAGS += -g3 -O0
-CXXFLAGS += -g3 -O0
-LIB_DIR = ../../../../lib/nacl/Debug
-OBJ_DIR := $(OBJ_DIR)/Debug
-DEFINES += -DDEBUG -DCOCOS2D_DEBUG=1
-STATICLIBS = -L$(NACL_SDK_ROOT)/lib/$(NACL_LIBC)_$(NACL_ARCH)/Debug
-else
-BIN_DIR = bin/release
-CCFLAGS += -O3
-CXXFLAGS += -O3
-LIB_DIR = ../../../../lib/nacl/Release
-OBJ_DIR := $(OBJ_DIR)/Release
-DEFINES += -DNDEBUG
-STATICLIBS = -L$(NACL_SDK_ROOT)/lib/$(NACL_LIBC)_$(NACL_ARCH)/Release
-endif
-
-SHAREDLIBS += -L$(LIB_DIR)
-
-STATICLIBS += -lopenal -lvorbisfile -lvorbis -logg  -lalut -lfontconfig -lfreetype -lexpat -lxml2 -lpng -ljpeg -ltiff -lppapi_gles2 -lnacl-mounts -lppapi -lppapi_cpp
-SHAREDLIBS += -lcocos2d -lcocosdenshion -lchipmunk -lbox2d -lz
-
-OBJECTS := $(SOURCES:.cpp=.o)
-OBJECTS := $(OBJECTS:.c=.o)
-OBJECTS := $(subst ../,,$(OBJECTS))
-OBJECTS := $(addprefix $(OBJ_DIR)/, $(OBJECTS))
-DEPS = $(OBJECTS:.o=.d)
+SHAREDLIBS += -lchipmunk -lbox2d
 
 TARGET = $(BIN_DIR)/TestCpp.nexe
 NMF = $(basename $(TARGET)).nmf
@@ -181,5 +155,7 @@ $(NMF): $(TARGET)
 run: all
 	/bin/cp -ar ../Resources/ .
 	$(NACL_SDK_ROOT)/tools/httpd.py --no_dir_check
+
+-include $(DEPS)
 
 .PHONY: run clean nmf

@@ -41,27 +41,9 @@ SOURCES = ../src/chipmunk.cpp \
 ../src/constraints/cpSlideJoint.cpp \
 ../src/constraints/cpPinJoint.cpp
 
-OBJ_DIR ?= out/$(NACL_ARCH)
+COCOS_ROOT = ../../..
 
-ifeq ($(DEBUG), 1)
-CCFLAGS += -g3 -O0
-CXXFLAGS += -g3 -O0
-DEFINES += -DDEBUG -DCC_ENABLE_CHIPMUNK_INTEGRATION -DCOCOS2D_DEBUG=1
-LIB_DIR = ../../../lib/nacl/Debug
-OBJ_DIR := $(OBJ_DIR)/Debug
-else
-CCFLAGS += -O3
-CXXFLAGS += -O3
-DEFINES += -DNDEBUG -DCC_ENABLE_CHIPMUNK_INTEGRATION
-LIB_DIR = ../../../lib/nacl/Release
-OBJ_DIR := $(OBJ_DIR)/Release
-endif
-
-OBJECTS := $(SOURCES:.cpp=.o)
-OBJECTS := $(OBJECTS:.c=.o)
-OBJECTS := $(subst ../,,$(OBJECTS))
-OBJECTS := $(addprefix $(OBJ_DIR)/, $(OBJECTS))
-DEPS = $(OBJECTS:.o=.d)
+include $(COCOS_ROOT)/cocos2dx/proj.nacl/cocos2dx.mk
 
 TARGET = $(LIB_DIR)/libchipmunk.a
 

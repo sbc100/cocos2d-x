@@ -10,7 +10,6 @@
 #include <string>
 #include "AL/alc.h"
 
-#include "nacl-mounts/base/UrlLoaderJob.h"
 #include "fcntl.h"
 #include "sys/stat.h"
 
@@ -18,6 +17,8 @@ USING_NS_CC;
 
 AppDelegate g_app;
 
+#ifdef OLD_NACL_MOUNTS
+#include "nacl-mounts/base/UrlLoaderJob.h"
 void downloadFiles(MainThreadRunner* runner, const char** filenames, int num_files)
 {
     CCLOG("Downloading %d files...", num_files);
@@ -46,6 +47,7 @@ void downloadFiles(MainThreadRunner* runner, const char** filenames, int num_fil
         close(fd);
     }
 }
+#endif
 
 void* cocos_main(void* arg)
 {
@@ -54,6 +56,7 @@ void* cocos_main(void* arg)
 
     alSetPpapiInfo(instance->pp_instance(), pp::Module::Get()->get_browser_interface());
 
+#ifdef OLD_NACL_MOUNTS
     // TODO(sbc): remove this hack an replace with some kind of URL mount
     mkdir("hd", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     mkdir("sd", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
@@ -72,6 +75,7 @@ void* cocos_main(void* arg)
                                 "fonts/Marker Felt.ttf" };
 
     downloadFiles(instance->m_runner, filenames, sizeof(filenames)/sizeof(char*));
+#endif
 
     CCEGLView::g_instance = instance;
     CCEGLView* eglView = CCEGLView::sharedOpenGLView();

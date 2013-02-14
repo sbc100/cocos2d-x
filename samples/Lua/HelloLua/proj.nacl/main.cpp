@@ -10,7 +10,6 @@
 #include <string>
 #include <AL/alc.h>
 
-#include "nacl-mounts/base/UrlLoaderJob.h"
 #include "fcntl.h"
 #include "sys/stat.h"
 
@@ -19,6 +18,7 @@ USING_NS_CC;
 AppDelegate g_app;
 
 #ifdef OLD_NACL_MOUNTS
+#include "nacl-mounts/base/UrlLoaderJob.h"
 void downloadFiles(MainThreadRunner* runner, const char** filenames, int num_files)
 {
     CCLOG("Downloading %d files...", num_files);

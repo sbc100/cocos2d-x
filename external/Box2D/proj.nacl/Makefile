@@ -58,28 +58,9 @@ SOURCES = ../Collision/Shapes/b2ChainShape.cpp \
 ../Dynamics/b2WorldCallbacks.cpp \
 ../Rope/b2Rope.cpp
 
-OBJ_DIR ?= out/$(NACL_ARCH)
-LIB_DIR ?= ../../../lib/nacl
+COCOS_ROOT = ../../../
 
-ifeq ($(DEBUG), 1)
-CCFLAGS += -g3 -O0
-CXXFLAGS += -g3 -O0
-DEFINES += -DDEBUG -DCOCOS2D_DEBUG=1
-OBJ_DIR := $(OBJ_DIR)/Debug
-LIB_DIR := $(LIB_DIR)/Debug
-else
-CCFLAGS += -O3
-CXXFLAGS += -O3
-DEFINES += -DNDEBUG
-OBJ_DIR := $(OBJ_DIR)/Release
-LIB_DIR := $(LIB_DIR)/Release
-endif
-
-OBJECTS := $(SOURCES:.cpp=.o)
-OBJECTS := $(OBJECTS:.c=.o)
-OBJECTS := $(subst ../,,$(OBJECTS))
-OBJECTS := $(addprefix $(OBJ_DIR)/, $(OBJECTS))
-DEPS = $(OBJECTS:.o=.d)
+include $(COCOS_ROOT)/cocos2dx/proj.nacl/cocos2dx.mk
 
 TARGET = $(LIB_DIR)/libbox2d.a
 
