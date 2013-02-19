@@ -3,6 +3,7 @@
 
 #include <ppapi/cpp/instance.h>
 #include <ppapi/cpp/input_event.h>
+#include <pthread.h>
 
 #ifdef OLD_NACL_MOUNTS
 #include "nacl-mounts/base/MainThreadRunner.h"
