@@ -1,12 +1,4 @@
-NACL_ARCH ?= x86_64
-NACL_LIBC = newlib
-CC      = $(NACL_ARCH)-nacl-gcc
-CXX     = $(NACL_ARCH)-nacl-g++
-CCFLAGS = -Wall
-CXXFLAGS = -Wall
-VISIBILITY =
-DEFINES = -DCC_ENABLE_BOX2D_INTEGRATION
-DEFINES = -DCC_ENABLE_CHIPMUNK_INTEGRATION
+DEFINES += -DCC_ENABLE_BOX2D_INTEGRATION
 
 COCOS_ROOT = ../../../..
 COCOS2DX_PATH = $(COCOS_ROOT)/cocos2dx
@@ -22,7 +14,6 @@ INCLUDES =  -I../ \
 	-I$(COCOS_ROOT)/extensions \
 	-I$(COCOS_ROOT)/external \
 	-I$(COCOS_ROOT)/external/chipmunk/include/chipmunk \
-	-I$(NACL_SDK_ROOT)/include
 
 SOURCES = ../Classes/AccelerometerTest/AccelerometerTest.cpp \
 	../Classes/ActionManagerTest/ActionManagerTest.cpp \
@@ -125,24 +116,24 @@ all: $(TARGET) $(NMF)
 ####### Build rules
 $(TARGET): $(OBJECTS) $(LIB_DIR)/libcocos2d.a $(LIB_DIR)/libcocosdenshion.a
 	@mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(OBJECTS) -o $@ $(SHAREDLIBS) $(STATICLIBS)
+	$(NACL_CXX) $(CXXFLAGS) $(LDFLAGS) $(OBJECTS) -o $@ $(SHAREDLIBS) $(STATICLIBS)
 
 ####### Compile
 $(OBJ_DIR)/%.o: ../%.cpp
 	@mkdir -p $(@D)
-	$(CXX) -MMD $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+	$(NACL_CXX) -MMD $(CXXFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@
 
 $(OBJ_DIR)/%.o: ../../../../%.cpp
 	@mkdir -p $(@D)
-	$(CXX) -MMD $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+	$(NACL_CXX) -MMD $(CXXFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@
 
 $(OBJ_DIR)/%.o: %.cpp
 	@mkdir -p $(@D)
-	$(CXX) -MMD $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+	$(NACL_CXX) -MMD $(CXXFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@
 
 $(OBJ_DIR)/%.o: ../%.c
 	@mkdir -p $(@D)
-	$(CC) -MMD $(CCFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+	$(NACL_CC) -MMD $(CCFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@
 
 clean:
 	rm -rf $(OBJ_DIR)

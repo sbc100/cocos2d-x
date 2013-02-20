@@ -1,11 +1,3 @@
-NACL_ARCH = x86_64
-NACL_LIBC = newlib
-CC      = $(NACL_ARCH)-nacl-gcc
-CXX     = $(NACL_ARCH)-nacl-g++
-CCFLAGS = -Wall
-CXXFLAGS = -Wall
-VISIBILITY =
-
 COCOS_ROOT = ../../../..
 COCOS2DX_PATH = $(COCOS_ROOT)/cocos2dx
 
@@ -40,24 +32,24 @@ all: $(TARGET) $(NMF)
 ####### Build rules
 $(TARGET): $(OBJECTS) $(LIB_DIR)/libcocos2d.a
 	@mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(OBJECTS) -o $@ $(SHAREDLIBS) $(STATICLIBS)
+	$(NACL_CXX) $(CXXFLAGS) $(LDFLAGS) $(OBJECTS) -o $@ $(SHAREDLIBS) $(STATICLIBS)
 
 ####### Compile
 $(OBJ_DIR)/%.o: ../%.cpp
 	@mkdir -p $(@D)
-	$(CXX) -MMD $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+	$(NACL_CXX) -MMD $(CXXFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@
 
 $(OBJ_DIR)/%.o: %.cpp
 	@mkdir -p $(@D)
-	$(CXX) -MMD $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+	$(NACL_CXX) -MMD $(CXXFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@
 
 $(OBJ_DIR)/%.o: $(COCOS_ROOT)/%.cpp
 	@mkdir -p $(@D)
-	$(CXX) -MMD $(CXXFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+	$(NACL_CXX) -MMD $(CXXFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@
 
 $(OBJ_DIR)/%.o: $(COCOS_ROOT)/%.c
 	@mkdir -p $(@D)
-	$(CC) -MMD $(CCFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+	$(NACL_CC) -MMD $(CCFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@
 
 clean:
 	rm -f $(OBJECTS) $(TARGET) $(DEPS) core
