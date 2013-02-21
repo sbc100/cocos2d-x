@@ -182,6 +182,7 @@ void CCEGLView::setIMEKeyboardState(bool bOpen)
 bool CCEGLView::initGL()
 {
     CCLOG("initGL: instance=%p", g_instance);
+    assert(g_instance);
     assert(!m_context);
     const pp::Size& size = g_instance->Size();
     setFrameSize(size.width(), size.height());

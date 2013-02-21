@@ -77,7 +77,6 @@ void* cocos_main(void* arg)
     downloadFiles(instance->m_runner, filenames, sizeof(filenames)/sizeof(char*));
 #endif
 
-    CCEGLView::g_instance = instance;
     CCEGLView* eglView = CCEGLView::sharedOpenGLView();
     fprintf(stderr, "calling application->run\n");
     int rtn = CCApplication::sharedApplication()->run();

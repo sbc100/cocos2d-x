@@ -44,10 +44,13 @@ public:
      @brief Get target platform
      */
     virtual TargetPlatform getTargetPlatform();
-protected:
-    long       m_nAnimationInterval;  //micro second
 
-    static CCApplication * sm_pSharedApplication;
+    static bool isRunning() { return s_running; }
+protected:
+    long m_nAnimationInterval;  //micro second
+
+    static bool s_running; // is the application running
+    static CCApplication* sm_pSharedApplication;
 };
 
 NS_CC_END

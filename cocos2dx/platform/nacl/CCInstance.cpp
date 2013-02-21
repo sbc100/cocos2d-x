@@ -1,5 +1,6 @@
 #include "platform/CCCommon.h"
 #include "CCInstance.h"
+#include "CCApplication.h"
 #include "CCEGLView.h"
 #include <ppapi/cpp/instance.h>
 #include <ppapi/cpp/module.h>
@@ -43,6 +44,8 @@ void CocosPepperInstance::DidChangeView(const pp::View& view)
     }
 
     m_size = position.size();
+    assert(!CCEGLView::g_instance);
+    CCEGLView::g_instance = this;
     CCLOG("DidChangeView %dx%d", m_size.width(), m_size.height());
     pthread_create(&m_cocos_thread, NULL, cocos_main, this);
     m_running = true;
@@ -51,7 +54,7 @@ void CocosPepperInstance::DidChangeView(const pp::View& view)
 
 bool CocosPepperInstance::Init(uint32_t argc, const char* argn[], const char* argv[])
 {
-    CCLOG("CocosPepperInstance::Init");
+    CCLog("CocosPepperInstance::Init");
 #ifdef OLD_NACL_MOUNTS
     m_runner = new MainThreadRunner(this);
 #else
@@ -79,6 +82,8 @@ bool CocosPepperInstance::Init(uint32_t argc, const char* argn[], const char* ar
 
 bool CocosPepperInstance::HandleInputEvent(const pp::InputEvent& event)
 {
+    if (!CCApplication::isRunning())
+      return false;
     CCEGLView::sharedOpenGLView()->AddEvent(event);
     return true;
 }

@@ -13,8 +13,8 @@
 
 NS_CC_BEGIN
 
-// sharedApplication pointer
-CCApplication * CCApplication::sm_pSharedApplication = 0;
+CCApplication* CCApplication::sm_pSharedApplication = 0;
+bool CCApplication::s_running = false;
 
 static long getCurrentMillSecond()
 {
@@ -28,7 +28,7 @@ static long getCurrentMillSecond()
 
 CCApplication::CCApplication()
 {
-    CC_ASSERT(! sm_pSharedApplication);
+    CC_ASSERT(!sm_pSharedApplication);
     sm_pSharedApplication = this;
 }
 
@@ -45,6 +45,7 @@ int CCApplication::run()
     if (!applicationDidFinishLaunching())
         return 0;
 
+    s_running = true;
     for (;;)
     {
         //long iLastTime = getCurrentMillSecond();
@@ -60,6 +61,7 @@ int CCApplication::run()
         */
     }
 
+    s_running = false;
     return -1;
 }
 

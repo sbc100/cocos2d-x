@@ -60,7 +60,7 @@ void* cocos_main(void* arg)
 #ifdef OLD_NACL_MOUNTS
     // TODO(sbc): remove this hack an replace with some kind of URL mount
     const char* dirnames[] = { "Images", "extensions", "fonts", "ccb",
-                               "zwoptex", "Particles", "Shaders" };
+                               "zwoptex", "Particles", "Shaders", "TileMaps" };
 
     for (int i = 0; i < sizeof(dirnames)/sizeof(char*); i++)
         mkdir(dirnames[i], S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
@@ -87,6 +87,10 @@ void* cocos_main(void* arg)
                                 "Images/test_1021x1024_rgb888.pvr.gz",
                                 "Images/test_1021x1024.png",
                                 "Images/grossini_dance_atlas.png",
+                                "Images/powered.png",
+                                "Images/background.png",
+                                "TileMaps/levelmap.tga",
+                                "TileMaps/tiles.png",
                                 "fps_images.png",
                                 "Shaders/example_Monjori.vsh",
                                 "Shaders/example_Monjori.fsh",
@@ -125,7 +129,6 @@ void* cocos_main(void* arg)
     downloadFiles(instance->m_runner, filenames, sizeof(filenames)/sizeof(char*));
 #endif
 
-    CCEGLView::g_instance = instance;
     CCEGLView* eglView = CCEGLView::sharedOpenGLView();
     fprintf(stderr, "calling application->run\n");
     int rtn = CCApplication::sharedApplication()->run();
