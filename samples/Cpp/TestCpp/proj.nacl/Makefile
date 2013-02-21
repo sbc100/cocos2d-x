@@ -108,7 +108,8 @@ include $(COCOS_ROOT)/cocos2dx/proj.nacl/cocos2dx.mk
 
 SHAREDLIBS += -lchipmunk -lbox2d
 
-TARGET = $(BIN_DIR)/TestCpp.nexe
+APP_NAME=TestCpp
+TARGET = $(BIN_DIR)/$(APP_NAME).nexe
 NMF = $(basename $(TARGET)).nmf
 
 all: $(TARGET) $(NMF)
@@ -136,12 +137,25 @@ $(OBJ_DIR)/%.o: ../%.c
 	$(NACL_CC) -MMD $(CCFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@
 
 clean:
-	rm -rf $(OBJ_DIR)
+	rm -rf $(OUT_DIR)
 	rm -f $(TARGET) core
 
 
 $(NMF): $(TARGET)
 	$(NACL_SDK_ROOT)/tools/create_nmf.py -o $(NMF) $(TARGET) --objdump=i686-nacl-objdump -L$(NACL_SDK_ROOT)/toolchain/linux_x86_newlib/x86_64-nacl/lib/ -s $(BIN_DIR)
+
+PACKAGE_ROOT = $(OUT_DIR)/package
+
+package: all
+	rm -rf $(PACKAGE_ROOT)
+	mkdir -p $(PACKAGE_ROOT)
+	/bin/cp -ar ../Resources/ $(PACKAGE_ROOT)
+	/bin/cp -ar $(BIN_DIR)/* $(PACKAGE_ROOT)
+	/bin/cp res/*.js res/icon*.png res/manifest.json $(PACKAGE_ROOT)
+	/bin/cp res/package_index.html $(PACKAGE_ROOT)/index.html
+
+zipfile: package
+	cd $(PACKAGE_ROOT) && zip -r ../$(APP_NAME).zip .
 
 run: all
 	/bin/cp -ar ../Resources/ .
@@ -149,4 +163,4 @@ run: all
 
 -include $(DEPS)
 
-.PHONY: run clean nmf
+.PHONY: run clean package zipfile
