@@ -1,11 +1,3 @@
-NACL_ARCH = x86_64
-NACL_LIBC = newlib
-CC      = $(NACL_ARCH)-nacl-gcc
-CXX     = $(NACL_ARCH)-nacl-g++
-CCFLAGS = -Wall
-CXXFLAGS = -Wall
-VISIBILITY =
-
 COCOS_ROOT = ../../../..
 COCOS2DX_PATH = $(COCOS_ROOT)/cocos2dx
 
@@ -17,7 +9,6 @@ INCLUDES = -I../ \
 	-I$(COCOS2DX_PATH)/platform/nacl \
 	-I$(COCOS2DX_PATH)/kazmath/include \
 	-I$(COCOS_ROOT)/CocosDenshion/include \
-	-I$(NACL_SDK_ROOT)/include
 
 SOURCES = main.cpp \
         ../Classes/AppDelegate.cpp \
@@ -26,12 +17,13 @@ SOURCES = main.cpp \
 
 include $(COCOS_ROOT)/cocos2dx/proj.nacl/cocos2dx.mk
 
-SHAREDLIBS += -lchipmunk -lbox2d 
+SHAREDLIBS += -lbox2d
 
-TARGET = $(BIN_DIR)/SimpleGame.nexe
-NMF = $(basename $(TARGET)).nmf
+APP_NAME = SimpleGame
+TARGET = $(BIN_DIR)/$(APP_NAME)_$(NACL_ARCH).nexe
+NMF = $(BIN_DIR)/$(APP_NAME).nmf
 
-all: $(TARGET) $(NMF)
+all: $(NMF)
 
 ####### Build rules
 $(TARGET): $(OBJECTS) $(LIB_DIR)/libcocos2d.a
@@ -57,7 +49,7 @@ clean:
 
 
 $(NMF): $(TARGET)
-	$(NACL_SDK_ROOT)/tools/create_nmf.py -o $(NMF) $(TARGET) --objdump=i686-nacl-objdump -L$(NACL_SDK_ROOT)/toolchain/linux_x86_newlib/x86_64-nacl/lib/ -s $(BIN_DIR)
+	$(NACL_SDK_ROOT)/tools/create_nmf.py -o $@ $(BIN_DIR)/*.nexe --objdump=i686-nacl-objdump -L$(NACL_SDK_ROOT)/toolchain/linux_x86_newlib/x86_64-nacl/lib/ -s $(BIN_DIR)
 
 run: all
 	/bin/cp -ar ../Resources/ .
@@ -65,4 +57,4 @@ run: all
 
 -include $(DEPS)
 
-.PHONY: run clean nmf
+.PHONY: run clean all

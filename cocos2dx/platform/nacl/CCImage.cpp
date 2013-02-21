@@ -4,7 +4,6 @@
 #include <string>
 #include <sstream>
 #include <algorithm>
-#include <fontconfig/fontconfig.h>
 
 #include "platform/CCFileUtils.h"
 #include "platform/CCPlatformMacros.h"

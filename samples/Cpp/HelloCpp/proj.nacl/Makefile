@@ -14,10 +14,11 @@ SOURCES = main.cpp \
 
 include $(COCOS_ROOT)/cocos2dx/proj.nacl/cocos2dx.mk
 
-TARGET = $(BIN_DIR)/HelloCpp.nexe
-NMF = $(basename $(TARGET)).nmf
+APP_NAME = HelloCpp
+TARGET = $(BIN_DIR)/$(APP_NAME)_$(NACL_ARCH).nexe
+NMF = $(BIN_DIR)/$(APP_NAME).nmf
 
-all: $(TARGET) $(NMF)
+all: $(NMF)
 
 ####### Build rules
 $(TARGET): $(OBJECTS) $(LIB_DIR)/libcocos2d.a
@@ -43,7 +44,7 @@ clean:
 
 
 $(NMF): $(TARGET)
-	$(NACL_SDK_ROOT)/tools/create_nmf.py -o $(NMF) $(TARGET) --objdump=i686-nacl-objdump -L$(NACL_SDK_ROOT)/toolchain/linux_x86_newlib/x86_64-nacl/lib/ -s $(BIN_DIR)
+	$(NACL_SDK_ROOT)/tools/create_nmf.py -o $@ $(BIN_DIR)/*.nexe --objdump=i686-nacl-objdump -L$(NACL_SDK_ROOT)/toolchain/linux_x86_newlib/x86_64-nacl/lib/ -s $(BIN_DIR)
 
 run: all
 	/bin/cp -ar ../Resources/ .
@@ -51,4 +52,4 @@ run: all
 
 -include $(DEPS)
 
-.PHONY: run clean nmf
+.PHONY: run clean all

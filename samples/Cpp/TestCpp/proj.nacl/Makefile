@@ -108,11 +108,11 @@ include $(COCOS_ROOT)/cocos2dx/proj.nacl/cocos2dx.mk
 
 SHAREDLIBS += -lchipmunk -lbox2d
 
-APP_NAME=TestCpp
-TARGET = $(BIN_DIR)/$(APP_NAME).nexe
-NMF = $(basename $(TARGET)).nmf
+APP_NAME = TestCpp
+TARGET = $(BIN_DIR)/$(APP_NAME)_$(NACL_ARCH).nexe
+NMF = $(BIN_DIR)/$(APP_NAME).nmf
 
-all: $(TARGET) $(NMF)
+all: $(NMF)
 
 ####### Build rules
 $(TARGET): $(OBJECTS) $(LIB_DIR)/libcocos2d.a $(LIB_DIR)/libcocosdenshion.a
@@ -142,7 +142,7 @@ clean:
 
 
 $(NMF): $(TARGET)
-	$(NACL_SDK_ROOT)/tools/create_nmf.py -o $(NMF) $(TARGET) --objdump=i686-nacl-objdump -L$(NACL_SDK_ROOT)/toolchain/linux_x86_newlib/x86_64-nacl/lib/ -s $(BIN_DIR)
+	$(NACL_SDK_ROOT)/tools/create_nmf.py -o $@ $(BIN_DIR)/*.nexe --objdump=i686-nacl-objdump -L$(NACL_SDK_ROOT)/toolchain/linux_x86_newlib/x86_64-nacl/lib/ -s $(BIN_DIR)
 
 PACKAGE_ROOT = $(OUT_DIR)/package
 
@@ -163,4 +163,4 @@ run: all
 
 -include $(DEPS)
 
-.PHONY: run clean package zipfile
+.PHONY: run clean zipfile package
