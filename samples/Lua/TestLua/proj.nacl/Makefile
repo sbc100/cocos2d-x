@@ -15,7 +15,7 @@ INCLUDES =  -I../ \
 	-I$(NACL_SDK_ROOT)/include \
 
 
-SOURCES = ./main.cpp \
+SOURCES = main.cpp \
         ../Classes/AppDelegate.cpp \
         $(COCOS_ROOT)/scripting/lua/cocos2dx_support/CCLuaEngine.cpp \
         $(COCOS_ROOT)/scripting/lua/cocos2dx_support/Cocos2dxLuaLoader.cpp \
@@ -34,14 +34,22 @@ all: $(TARGET) $(NMF)
 ####### Build rules
 $(TARGET): $(OBJECTS) $(LIB_DIR)/libcocos2d.a
 	@mkdir -p $(@D)
-	$(NACL_CXX) $(CXXFLAGS) $(LDFALGS) $(OBJECTS) -o $@ $(SHAREDLIBS) $(STATICLIBS)
+	$(NACL_CXX) $(CXXFLAGS) $(LDFLAGS) $(OBJECTS) -o $@ $(SHAREDLIBS) $(STATICLIBS)
 
 ####### Compile
-%.o: %.cpp
+$(OBJ_DIR)/%.o: %.cpp
 	@mkdir -p $(@D)
 	$(NACL_CXX) -MMD $(CXXFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@
 
-%.o: %.c
+$(OBJ_DIR)/%.o: ../%.cpp
+	@mkdir -p $(@D)
+	$(NACL_CXX) -MMD $(CXXFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@
+
+$(OBJ_DIR)/%.o: $(COCOS_ROOT)/%.cpp
+	@mkdir -p $(@D)
+	$(NACL_CXX) -MMD $(CXXFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@
+
+$(OBJ_DIR)/%.o: $(COCOS_ROOT)/%.c
 	@mkdir -p $(@D)
 	$(NACL_CC) -MMD $(CCFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@
 

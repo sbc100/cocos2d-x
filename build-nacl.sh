@@ -19,17 +19,18 @@ if [ -z "$NACL_SDK_ROOT" ]; then
 fi
 
 MAKEFLAGS=-j10
-COCOS2DX20_TRUNK=`pwd`
+SCRIPT_DIR=$(dirname ${BASH_SOURCE})
 OUTPUT_DEBUG=lib/nacl/Debug/
 OUTPUT_RELEASE=lib/nacl/Release/
 
 set -e
 set -x
 
+cd $SCRIPT_DIR
+
 mkdir -p $OUTPUT_DEBUG
 mkdir -p $OUTPUT_RELEASE
 
-cd $COCOS2DX20_TRUNK
 
 clean()
 {
@@ -41,6 +42,7 @@ clean()
     make $MAKEFLAGS -C samples/Cpp/HelloCpp/proj.nacl $1 clean
     make $MAKEFLAGS -C samples/Lua/HelloLua/proj.nacl $1 clean
     make $MAKEFLAGS -C samples/Cpp/TestCpp/proj.nacl $1 clean
+    make $MAKEFLAGS -C samples/Lua/TestLua/proj.nacl $1 clean
     make $MAKEFLAGS -C samples/Cpp/SimpleGame/proj.nacl $1 clean
 }
 
@@ -58,6 +60,7 @@ make $MAKEFLAGS -C scripting/lua/proj.nacl DEBUG=1
 make $MAKEFLAGS -C samples/Cpp/HelloCpp/proj.nacl DEBUG=1
 make $MAKEFLAGS -C samples/Lua/HelloLua/proj.nacl DEBUG=1
 make $MAKEFLAGS -C samples/Cpp/TestCpp/proj.nacl DEBUG=1
+make $MAKEFLAGS -C samples/Lua/TestLua/proj.nacl DEBUG=1
 make $MAKEFLAGS -C samples/Cpp/SimpleGame/proj.nacl DEBUG=1
 
 make $MAKEFLAGS -C cocos2dx/proj.nacl DEBUG=0
@@ -68,4 +71,5 @@ make $MAKEFLAGS -C scripting/lua/proj.nacl DEBUG=0
 make $MAKEFLAGS -C samples/Cpp/HelloCpp/proj.nacl DEBUG=0
 make $MAKEFLAGS -C samples/Lua/HelloLua/proj.nacl DEBUG=0
 make $MAKEFLAGS -C samples/Cpp/TestCpp/proj.nacl DEBUG=0
+make $MAKEFLAGS -C samples/Lua/TestLua/proj.nacl DEBUG=0
 make $MAKEFLAGS -C samples/Cpp/SimpleGame/proj.nacl DEBUG=0

@@ -10,9 +10,11 @@
 #include <string>
 #include <AL/alc.h>
 
+#ifdef OLD_NACL_MOUNTS
 #include "nacl-mounts/base/UrlLoaderJob.h"
 #include "fcntl.h"
 #include "sys/stat.h"
+#endif
 
 USING_NS_CC;
 
@@ -131,7 +133,6 @@ void* cocos_main(void* arg)
     downloadFiles(instance->m_runner, filenames, sizeof(filenames)/sizeof(char*));
 #endif
 
-    CCEGLView::g_instance = instance;
     CCEGLView* eglView = CCEGLView::sharedOpenGLView();
     fprintf(stderr, "calling application->run\n");
     int rtn = CCApplication::sharedApplication()->run();
