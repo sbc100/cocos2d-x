@@ -264,7 +264,7 @@ static bool _initWithString(const char * pText, cocos2d::CCImage::ETextAlign eAl
         if (constrainSize.height > 0 && constrainSize.height > dim.height)
         {
             dim.height = constrainSize.height;
-        }         
+        }
         
         unsigned char* data = new unsigned char[(int)(dim.width * dim.height * 4)];
         memset(data, 0, (int)(dim.width * dim.height * 4));
@@ -344,7 +344,7 @@ bool CCImage::initWithImageFile(const char * strPath, EImageFormat eImgFmt/* = e
 	bool bRet = false;
     unsigned long nSize = 0;
     unsigned char* pBuffer = CCFileUtils::sharedFileUtils()->getFileData(
-				CCFileUtils::sharedFileUtils()->fullPathFromRelativePath(strPath),
+				CCFileUtils::sharedFileUtils()->fullPathForFilename(strPath).c_str(),
 				"rb",
 				&nSize);
 				
@@ -387,6 +387,10 @@ bool CCImage::initWithImageData(void * pData,
         if (eFmt == kFmtRawData)
         {
             bRet = _initWithRawData(pData, nDataLen, nWidth, nHeight, nBitsPerComponent);
+        }
+        else if (eFmt == kFmtWebp)
+        {
+            bRet = _initWithWebpData(pData, nDataLen);
         }
         else // init with png or jpg file data
         {

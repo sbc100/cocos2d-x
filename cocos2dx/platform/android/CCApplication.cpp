@@ -52,20 +52,6 @@ void CCApplication::setAnimationInterval(double interval)
     }
 }
 
-CCApplication::Orientation CCApplication::setOrientation(Orientation orientation)
-{
-    return orientation;
-}
-
-//void CCApplication::statusBarFrame(CCRect * rect)
-//{
-//    if (rect)
-//    {
-//        // android doesn't have status bar.
-//        *rect = CCRectMake(0, 0, 0, 0);
-//    }
-//}
-
 //////////////////////////////////////////////////////////////////////////
 // static member function
 //////////////////////////////////////////////////////////////////////////
@@ -119,6 +105,14 @@ ccLanguageType CCApplication::getCurrentLanguage()
     else if (0 == strcmp("hu", pLanguageName))
     {
         ret = kLanguageHungarian;
+    }
+    else if (0 == strcmp("pt", pLanguageName))
+    {
+        ret = kLanguagePortuguese;
+    }
+    else if (0 == strcmp("ar", pLanguageName))
+    {
+        ret = kLanguageArabic;
     }
     
     return ret;

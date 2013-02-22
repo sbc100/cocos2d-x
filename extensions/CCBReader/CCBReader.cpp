@@ -246,7 +246,7 @@ CCNode* CCBReader::readNodeGraphFromFile(const char *pCCBFileName, CCObject *pOw
         strCCBFileName += strSuffix;
     }
 
-    std::string strPath = CCFileUtils::sharedFileUtils()->fullPathFromRelativePath(strCCBFileName.c_str());
+    std::string strPath = CCFileUtils::sharedFileUtils()->fullPathForFilename(strCCBFileName.c_str());
     unsigned long size = 0;
 
     unsigned char * pBytes = CCFileUtils::sharedFileUtils()->getFileData(strPath.c_str(), "rb", &size);
@@ -294,7 +294,7 @@ CCNode* CCBReader::readNodeGraphFromData(CCData *pData, CCObject *pOwner, const 
     {
         CCNode* pNode = (CCNode*)pElement->getIntKey();
         CCBAnimationManager* manager = (CCBAnimationManager*)animationManagers->objectForKey((intptr_t)pNode);
-        //pNode->setUserObject(manager);
+        pNode->setUserObject(manager);
 
         if (jsControlled)
         {
@@ -515,8 +515,21 @@ float CCBReader::readFloat() {
                  * TODO still applies in C++ ? */
                 float * pF = (float*)(this->mBytes + this->mCurrentByte);
                 float f = 0;
-                memcpy(&f, pF, sizeof(float));
-                this->mCurrentByte += 4;
+                
+                // N.B - in order to avoid an unaligned memory access crash on 'memcpy()' the the (void*) casts of the source and
+                // destination pointers are EXTREMELY important for the ARM compiler.
+                //
+                // Without a (void*) cast, the ARM compiler makes the assumption that the float* pointer is naturally aligned
+                // according to it's type size (aligned along 4 byte boundaries) and thus tries to call a more optimized
+                // version of memcpy() which makes this alignment assumption also. When reading back from a file of course our pointers
+                // may not be aligned, hence we need to avoid the compiler making this assumption. The (void*) cast serves this purpose,
+                // and causes the ARM compiler to choose the slower, more generalized (unaligned) version of memcpy()
+                //
+                // For more about this compiler behavior, see:
+                // http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.faqs/ka3934.html
+                memcpy((void*) &f, (const void*) pF, sizeof(float));
+                
+                this->mCurrentByte += sizeof(float);
                 return f;
             }
     }

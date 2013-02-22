@@ -22,6 +22,8 @@
 					<string>COCOS2D_JAVASCRIPT</string>
                                         <string>CC_ENABLE_CHIPMUNK_INTEGRATION</string>
 				</array>
+                                <key>GCC_OPTIMIZATION_LEVEL</key>
+				<string>1</string>
 			</dict>
 			<key>Release</key>
 			<dict>
@@ -214,6 +216,18 @@
 			</array>
 			<key>Path</key>
 			<string>libs/javascript/bindings/js/jsb_sys.js</string>
+		</dict>
+		<key>libs/javascript/bindings/js/main.debug.js</key>
+		<dict>
+			<key>Group</key>
+			<array>
+				<string>libs</string>
+				<string>javascript</string>
+				<string>bindings</string>
+				<string>js</string>
+			</array>
+			<key>Path</key>
+			<string>libs/javascript/bindings/js/main.debug.js</string>
 		</dict>
 		<key>libs/javascript/bindings/js_bindings_ccbreader.cpp</key>
 		<dict>
@@ -551,6 +565,7 @@
 		<string>libs/javascript/bindings/js/jsb_debugger.js</string>
 		<string>libs/javascript/bindings/js/jsb_opengl.js</string>
 		<string>libs/javascript/bindings/js/jsb_sys.js</string>
+		<string>libs/javascript/bindings/js/main.debug.js</string>
 		<string>libs/javascript/bindings/js_bindings_ccbreader.cpp</string>
 		<string>libs/javascript/bindings/js_bindings_ccbreader.h</string>
 		<string>libs/javascript/bindings/js_bindings_chipmunk_auto_classes.cpp</string>

@@ -26,6 +26,7 @@ THE SOFTWARE.
 ****************************************************************************/
 
 #include <map>
+#include <sstream>
 #include "CCTMXXMLParser.h"
 #include "CCTMXTiledMap.h"
 #include "ccMacros.h"
@@ -157,7 +158,7 @@ void CCTMXMapInfo::internalInit(const char* tmxFileName, const char* resourcePat
 
     if (tmxFileName != NULL)
     {
-        m_sTMXFileName = CCFileUtils::sharedFileUtils()->fullPathFromRelativePath(tmxFileName);
+        m_sTMXFileName = CCFileUtils::sharedFileUtils()->fullPathForFilename(tmxFileName);
     }
     
     if (resourcePath != NULL)
@@ -358,7 +359,7 @@ void CCTMXMapInfo::startElement(void *ctx, const char *name, const char **atts)
             {
                 externalTilesetFilename = m_sResources + "/" + externalTilesetFilename;
             }
-            externalTilesetFilename = CCFileUtils::sharedFileUtils()->fullPathFromRelativePath(externalTilesetFilename.c_str());
+            externalTilesetFilename = CCFileUtils::sharedFileUtils()->fullPathForFilename(externalTilesetFilename.c_str());
             
             pTMXMapInfo->parseXMLFile(externalTilesetFilename.c_str());
         }
@@ -599,10 +600,55 @@ void CCTMXMapInfo::startElement(void *ctx, const char *name, const char **atts)
     else if (elementName == "polygon") 
     {
         // find parent object's dict and add polygon-points to it
-        // CCTMXObjectGroup* objectGroup = (CCTMXObjectGroup*)m_pObjectGroups->lastObject();
-        // CCDictionary* dict = (CCDictionary*)objectGroup->getObjects()->lastObject();
-        // TODO: dict->setObject(attributeDict objectForKey:@"points"] forKey:@"polygonPoints"];
+        CCTMXObjectGroup* objectGroup = (CCTMXObjectGroup*)m_pObjectGroups->lastObject();
+        CCDictionary* dict = (CCDictionary*)objectGroup->getObjects()->lastObject();
 
+        // get points value string
+        const char* value = valueForKey("points", attributeDict);
+        if(value)
+        {
+            CCArray* pPointsArray = new CCArray;
+
+            // parse points string into a space-separated set of points
+            stringstream pointsStream(value);
+            string pointPair;
+            while(std::getline(pointsStream, pointPair, ' '))
+            {
+                // parse each point combo into a comma-separated x,y point
+                stringstream pointStream(pointPair);
+                string xStr,yStr;
+                char buffer[32] = {0};
+                
+                CCDictionary* pPointDict = new CCDictionary;
+
+                // set x
+                if(std::getline(pointStream, xStr, ','))
+                {
+                    int x = atoi(xStr.c_str()) + (int)objectGroup->getPositionOffset().x;
+                    sprintf(buffer, "%d", x);
+                    CCString* pStr = new CCString(buffer);
+                    pStr->autorelease();
+                    pPointDict->setObject(pStr, "x");
+                }
+
+                // set y
+                if(std::getline(pointStream, yStr, ','))
+                {
+                    int y = atoi(yStr.c_str()) + (int)objectGroup->getPositionOffset().y;
+                    sprintf(buffer, "%d", y);
+                    CCString* pStr = new CCString(buffer);
+                    pStr->autorelease();
+                    pPointDict->setObject(pStr, "y");
+                }
+                
+                // add to points array
+                pPointsArray->addObject(pPointDict);
+                pPointDict->release();
+            }
+            
+            dict->setObject(pPointsArray, "points");
+            pPointsArray->release();
+        }
     } 
     else if (elementName == "polyline")
     {
