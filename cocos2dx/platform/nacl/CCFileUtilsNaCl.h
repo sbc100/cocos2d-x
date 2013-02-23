@@ -38,11 +38,12 @@ NS_CC_BEGIN
 //! @brief  Helper class to handle file operations
 class CC_DLL CCFileUtilsNaCl : public CCFileUtils
 {
+private:
     friend class CCFileUtils;
     CCFileUtilsNaCl() {}
 public:
     /* override funtions */
-    bool init();
+    bool init() {}
     virtual std::string getWritablePath();
     virtual bool isFileExist(const std::string& strFilePath);
 };

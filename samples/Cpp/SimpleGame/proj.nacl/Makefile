@@ -1,13 +1,8 @@
 COCOS_ROOT = ../../../..
 COCOS2DX_PATH = $(COCOS_ROOT)/cocos2dx
 
-INCLUDES = -I../ \
+INCLUDES = -I.. \
 	-I../Classes \
-	-I$(COCOS2DX_PATH) \
-	-I$(COCOS2DX_PATH)/cocoa \
-	-I$(COCOS2DX_PATH)/include \
-	-I$(COCOS2DX_PATH)/platform/nacl \
-	-I$(COCOS2DX_PATH)/kazmath/include \
 	-I$(COCOS_ROOT)/CocosDenshion/include \
 
 SOURCES = main.cpp \

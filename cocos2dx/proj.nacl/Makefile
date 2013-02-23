@@ -1,12 +1,7 @@
 COCOS_ROOT = ../..
+COCOS_SRC_ROOT = $(COCOS_ROOT)/cocos2dx
 
-INCLUDES = -I.. \
-	-I../platform/third_party/linux/libfreetype2 \
-	-I../cocoa \
-	-I../include \
-	-I../kazmath/include \
-	-I../platform \
-	-I../platform/nacl \
+INCLUDES = \
 	-I$(COCOS_ROOT)/extensions \
 	-I$(COCOS_ROOT)/extensions/CCBReader \
 	-I$(COCOS_ROOT)/extensions/GUI/CCControlExtension \
@@ -66,9 +61,12 @@ SOURCES = ../actions/CCAction.cpp \
 ../platform/CCSAXParser.cpp \
 ../platform/CCThread.cpp \
 ../platform/platform.cpp \
+../platform/CCImageCommonWebp.cpp \
 ../platform/CCEGLViewProtocol.cpp \
+../platform/CCFileUtils.cpp \
 ../platform/nacl/CCCommon.cpp \
-../platform/nacl/CCFileUtils.cpp \
+../platform/nacl/CCDevice.cpp \
+../platform/nacl/CCFileUtilsNaCl.cpp \
 ../platform/nacl/CCApplication.cpp \
 ../platform/nacl/CCEGLView.cpp \
 ../platform/nacl/CCImage.cpp \
@@ -81,6 +79,7 @@ SOURCES = ../actions/CCAction.cpp \
 ../sprite_nodes/CCSpriteBatchNode.cpp \
 ../sprite_nodes/CCSpriteFrame.cpp \
 ../sprite_nodes/CCSpriteFrameCache.cpp \
+../support/tinyxml2/tinyxml2.cpp \
 ../support/CCPointExtension.cpp \
 ../support/CCProfiling.cpp \
 ../support/CCUserDefault.cpp \

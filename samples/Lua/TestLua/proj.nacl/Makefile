@@ -1,13 +1,8 @@
 COCOS_ROOT = ../../../../
 COCOS2DX_PATH = $(COCOS_ROOT)/cocos2dx
 
-INCLUDES =  -I../ \
+INCLUDES =  -I.. \
 	-I../Classes \
-	-I$(COCOS2DX_PATH) \
-	-I$(COCOS2DX_PATH)/cocoa \
-	-I$(COCOS2DX_PATH)/include \
-	-I$(COCOS2DX_PATH)/platform/nacl \
-	-I$(COCOS2DX_PATH)/kazmath/include \
 	-I$(COCOS_ROOT)/CocosDenshion/include \
 	-I$(COCOS_ROOT)/scripting/lua/lua \
 	-I$(COCOS_ROOT)/scripting/lua/tolua \
@@ -18,6 +13,7 @@ INCLUDES =  -I../ \
 SOURCES = main.cpp \
         ../Classes/AppDelegate.cpp \
         $(COCOS_ROOT)/scripting/lua/cocos2dx_support/CCLuaEngine.cpp \
+        $(COCOS_ROOT)/scripting/lua/cocos2dx_support/CCLuaStack.cpp \
         $(COCOS_ROOT)/scripting/lua/cocos2dx_support/Cocos2dxLuaLoader.cpp \
         $(COCOS_ROOT)/scripting/lua/cocos2dx_support/LuaCocos2d.cpp \
         $(COCOS_ROOT)/scripting/lua/cocos2dx_support/tolua_fix.c

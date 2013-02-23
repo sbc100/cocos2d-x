@@ -17,6 +17,7 @@ THIS_MAKEFILE := $(CURDIR)/$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
 # often define this, but in case is doesn't we can find it relative to
 # THIS_MAKEFILE
 COCOS_ROOT ?= $(realpath $(dir $(THIS_MAKEFILE))/../..)
+COCOS_SRC = $(COCOS_ROOT)/cocos2dx
 
 ifeq ($(NACL_ARCH), i686)
 ARCH_DIR=$(NACL_LIBC)_x86_32
@@ -30,7 +31,15 @@ OUT_DIR ?= out
 OBJ_DIR ?= $(OUT_DIR)/$(NACL_ARCH)
 LIB_DIR ?= $(COCOS_ROOT)/lib/nacl/$(ARCH_DIR)
 
-INCLUDES += -I$(NACL_SDK_ROOT)/include -I$(NACLPORTS_INCLUDE) -I$(NACLPORTS_INCLUDE)/libxml2
+INCLUDES += -I$(COCOS_SRC) \
+	-I$(COCOS_SRC)/cocoa \
+	-I$(COCOS_SRC)/include \
+	-I$(COCOS_SRC)/kazmath/include \
+	-I$(COCOS_SRC)/platform \
+	-I$(COCOS_SRC)/platform/nacl \
+	-I$(NACL_SDK_ROOT)/include \
+	-I$(NACLPORTS_INCLUDE) \
+	-I$(NACLPORTS_INCLUDE)/libxml2
 
 ifeq ($(DEBUG), 1)
 BIN_DIR = bin/debug
@@ -68,7 +77,7 @@ STATICLIBS += -lnacl_io
 endif
 
 SOUNDLIBS := -lalut -lopenal -lvorbisfile -lvorbis -logg
-STATICLIBS += $(SOUNDLIBS) -lfreetype -lxml2 -lpng -ljpeg -ltiff -llua
+STATICLIBS += $(SOUNDLIBS) -lfreetype -lxml2 -lwebp -lpng -ljpeg -ltiff -llua
 STATICLIBS += -lppapi_gles2 -lppapi -lppapi_cpp -lnosys
 SHAREDLIBS += -lpthread -lcocosdenshion -lcocos2d -lz
 

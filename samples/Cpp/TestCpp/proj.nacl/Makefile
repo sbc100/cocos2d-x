@@ -3,13 +3,7 @@ DEFINES += -DCC_ENABLE_BOX2D_INTEGRATION
 COCOS_ROOT = ../../../..
 COCOS2DX_PATH = $(COCOS_ROOT)/cocos2dx
 
-INCLUDES =  -I../ \
-	-I../Classes \
-	-I$(COCOS2DX_PATH) \
-	-I$(COCOS2DX_PATH)/cocoa \
-	-I$(COCOS2DX_PATH)/include \
-	-I$(COCOS2DX_PATH)/platform/nacl \
-	-I$(COCOS2DX_PATH)/kazmath/include \
+INCLUDES =  -I.. -I../Classes \
 	-I$(COCOS_ROOT)/CocosDenshion/include \
 	-I$(COCOS_ROOT)/extensions \
 	-I$(COCOS_ROOT)/external \
@@ -62,6 +56,7 @@ SOURCES = ../Classes/AccelerometerTest/AccelerometerTest.cpp \
 	../Classes/ExtensionsTest/TableViewTest/CustomTableViewCell.cpp \
 	../Classes/ExtensionsTest/ExtensionsTest.cpp \
 	../Classes/ExtensionsTest/NotificationCenterTest/NotificationCenterTest.cpp \
+	../Classes/FileUtilsTest/FileUtilsTest.cpp \
 	../Classes/FontTest/FontTest.cpp \
 	../Classes/IntervalTest/IntervalTest.cpp \
 	../Classes/KeypadTest/KeypadTest.cpp \
