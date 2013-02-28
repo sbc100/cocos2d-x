@@ -56,6 +56,7 @@ public:
     static CCEGLView* sharedOpenGLView();
     static CocosPepperInstance* g_instance;
 private:
+    void HandleMouseEvent(const pp::MouseInputEvent* event);
     bool initGL();
     void destroyGL();
     bool bIsInit;

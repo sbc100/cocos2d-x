@@ -267,7 +267,7 @@ public:
                     if (iY >= iMaxLineHeight)
                     {
                         //exceed the height truncate
-                        assert(iY <= iMaxLineWidth + 1);
+                        assert(iY <= iMaxLineHeight + 1);
                         continue;
                     }
 

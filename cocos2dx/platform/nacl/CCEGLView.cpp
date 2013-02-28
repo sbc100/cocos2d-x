@@ -215,6 +215,45 @@ CCEGLView* CCEGLView::sharedOpenGLView()
     return s_pEglView;
 }
 
+void CCEGLView::HandleMouseEvent(const pp::MouseInputEvent* event)
+{
+    pp::Point pos = event->GetPosition();
+    float x = pos.x();
+    float y = pos.y();
+    int touchID = 1;
+
+    // Clamp event position to be within cocos2dx window size
+    CCSize frame_size = getFrameSize();
+    float max_y = frame_size.height;
+    float max_x = frame_size.width;
+
+    if (x < 0)
+      x = 0;
+    if (y < 0)
+      y = 0;
+    if (y > max_y)
+      y = max_y;
+    if (x > max_x)
+      x = max_x;
+
+    switch (event->GetType())
+    {
+        case PP_INPUTEVENT_TYPE_MOUSEDOWN:
+            handleTouchesBegin(1, &touchID, &x, &y);
+            bIsMouseDown = true;
+            break;
+        case PP_INPUTEVENT_TYPE_MOUSEUP:
+            handleTouchesEnd(1, &touchID, &x, &y);
+            bIsMouseDown = false;
+            break;
+        case PP_INPUTEVENT_TYPE_MOUSEMOVE:
+            if (bIsMouseDown)
+                handleTouchesMove(1, &touchID, &x, &y);
+            break;
+        default:
+            break;
+    }
+}
 
 void CCEGLView::ProcessEventQueue()
 {
@@ -253,30 +292,9 @@ void CCEGLView::ProcessEventQueue()
             case PP_INPUTEVENT_TYPE_MOUSEUP:
             case PP_INPUTEVENT_TYPE_MOUSEMOVE:
                 {
-                    pp::MouseInputEvent* mevent;
-                    mevent = reinterpret_cast<pp::MouseInputEvent*>(&event);
-                    pp::Point pos = mevent->GetPosition();
-                    float x = pos.x();
-                    float y = pos.y();
-                    int touchID = 1;
-                    //CCLOG("touchevent at: %.0f %.0f", x, y);
-                    switch (type)
-                    {
-                        case PP_INPUTEVENT_TYPE_MOUSEDOWN:
-                            handleTouchesBegin(1, &touchID, &x, &y);
-                            bIsMouseDown = true;
-                            break;
-                        case PP_INPUTEVENT_TYPE_MOUSEUP:
-                            handleTouchesEnd(1, &touchID, &x, &y);
-                            bIsMouseDown = false;
-                            break;
-                        case PP_INPUTEVENT_TYPE_MOUSEMOVE:
-                            if (bIsMouseDown)
-                                handleTouchesMove(1, &touchID, &x, &y);
-                            break;
-                        default:
-                            break;
-                    }
+                    const pp::MouseInputEvent* mevent =
+                        reinterpret_cast<const pp::MouseInputEvent*>(&event);
+                    HandleMouseEvent(mevent);
                     break;
                 }
             default:
