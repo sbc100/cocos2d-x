@@ -116,7 +116,6 @@ public:
     bool divideString(FT_Face face, const char* sText, int iMaxWidth, int iMaxHeight)
     {
         int iError = 0;
-        int iCurXCursor;
         const char* pText = sText;
 
         FT_UInt unicode = utf8((char**)&pText);
@@ -124,7 +123,7 @@ public:
         if (iError)
             return false;
 
-        iCurXCursor = -SHIFT6(face->glyph->metrics.horiBearingX);
+        int iCurXCursor = -SHIFT6(face->glyph->metrics.horiBearingX);
 
         FT_UInt cLastCh = 0;
 
@@ -133,7 +132,8 @@ public:
         wchar_t* text_buf = (wchar_t*) malloc(sizeof(wchar_t) * strlen(sText));
         while ((unicode=utf8((char**)&pText)))
         {
-            if (unicode == '\n') {
+            if (unicode == '\n')
+            {
                 buildLine(text_buf, text_len, face, iCurXCursor, cLastCh);
                 text_len = 0;
 
@@ -214,159 +214,182 @@ public:
 
     int computeLineStartY(FT_Face face, CCImage::ETextAlign eAlignMask, int txtHeight, int borderHeight)
     {
-        int iRet;
+        int iRet = 0;
         if (eAlignMask == CCImage::kAlignCenter || eAlignMask == CCImage::kAlignLeft ||
             eAlignMask == CCImage::kAlignRight ) {
             //vertical center
-            iRet = (borderHeight - txtHeight)/2 + SHIFT6(face->size->metrics.ascender);
+            iRet = (borderHeight - txtHeight)/2;
 
         } else if (eAlignMask == CCImage::kAlignBottomRight ||
                    eAlignMask == CCImage::kAlignBottom ||
                    eAlignMask == CCImage::kAlignBottomLeft ) {
             //vertical bottom
-            iRet = borderHeight - txtHeight + SHIFT6(face->size->metrics.ascender);
-        } else {
-            // left or other situation
-            iRet = SHIFT6(face->size->metrics.ascender);
+            iRet = borderHeight - txtHeight;
         }
+        iRet += SHIFT6(face->size->metrics.ascender);
         return iRet;
+    }
+
+    bool renderLine(FT_Face face, const wchar_t* text_ptr, int* iCurXCursor, int iCurYCursor)
+    {
+        assert(iCurYCursor > 0);
+        size_t text_len = wcslen(text_ptr);
+        for (size_t i=0; i<text_len; ++i)
+        {
+            int iError = FT_Load_Char(face, text_ptr[i], FT_LOAD_RENDER);
+            if (iError)
+                return false;
+
+            //  convert glyph to bitmap with 256 gray
+            //  and get the bitmap
+            FT_Bitmap& bitmap = face->glyph->bitmap;
+
+            int yoffset = iCurYCursor - SHIFT6(face->glyph->metrics.horiBearingY);
+            int xoffset = *iCurXCursor + SHIFT6(face->glyph->metrics.horiBearingX);
+            for (int i = 0; i < bitmap.rows; ++i)
+            {
+                for (int j = 0; j < bitmap.width; ++j)
+                {
+                    unsigned char cTemp = bitmap.buffer[i * bitmap.width + j];
+                    if (cTemp == 0) continue;
+
+                    //  if it has gray>0 we set show it as 1, o otherwise
+                    int iY = yoffset + i;
+                    int iX = xoffset + j;
+
+                    if (iY < 0)
+                    {
+                        //truncate if drawing below first line
+                        assert(iY >= -1);
+                        continue;
+                    }
+
+                    if (iY >= iMaxLineHeight)
+                    {
+                        //exceed the height truncate
+                        assert(iY <= iMaxLineWidth + 1);
+                        continue;
+                    }
+
+                    int iTemp = cTemp << 24 | cTemp << 16 | cTemp << 8 | cTemp;
+                    int data_offset = iY * iMaxLineWidth + iX;
+                    assert(data_offset >= 0);
+                    assert(data_offset < m_DataSize);
+                    m_pData[data_offset] = iTemp;
+                }
+            }
+
+            //step to next glyph
+            *iCurXCursor += SHIFT6(face->glyph->metrics.horiAdvance) + iInterval;
+        }
+        return true;
+    }
+
+    bool renderLines(FT_Face face, CCImage::ETextAlign eAlignMask, int iCurYCursor)
+    {
+        size_t lines = vLines.size();
+        for (size_t i = 0; i < lines; i++)
+        {
+            const wchar_t* text_ptr = vLines[i].text;
+
+            // initialize the origin cursor
+            int iCurXCursor = computeLineStart(face, eAlignMask, text_ptr[0], i);
+            if (!renderLine(face, text_ptr, &iCurXCursor, iCurYCursor))
+                return false;
+
+            iCurYCursor += SHIFT6(face->size->metrics.ascender) -
+                SHIFT6(face->size->metrics.descender);
+        }
+        return true;
     }
 
     bool getBitmap(const char *text, int nWidth, int nHeight, CCImage::ETextAlign eAlignMask, const char * pFontName, float fontSize)
     {
         FT_Error iError;
 
-        int iCurXCursor, iCurYCursor;
         bool bRet = false;
         if (libError)
             return false;
 
-        do
+        std::string fontfile = pFontName;
+        std::string fontfileOrig = std::string(fontfile);
+
+        std::string ext = fileNameExtension(fontfile);
+        if (ext.empty() || (ext != "ttf" && ext != "TTF"))
         {
-            std::string fontfile = pFontName;
-            std::string fontfileOrig = std::string(fontfile);
+            fontfile += ".ttf" ;
+        }
 
-            std::string ext = fileNameExtension(fontfile);
-            if (ext.empty() || (ext != "ttf" && ext != "TTF"))
-            {
-                fontfile += ".ttf" ;
-            }
-
+        iError = openFont(fontfile, fontSize, fontfileOrig);
+        // try with fonts prefixed
+        if (iError && !startsWith(fontfile,"fonts/") )
+        {
+            fontfile = std::string("fonts/") + fontfile;
             iError = openFont(fontfile, fontSize, fontfileOrig);
-            // try with fonts prefixed
-            if (iError && !startsWith(fontfile,"fonts/") )
-            {
-                fontfile = std::string("fonts/") + fontfile;
-                iError = openFont(fontfile, fontSize, fontfileOrig);
-            }
+        }
 
+        if (iError)
+        {
+            // try lowercase version
+            std::transform(fontfile.begin(), fontfile.end(), fontfile.begin(), ::tolower);
+            iError = openFont(fontfile, fontSize, fontfileOrig);
             if (iError)
             {
-                // try lowercase version
-                std::transform(fontfile.begin(), fontfile.end(), fontfile.begin(), ::tolower);
-                iError = openFont(fontfile, fontSize, fontfileOrig);
+                // try default font
+                CCLOG("font missing (%s) falling back to default font", fontfileOrig.c_str());
+                iError = openFont("fonts/Marker Felt.ttf", fontSize, fontfileOrig);
                 if (iError)
-                {
-                    // try default font
-                    CCLOG("font missing (%s) falling back to default font", fontfileOrig.c_str());
-                    iError = openFont("fonts/Marker Felt.ttf", fontSize, fontfileOrig);
-                    if (iError)
-                        CCLOG("default font missing (fonts/Marker Felt.ttf)");
-                }
+                    CCLOG("default font missing (fonts/Marker Felt.ttf)");
             }
-            CC_BREAK_IF(iError);
+        }
+        if (iError)
+            return false;
 
-            FT_Face face = m_cachedFont;
+        FT_Face face = m_cachedFont;
 
-            //select utf8 charmap
-            iError = FT_Select_Charmap(face,FT_ENCODING_UNICODE);
-            CC_BREAK_IF(iError);
+        //select utf8 charmap
+        iError = FT_Select_Charmap(face,FT_ENCODING_UNICODE);
+        if (iError)
+            return false;
 
-            iError = FT_Set_Pixel_Sizes(face, fontSize,fontSize);
-            CC_BREAK_IF(iError);
+        iError = FT_Set_Pixel_Sizes(face, fontSize, fontSize);
+        if (iError)
+            return false;
 
-            iError = divideString(face, text, nWidth, nHeight)?0:1;
+        if (!divideString(face, text, nWidth, nHeight))
+            return false;
 
-            //compute the final line width
-            iMaxLineWidth = MAX(iMaxLineWidth, nWidth);
+        //compute the final line width
+        iMaxLineWidth = MAX(iMaxLineWidth, nWidth);
 
-            iMaxLineHeight = (face->size->metrics.ascender >> 6) - (face->size->metrics.descender >> 6);
-            iMaxLineHeight *= vLines.size();
+        iMaxLineHeight = SHIFT6(face->size->metrics.ascender) - SHIFT6(face->size->metrics.descender);
+        iMaxLineHeight *= vLines.size();
 
-            int txtHeight = iMaxLineHeight;
+        int txtHeight = iMaxLineHeight;
 
-            //compute the final line height
-            iMaxLineHeight = MAX(iMaxLineHeight, nHeight);
-            m_pData = new unsigned char[iMaxLineWidth * iMaxLineHeight*4];
-//          iCurYCursor = SHIFT6(face->size->metrics.ascender);
-            iCurYCursor = computeLineStartY(face, eAlignMask, txtHeight, iMaxLineHeight);
+        //compute the final line height
+        iMaxLineHeight = MAX(iMaxLineHeight, nHeight);
 
-            memset(m_pData,0, iMaxLineWidth * iMaxLineHeight*4);
+        // create m_pData as render target
+        m_DataSize = iMaxLineWidth * iMaxLineHeight;
+        m_pData = new int[m_DataSize];
+        memset(m_pData, 0, m_DataSize*sizeof(*m_pData));
 
-            size_t lines = vLines.size();
-            for (size_t i = 0; i < lines; i++)
-            {
-                const wchar_t* text_ptr = vLines[i].text;
+        //iCurYCursor = SHIFT6(face->size->metrics.ascender);
+        int iCurYCursor = computeLineStartY(face, eAlignMask, txtHeight, iMaxLineHeight);
+        if (!renderLines(face, eAlignMask, iCurYCursor))
+            return false;
 
-                //initialize the origin cursor
-                iCurXCursor = computeLineStart(face, eAlignMask, text_ptr[0], i);
-
-                size_t text_len = wcslen(text_ptr);
-                for (size_t i=0; i<text_len; ++i)
-                {
-                    int iError = FT_Load_Char(face, text_ptr[i], FT_LOAD_RENDER);
-                    if (iError) {
-                        break;
-                    }
-
-                    //  convert glyph to bitmap with 256 gray
-                    //  and get the bitmap
-                    FT_Bitmap& bitmap = face->glyph->bitmap;
-
-                    int yoffset = iCurYCursor - (face->glyph->metrics.horiBearingY >> 6);
-                    int xoffset = iCurXCursor + (face->glyph->metrics.horiBearingX >> 6);
-                    for (int i = 0; i < bitmap.rows; ++i)
-                    {
-                        for (int j = 0; j < bitmap.width; ++j)
-                        {
-                            unsigned char cTemp = bitmap.buffer[i * bitmap.width + j];
-                            if (cTemp == 0) continue;
-
-                            //  if it has gray>0 we set show it as 1, o otherwise
-                            int iY = yoffset + i;
-                            int iX = xoffset + j;
-
-                            if (iY<0 || iY>=iMaxLineHeight) {
-                                //exceed the bounds of the allocated memory. truncate
-                                continue;
-                            }
-
-                            int iTemp = cTemp << 24 | cTemp << 16 | cTemp << 8 | cTemp;
-                            *(int*) &m_pData[(iY * iMaxLineWidth + iX) * 4 + 0] = iTemp;
-                        }
-                    }
-                    //step to next glyph
-                    iCurXCursor += (face->glyph->metrics.horiAdvance >> 6) + iInterval;
-
-                }
-                iCurYCursor += (face->size->metrics.ascender >> 6)
-                - (face->size->metrics.descender >> 6);
-            }
-
-            //success;
-            if (iError)
-                bRet = false;
-            else
-                bRet = true;
-        } while(0);
-
-        return bRet;
+        // success;
+        return true;
     }
 
 public:
     FT_Library m_library;
 
-    unsigned char *m_pData;
+    int *m_pData;
+    // size of m_pData in words
+    int m_DataSize;
     int libError;
     vector<TextLine> vLines;
     int iInterval;
@@ -412,7 +435,7 @@ bool CCImage::initWithString(
         CC_BREAK_IF(! dc.getBitmap(pText, nWidth, nHeight, eAlignMask, pFontName, nSize));
 
         // assign the dc.m_pData to m_pData in order to save time
-        m_pData = dc.m_pData;
+        m_pData = (unsigned char*)dc.m_pData;
         CC_BREAK_IF(! m_pData);
 
         m_nWidth = (short)dc.iMaxLineWidth;
