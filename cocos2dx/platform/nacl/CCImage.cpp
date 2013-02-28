@@ -336,8 +336,8 @@ public:
                             int iY = yoffset + i;
                             int iX = xoffset + j;
 
-                            if (iY>=iMaxLineHeight) {
-                                //exceed the height truncate
+                            if (iY<0 || iY>=iMaxLineHeight) {
+                                //exceed the bounds of the allocated memory. truncate
                                 continue;
                             }
 
