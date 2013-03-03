@@ -560,7 +560,6 @@ CameraOrbitTest::CameraOrbitTest()
     
     CCSprite* sprite;
     CCOrbitCamera* orbit;
-    CCCamera* cam;
     CCSize ss;
 
     // LEFT
@@ -569,7 +568,6 @@ CameraOrbitTest::CameraOrbitTest()
     sprite->setScale(0.5f);
     p->addChild(sprite, 0);        
     sprite->setPosition( ccp(s.width/4*1, s.height/2) );
-    cam = sprite->getCamera();
     orbit = CCOrbitCamera::create(2, 1, 0, 0, 360, 0, 0);
     sprite->runAction( CCRepeatForever::create( orbit ) );
     

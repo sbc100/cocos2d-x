@@ -750,7 +750,7 @@ SpriteBatchNodeReorder::SpriteBatchNodeReorder()
         }
     }
     
-    int prev = -1;
+    int CC_UNUSED prev = -1;
     CCArray* children = asmtest->getChildren();
     CCSprite* child;
     CCObject* pObject = NULL;

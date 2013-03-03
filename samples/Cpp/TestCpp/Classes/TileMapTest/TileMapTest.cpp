@@ -21,7 +21,7 @@ TileMapTest::TileMapTest()
     // Convert it to "alias" (GL_LINEAR filtering)
     map->getTexture()->setAntiAliasTexParameters();
     
-    CCSize s = map->getContentSize();
+    CCSize CC_UNUSED s = map->getContentSize();
     CCLOG("ContentSize: %f, %f", s.width,s.height);
 
     // If you are not going to use the Map, you can free it now
@@ -56,7 +56,7 @@ TileMapEditTest::TileMapEditTest()
     // Create an Aliased Atlas
     map->getTexture()->setAliasTexParameters();
     
-    CCSize s = map->getContentSize();
+    CCSize CC_UNUSED s = map->getContentSize();
     CCLOG("ContentSize: %f, %f", s.width,s.height);
     
     // If you are not going to use the Map, you can free it now
@@ -125,7 +125,7 @@ TMXOrthoTest::TMXOrthoTest()
     CCTMXTiledMap* map = CCTMXTiledMap::create("TileMaps/orthogonal-test2.tmx");
     addChild(map, 0, kTagTileMap);
     
-    CCSize s = map->getContentSize();
+    CCSize CC_UNUSED s = map->getContentSize();
     CCLOG("ContentSize: %f, %f", s.width,s.height);
     
     CCArray * pChildrenArray = map->getChildren();
@@ -174,7 +174,7 @@ TMXOrthoTest2::TMXOrthoTest2()
     CCTMXTiledMap* map = CCTMXTiledMap::create("TileMaps/orthogonal-test1.tmx");
     addChild(map, 0, kTagTileMap);
 
-    CCSize s = map->getContentSize();
+    ////CCSize s = map->getContentSize();
     ////----UXLOG("ContentSize: %f, %f", s.width,s.height);
 
     CCArray* pChildrenArray = map->getChildren();
@@ -208,7 +208,7 @@ TMXOrthoTest3::TMXOrthoTest3()
     CCTMXTiledMap *map = CCTMXTiledMap::create("TileMaps/orthogonal-test3.tmx");
     addChild(map, 0, kTagTileMap);
     
-    CCSize s = map->getContentSize();
+    ////CCSize s = map->getContentSize();
     ////----UXLOG("ContentSize: %f, %f", s.width,s.height);
     
     CCArray* pChildrenArray = map->getChildren();
@@ -243,7 +243,7 @@ TMXOrthoTest4::TMXOrthoTest4()
     CCTMXTiledMap *map = CCTMXTiledMap::create("TileMaps/orthogonal-test4.tmx");
     addChild(map, 0, kTagTileMap);
     
-    CCSize s1 = map->getContentSize();
+    ////CCSize s1 = map->getContentSize();
     ////----UXLOG("ContentSize: %f, %f", s1.width,s1.height);
     
     CCArray* pChildrenArray = map->getChildren();
@@ -314,7 +314,7 @@ TMXReadWriteTest::TMXReadWriteTest()
     CCTMXTiledMap* map = CCTMXTiledMap::create("TileMaps/orthogonal-test2.tmx");
     addChild(map, 0, kTagTileMap);
     
-    CCSize s = map->getContentSize();
+    ////CCSize s = map->getContentSize();
     ////----UXLOG("ContentSize: %f, %f", s.width,s.height);
 
     
@@ -445,7 +445,7 @@ TMXHexTest::TMXHexTest()
     CCTMXTiledMap* map = CCTMXTiledMap::create("TileMaps/hexa-test.tmx");
     addChild(map, 0, kTagTileMap);
     
-    CCSize s = map->getContentSize();
+    ////CCSize s = map->getContentSize();
     ////----UXLOG("ContentSize: %f, %f", s.width,s.height);
 }
 
@@ -491,7 +491,7 @@ TMXIsoTest1::TMXIsoTest1()
     CCTMXTiledMap *map = CCTMXTiledMap::create("TileMaps/iso-test1.tmx");
     addChild(map, 0, kTagTileMap);
     
-    CCSize s = map->getContentSize();
+    ////CCSize s = map->getContentSize();
     ////----UXLOG("ContentSize: %f, %f", s.width,s.height);
     
     map->setAnchorPoint(ccp(0.5f, 0.5f));
@@ -515,7 +515,7 @@ TMXIsoTest2::TMXIsoTest2()
     CCTMXTiledMap *map = CCTMXTiledMap::create("TileMaps/iso-test2.tmx");
     addChild(map, 0, kTagTileMap);    
     
-    CCSize s = map->getContentSize();
+    ////CCSize s = map->getContentSize();
     ////----UXLOG("ContentSize: %f, %f", s.width,s.height);
     
     // move map to the center of the screen
@@ -542,7 +542,7 @@ TMXUncompressedTest::TMXUncompressedTest()
     CCTMXTiledMap *map = CCTMXTiledMap::create("TileMaps/iso-test2-uncompressed.tmx");
     addChild(map, 0, kTagTileMap);    
     
-    CCSize s = map->getContentSize();
+    ////CCSize s = map->getContentSize();
     ////----UXLOG("ContentSize: %f, %f", s.width,s.height);
     
     // move map to the center of the screen
@@ -581,7 +581,7 @@ TMXTilesetTest::TMXTilesetTest()
     CCTMXTiledMap *map = CCTMXTiledMap::create("TileMaps/orthogonal-test5.tmx");
     addChild(map, 0, kTagTileMap);
     
-    CCSize s = map->getContentSize();
+    ////CCSize s = map->getContentSize();
     ////----UXLOG("ContentSize: %f, %f", s.width,s.height);
     
     CCTMXLayer* layer;
@@ -610,7 +610,7 @@ TMXOrthoObjectsTest::TMXOrthoObjectsTest()
     CCTMXTiledMap *map = CCTMXTiledMap::create("TileMaps/ortho-objects.tmx");
     addChild(map, -1, kTagTileMap);
     
-    CCSize s = map->getContentSize();
+    ////CCSize s = map->getContentSize();
     ////----UXLOG("ContentSize: %f, %f", s.width,s.height);
     
     ////----UXLOG("----> Iterating over all the group objets");
@@ -690,7 +690,7 @@ TMXIsoObjectsTest::TMXIsoObjectsTest()
     CCTMXTiledMap* map = CCTMXTiledMap::create("TileMaps/iso-test-objectgroup.tmx");
     addChild(map, -1, kTagTileMap);
     
-    CCSize s = map->getContentSize();
+    ////CCSize s = map->getContentSize();
     ////----UXLOG("ContentSize: %f, %f", s.width,s.height);
 
     CCTMXObjectGroup* group = map->objectGroupNamed("Object Group 1");
@@ -767,7 +767,7 @@ TMXResizeTest::TMXResizeTest()
     CCTMXTiledMap* map = CCTMXTiledMap::create("TileMaps/orthogonal-test5.tmx");
     addChild(map, 0, kTagTileMap);
     
-    CCSize s = map->getContentSize();
+    ////CCSize s = map->getContentSize();
     ////----UXLOG("ContentSize: %f, %f", s.width,s.height);
 
     CCTMXLayer* layer;
@@ -873,7 +873,7 @@ TMXOrthoZorder::TMXOrthoZorder()
     CCTMXTiledMap *map = CCTMXTiledMap::create("TileMaps/orthogonal-test-zorder.tmx");
     addChild(map, 0, kTagTileMap);
     
-    CCSize s = map->getContentSize();
+    ////CCSize s = map->getContentSize();
     ////----UXLOG("ContentSize: %f, %f", s.width,s.height);
     
     m_tamara = CCSprite::create(s_pPathSister1);
@@ -1004,7 +1004,7 @@ TMXOrthoVertexZ::TMXOrthoVertexZ()
     CCTMXTiledMap *map = CCTMXTiledMap::create("TileMaps/orthogonal-test-vertexz.tmx");
     addChild(map, 0, kTagTileMap);
     
-    CCSize s = map->getContentSize();
+    ////CCSize s = map->getContentSize();
     ////----UXLOG("ContentSize: %f, %f", s.width,s.height);
     
     // because I'm lazy, I'm reusing a tile as an sprite, but since this method uses vertexZ, you
@@ -1075,7 +1075,7 @@ TMXIsoMoveLayer::TMXIsoMoveLayer()
     
     map->setPosition(ccp(-700,-50));
 
-    CCSize s = map->getContentSize();
+    ////CCSize s = map->getContentSize();
     ////----UXLOG("ContentSize: %f, %f", s.width,s.height);
 }
 
@@ -1100,7 +1100,7 @@ TMXOrthoMoveLayer::TMXOrthoMoveLayer()
     CCTMXTiledMap *map = CCTMXTiledMap::create("TileMaps/orthogonal-test-movelayer.tmx");
     addChild(map, 0, kTagTileMap);
 
-    CCSize s = map->getContentSize();
+    ////CCSize s = map->getContentSize();
     ////----UXLOG("ContentSize: %f, %f", s.width,s.height);
 }
 
@@ -1151,7 +1151,7 @@ TMXOrthoFlipTest::TMXOrthoFlipTest()
     CCTMXTiledMap *map = CCTMXTiledMap::create("TileMaps/ortho-rotation-test.tmx");
     addChild(map, 0, kTagTileMap);
 
-    CCSize s = map->getContentSize();
+    CCSize CC_UNUSED s = map->getContentSize();
     CCLog("ContentSize: %f, %f", s.width,s.height);
 
     CCObject* pObj = NULL;
@@ -1289,7 +1289,7 @@ TMXBug987::TMXBug987()
     CCTMXTiledMap *map = CCTMXTiledMap::create("TileMaps/orthogonal-test6.tmx");
     addChild(map, 0, kTagTileMap);
 
-    CCSize s1 = map->getContentSize();
+    CCSize CC_UNUSED s1 = map->getContentSize();
     CCLOG("ContentSize: %f, %f", s1.width,s1.height);
 
     CCArray* childs = map->getChildren();
@@ -1540,7 +1540,7 @@ TMXGIDObjectsTest::TMXGIDObjectsTest()
     CCTMXTiledMap *map = CCTMXTiledMap::create("TileMaps/test-object-layer.tmx");
     addChild(map, -1, kTagTileMap);
 
-    CCSize s = map->getContentSize();
+    CCSize CC_UNUSED s = map->getContentSize();
     CCLOG("Contentsize: %f, %f", s.width, s.height);
 
     CCLOG("----> Iterating over all the group objets");
