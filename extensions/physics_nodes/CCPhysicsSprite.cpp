@@ -151,6 +151,12 @@ CCPhysicsSprite* CCPhysicsSprite::create(const char *pszFileName, const CCRect& 
 // If you return NO, then nodeToParentTransform won't be called.
 bool CCPhysicsSprite::isDirty()
 {
+    // We need to mark all our children as dirty as well as ourselves
+    // otherwise the batch drawing code will not recalculate our childrens
+    // positions.
+    // TODO(sbc): we should be able to find a better place than this
+    // to perform this operation.
+    setDirtyRecursively(true);
     return true;
 }
 
