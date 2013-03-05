@@ -30,7 +30,7 @@ THE SOFTWARE.
 #include "platform/CCEGLViewProtocol.h"
 #include "ppapi/cpp/input_event.h"
 #include <pthread.h>
-#include <queue>
+#include <deque>
 
 
 bool initExtensions();
@@ -72,6 +72,7 @@ public:
      */
     static CCEGLView* sharedOpenGLView();
     static CocosPepperInstance* g_instance;
+
 private:
     void HandleMouseEvent(const pp::MouseInputEvent* event);
     bool initGL();
@@ -80,7 +81,7 @@ private:
     bool bIsMouseDown;
     float m_fFrameZoomFactor;
     OpenGLContext* m_context;
-    std::queue<pp::InputEvent> m_event_queue;
+    std::deque<pp::InputEvent> m_event_queue;
     pthread_mutex_t m_mutex;
 };
 
