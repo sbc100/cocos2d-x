@@ -282,11 +282,20 @@ void CCEGLView::ProcessEventQueue()
         setFrameSize(size.width(), size.height());
     }
 
+    // Copy all the elements of the queue and clear it.
+    // We don't want to hold the lock while processing the events
+    // and we don't want to process events that arrive after the
+    // start of the processing
     pthread_mutex_lock(&m_mutex);
-    while (m_event_queue.size())
+    std::deque<pp::InputEvent> queue_copy(m_event_queue);
+    m_event_queue.clear();
+    pthread_mutex_unlock(&m_mutex);
+
+    while (queue_copy.size())
     {
-        pp::InputEvent event = m_event_queue.front();
-        m_event_queue.pop();
+        pp::InputEvent event = queue_copy.front();
+        queue_copy.pop_front();
+
         PP_InputEvent_Type type = event.GetType();
         switch (type)
         {
@@ -319,13 +328,12 @@ void CCEGLView::ProcessEventQueue()
                 break;
         }
     }
-    pthread_mutex_unlock(&m_mutex);
 }
 
 void CCEGLView::AddEvent(const pp::InputEvent& event)
 {
     pthread_mutex_lock(&m_mutex);
-    m_event_queue.push(event);
+    m_event_queue.push_back(event);
     pthread_mutex_unlock(&m_mutex);
 }
 
