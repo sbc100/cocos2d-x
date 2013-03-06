@@ -1,18 +1,18 @@
 /****************************************************************************
  Copyright (c) 2011 cocos2d-x.org
- 
+
  http://www.cocos2d-x.org
- 
+
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  copies of the Software, and to permit persons to whom the Software is
  furnished to do so, subject to the following conditions:
- 
+
  The above copyright notice and this permission notice shall be included in
  all copies or substantial portions of the Software.
- 
+
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -40,7 +40,7 @@ class CCLuaStack : public CCObject
 public:
     static CCLuaStack *create(void);
     static CCLuaStack *attach(lua_State *L);
-    
+
     /**
      @brief Method used to get a pointer to the lua_State that the script module is attached to.
      @return A pointer to the lua_State that the script module is attached to.
@@ -48,29 +48,29 @@ public:
     lua_State* getLuaState(void) {
         return m_state;
     }
-    
+
     /**
      @brief Add a path to find lua files in
      @param path to be added to the Lua path
      */
     virtual void addSearchPath(const char* path);
-    
+
     /**
      @brief Add lua loader, now it is used on android
      */
     virtual void addLuaLoader(lua_CFunction func);
-    
+
     /**
      @brief Remove CCObject from lua state
      @param object to remove
      */
     virtual void removeScriptObjectByCCObject(CCObject* pObj);
-    
+
     /**
      @brief Remove Lua function reference
      */
     virtual void removeScriptHandler(int nHandler);
-    
+
     /**
      @brief Execute script code contained in the given string.
      @param codes holding the valid script code that should be executed.
@@ -78,7 +78,7 @@ public:
      @return other if the string is excuted wrongly.
      */
     virtual int executeString(const char* codes);
-    
+
     /**
      @brief Execute a script file.
      @param filename String object holding the filename of the script file that is to be executed
@@ -89,9 +89,31 @@ public:
      @brief Execute a scripted global function.
      @brief The function should not take any parameters and should return an integer.
      @param functionName String object holding the name of the function, in the global script environment, that is to be executed.
-     @return The integer value returned from the script function.
+     @return The integer value returned from the script function, or zero if
+     the functions returned a non-integer, non-boolean type, or -1 if there
+     was an error executing the function.
      */
     virtual int executeGlobalFunction(const char* functionName);
+
+    /**
+     @brief Execute a scripted global function.
+     @brief The function should not take any parameters and should return an integer.
+     @param functionName String object holding the name of the function, in the global script environment, that is to be executed.
+     @return The integer value returned from the script function, or zero if
+     the functions returned a non-integer, non-boolean type, or -1 if there
+     was an error executing the function.
+     */
+    virtual int executeFunctionByName(const char* functionName, int numArgs);
+
+    /**
+     @brief Execute a scripted global function.
+     @brief The function should not take any parameters and should return an integer.
+     @param functionName String object holding the name of the function, in the global script environment, that is to be executed.
+     @return The integer value returned from the script function, or zero if
+     the functions returned a non-integer, non-boolean type, or -1 if there
+     was an error executing the function.
+     */
+    virtual int executeFunctionByHandler(int nHandler, int numArgs);
 
     virtual void clean(void);
     virtual void pushInt(int intValue);
@@ -103,23 +125,23 @@ public:
     virtual void pushCCObject(CCObject* objectValue, const char* typeName);
     virtual void pushCCLuaValue(const CCLuaValue& value);
     virtual void pushCCLuaValueDict(const CCLuaValueDict& dict);
-    virtual void pushCCLuaValueArray(const CCLuaValueArray& array);    
+    virtual void pushCCLuaValueArray(const CCLuaValueArray& array);
     virtual bool pushFunctionByHandler(int nHandler);
     virtual int executeFunction(int numArgs);
-    
-    virtual int executeFunctionByHandler(int nHandler, int numArgs);
     virtual bool executeAssert(bool cond, const char *msg);
-    
+
 protected:
     CCLuaStack(void)
     : m_state(NULL)
     , m_callFromLua(0)
     {
     }
-    
+
     bool init(void);
     bool initWithLuaState(lua_State *L);
-    
+
+    int executeFunctionNoPop(int numArgs);
+
     lua_State *m_state;
     int m_callFromLua;
 };
