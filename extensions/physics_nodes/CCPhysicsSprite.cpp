@@ -217,6 +217,7 @@ void CCPhysicsSprite::setPosition(const CCPoint &pos)
 {
     cpVect cpPos = cpv(pos.x, pos.y);
     cpBodySetPos(m_pCPBody, cpPos);
+    updatePosFromPhysics();
 }
 
 float CCPhysicsSprite::getRotation()
@@ -292,6 +293,7 @@ void CCPhysicsSprite::setPosition(const CCPoint &pos)
 {
     float angle = m_pB2Body->GetAngle();
     m_pB2Body->SetTransform(b2Vec2(pos.x / m_fPTMRatio, pos.y / m_fPTMRatio), angle);
+    updatePosFromPhysics();
 }
 
 float CCPhysicsSprite::getRotation()
