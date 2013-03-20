@@ -14,7 +14,7 @@ INCLUDES = -I$(COCOS_ROOT)/external \
 	-I../CocoStudio/Components \
 	-I../CocoStudio/GUI \
 	-I../CocoStudio/Json \
-	-I../CocoStudio/Reader \
+	-I../CocoStudio/Reader
 
 SOURCES = ../CCBReader/CCBFileLoader.cpp \
 ../CCBReader/CCMenuItemImageLoader.cpp \
