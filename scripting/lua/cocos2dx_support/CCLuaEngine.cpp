@@ -187,7 +187,8 @@ int CCLuaEngine::executeLayerTouchEvent(CCLayer* pLayer, int eventType, CCTouch 
     const CCPoint pt = CCDirector::sharedDirector()->convertToGL(pTouch->getLocationInView());
     m_stack->pushFloat(pt.x);
     m_stack->pushFloat(pt.y);
-    return m_stack->executeFunctionByHandler(nHandler, 3);
+    m_stack->pushInt(pTouch->getID());
+    return m_stack->executeFunctionByHandler(nHandler, 4);
 }
 
 int CCLuaEngine::executeLayerTouchesEvent(CCLayer* pLayer, int eventType, CCSet *pTouches)

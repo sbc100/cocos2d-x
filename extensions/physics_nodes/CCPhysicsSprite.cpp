@@ -170,6 +170,31 @@ void CCPhysicsSprite::setIgnoreBodyRotation(bool bIgnoreBodyRotation)
     m_bIgnoreBodyRotation = bIgnoreBodyRotation;
 }
 
+// Override the setters and getters to always reflect the body's properties.
+const CCPoint& CCPhysicsSprite::getPosition()
+{
+    updatePosFromPhysics();
+    return CCNode::getPosition();
+}
+
+void CCPhysicsSprite::getPosition(float* x, float* y)
+{
+    updatePosFromPhysics();
+    return CCNode::getPosition(x, y);
+}
+
+float CCPhysicsSprite::getPositionX()
+{
+    updatePosFromPhysics();
+    return m_obPosition.x;
+}
+
+float CCPhysicsSprite::getPositionY()
+{
+    updatePosFromPhysics();
+    return m_obPosition.y;
+}
+
 #if CC_ENABLE_CHIPMUNK_INTEGRATION
 
 cpBody* CCPhysicsSprite::getCPBody() const
@@ -182,18 +207,17 @@ void CCPhysicsSprite::setCPBody(cpBody *pBody)
     m_pCPBody = pBody;
 }
 
-// Override the setters and getters to always reflect the body's properties.
-const CCPoint& CCPhysicsSprite::getPosition()
+void CCPhysicsSprite::updatePosFromPhysics()
 {
     cpVect cpPos = cpBodyGetPos(m_pCPBody);
     m_obPosition = ccp(cpPos.x, cpPos.y);
-    return m_obPosition;
 }
 
 void CCPhysicsSprite::setPosition(const CCPoint &pos)
 {
     cpVect cpPos = cpv(pos.x, pos.y);
     cpBodySetPos(m_pCPBody, cpPos);
+    updatePosFromPhysics();
 }
 
 float CCPhysicsSprite::getRotation()
@@ -257,20 +281,19 @@ void CCPhysicsSprite::setPTMRatio(float fRatio)
 }
 
 // Override the setters and getters to always reflect the body's properties.
-const CCPoint& CCPhysicsSprite::getPosition()
+void CCPhysicsSprite::updatePosFromPhysics()
 {
     b2Vec2 pos = m_pB2Body->GetPosition();
-    
     float x = pos.x * m_fPTMRatio;
     float y = pos.y * m_fPTMRatio;
     m_obPosition = ccp(x,y);
-    return m_obPosition;
 }
 
 void CCPhysicsSprite::setPosition(const CCPoint &pos)
 {
     float angle = m_pB2Body->GetAngle();
     m_pB2Body->SetTransform(b2Vec2(pos.x / m_fPTMRatio, pos.y / m_fPTMRatio), angle);
+    updatePosFromPhysics();
 }
 
 float CCPhysicsSprite::getRotation()
