@@ -64,7 +64,6 @@ SOURCES = ../actions/CCAction.cpp \
 ../platform/CCImageCommonWebp.cpp \
 ../platform/CCEGLViewProtocol.cpp \
 ../platform/CCFileUtils.cpp \
-../platform/linux/CCStdC.cpp \
 ../platform/linux/CCFileUtilsLinux.cpp \
 ../platform/linux/CCCommon.cpp \
 ../platform/linux/CCApplication.cpp \
