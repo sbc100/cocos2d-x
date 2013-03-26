@@ -1,13 +1,12 @@
-
 class CCTouch : public CCObject
 {
-	CCPoint getLocation() const;
+    CCPoint getLocation() const;
     CCPoint getPreviousLocation() const;
     CCPoint getDelta() const;
     CCPoint getLocationInView() const;
     CCPoint getPreviousLocationInView() const;
 
-	void setTouchInfo(int id, float x, float y);
+    void setTouchInfo(int id, float x, float y, int tapcount);
     int getID();
 };
 

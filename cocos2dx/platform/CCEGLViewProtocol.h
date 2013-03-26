@@ -80,33 +80,41 @@ public:
      */
     virtual void setDesignResolutionSize(float width, float height, ResolutionPolicy resolutionPolicy);
 
-    /** Get design resolution size.
-     *  Default resolution size is the same as 'getFrameSize'.
+    /**
+     * Get design resolution size.
+     * Default resolution size is the same as 'getFrameSize'.
      */
-    virtual const CCSize&  getDesignResolutionSize() const;
+    virtual const CCSize& getDesignResolutionSize() const;
 
     /** Set touch delegate */
-    virtual void setTouchDelegate(EGLTouchDelegate * pDelegate);
+    virtual void setTouchDelegate(EGLTouchDelegate* pDelegate);
 
     /**
      * Set opengl view port rectangle with points.
      */
-    virtual void setViewPortInPoints(float x , float y , float w , float h);
+    virtual void setViewPortInPoints(float x, float y, float w, float h);
 
     /**
      * Set Scissor rectangle with points.
      */
-    virtual void setScissorInPoints(float x , float y , float w , float h);
+    virtual void setScissorInPoints(float x, float y, float w, float h);
 
     virtual void setViewName(const char* pszViewName);
 
     const char* getViewName();
 
-    /** Touch events are handled by default; if you want to customize your handlers, please override these functions: */
-    virtual void handleTouchesBegin(int num, int ids[], float xs[], float ys[]);
-    virtual void handleTouchesMove(int num, int ids[], float xs[], float ys[]);
-    virtual void handleTouchesEnd(int num, int ids[], float xs[], float ys[]);
-    virtual void handleTouchesCancel(int num, int ids[], float xs[], float ys[]);
+    /**
+     * Touch events are handled by default; if you want to customize your
+     * handlers, please override these functions:
+     */
+    virtual void handleTouchesBegin(int num, int ids[], float xs[],
+                                    float ys[], int* tapcounts=NULL);
+    virtual void handleTouchesMove(int num, int ids[], float xs[],
+                                   float ys[], int* tapcounts=NULL);
+    virtual void handleTouchesEnd(int num, int ids[], float xs[],
+                                  float ys[], int* tapcounts=NULL);
+    virtual void handleTouchesCancel(int num, int ids[], float xs[],
+                                     float ys[], int* tapcounts=NULL);
 
     /**
      * Get the opengl view port rectangle.
@@ -123,7 +131,7 @@ public:
      */
     float getScaleY() const;
 private:
-    void getSetOfTouchesEndOrCancel(CCSet& set, int num, int ids[], float xs[], float ys[]);
+    void getSetOfTouchesEndOrCancel(CCSet& set, int num, int ids[], float xs[], float ys[], int* tapcount);
 
 protected:
     EGLTouchDelegate* m_pDelegate;

@@ -188,7 +188,8 @@ int CCLuaEngine::executeLayerTouchEvent(CCLayer* pLayer, int eventType, CCTouch 
     m_stack->pushFloat(pt.x);
     m_stack->pushFloat(pt.y);
     m_stack->pushInt(pTouch->getID());
-    return m_stack->executeFunctionByHandler(nHandler, 4);
+    m_stack->pushInt(pTouch->getTapCount());
+    return m_stack->executeFunctionByHandler(nHandler, 5);
 }
 
 int CCLuaEngine::executeLayerTouchesEvent(CCLayer* pLayer, int eventType, CCSet *pTouches)

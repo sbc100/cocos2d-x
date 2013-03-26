@@ -237,6 +237,7 @@ void CCEGLView::HandleMouseEvent(const pp::MouseInputEvent* event)
     pp::Point pos = event->GetPosition();
     float x = pos.x();
     float y = pos.y();
+    int tapcount = event->GetClickCount();
     int touchID = 1;
 
     // Clamp event position to be within cocos2dx window size
@@ -256,16 +257,16 @@ void CCEGLView::HandleMouseEvent(const pp::MouseInputEvent* event)
     switch (event->GetType())
     {
         case PP_INPUTEVENT_TYPE_MOUSEDOWN:
-            handleTouchesBegin(1, &touchID, &x, &y);
+            handleTouchesBegin(1, &touchID, &x, &y, &tapcount);
             bIsMouseDown = true;
             break;
         case PP_INPUTEVENT_TYPE_MOUSEUP:
-            handleTouchesEnd(1, &touchID, &x, &y);
+            handleTouchesEnd(1, &touchID, &x, &y, &tapcount);
             bIsMouseDown = false;
             break;
         case PP_INPUTEVENT_TYPE_MOUSEMOVE:
             if (bIsMouseDown)
-                handleTouchesMove(1, &touchID, &x, &y);
+                handleTouchesMove(1, &touchID, &x, &y, &tapcount);
             break;
         default:
             break;

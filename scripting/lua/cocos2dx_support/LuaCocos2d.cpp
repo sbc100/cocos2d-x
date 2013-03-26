@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Cocos2d
-** Generated automatically by tolua++-1.0.92 on Wed Mar 20 16:04:45 2013.
+** Generated automatically by tolua++-1.0.93 on Tue Mar 26 15:00:13 2013.
 */
 
 /****************************************************************************
@@ -51001,7 +51001,8 @@ static int tolua_Cocos2d_CCTouch_setTouchInfo00(lua_State* tolua_S)
      !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
      !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,5,&tolua_err)
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,6,&tolua_err)
  )
   goto tolua_lerror;
  else
@@ -51011,11 +51012,12 @@ static int tolua_Cocos2d_CCTouch_setTouchInfo00(lua_State* tolua_S)
   int id = ((int)  tolua_tonumber(tolua_S,2,0));
   float x = ((float)  tolua_tonumber(tolua_S,3,0));
   float y = ((float)  tolua_tonumber(tolua_S,4,0));
+  int tapcount = ((int)  tolua_tonumber(tolua_S,5,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setTouchInfo'", NULL);
 #endif
   {
-   self->setTouchInfo(id,x,y);
+   self->setTouchInfo(id,x,y,tapcount);
   }
  }
  return 0;

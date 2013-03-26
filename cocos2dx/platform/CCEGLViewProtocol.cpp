@@ -167,12 +167,14 @@ const char* CCEGLViewProtocol::getViewName()
     return m_szViewName;
 }
 
-void CCEGLViewProtocol::handleTouchesBegin(int num, int ids[], float xs[], float ys[])
+void CCEGLViewProtocol::handleTouchesBegin(int num, int ids[], float xs[],
+                                           float ys[], int* tapcounts)
 {
     CCSet set;
     for (int i = 0; i < num; ++i)
     {
         int id = ids[i];
+        int tapcount = tapcounts ? tapcounts[i] : 1;
         float x = xs[i];
         float y = ys[i];
 
@@ -192,7 +194,7 @@ void CCEGLViewProtocol::handleTouchesBegin(int num, int ids[], float xs[], float
 
             CCTouch* pTouch = s_pTouches[nUnusedIndex] = new CCTouch();
 			pTouch->setTouchInfo(nUnusedIndex, (x - m_obViewPortRect.origin.x) / m_fScaleX, 
-                                     (y - m_obViewPortRect.origin.y) / m_fScaleY);
+                                     (y - m_obViewPortRect.origin.y) / m_fScaleY, tapcount);
             
             //CCLOG("x = %f y = %f", pTouch->getLocationInView().x, pTouch->getLocationInView().y);
             
@@ -212,12 +214,14 @@ void CCEGLViewProtocol::handleTouchesBegin(int num, int ids[], float xs[], float
     m_pDelegate->touchesBegan(&set, NULL);
 }
 
-void CCEGLViewProtocol::handleTouchesMove(int num, int ids[], float xs[], float ys[])
+void CCEGLViewProtocol::handleTouchesMove(int num, int ids[], float xs[],
+                                          float ys[], int* tapcounts)
 {
     CCSet set;
     for (int i = 0; i < num; ++i)
     {
         int id = ids[i];
+        int tapcount = tapcounts ? tapcounts[i] : 1;
         float x = xs[i];
         float y = ys[i];
 
@@ -232,7 +236,7 @@ void CCEGLViewProtocol::handleTouchesMove(int num, int ids[], float xs[], float 
         if (pTouch)
         {
 			pTouch->setTouchInfo(pIndex->getValue(), (x - m_obViewPortRect.origin.x) / m_fScaleX, 
-								(y - m_obViewPortRect.origin.y) / m_fScaleY);
+								(y - m_obViewPortRect.origin.y) / m_fScaleY, tapcount);
             
             set.addObject(pTouch);
         }
@@ -253,11 +257,13 @@ void CCEGLViewProtocol::handleTouchesMove(int num, int ids[], float xs[], float 
     m_pDelegate->touchesMoved(&set, NULL);
 }
 
-void CCEGLViewProtocol::getSetOfTouchesEndOrCancel(CCSet& set, int num, int ids[], float xs[], float ys[])
+void CCEGLViewProtocol::getSetOfTouchesEndOrCancel(CCSet& set, int num, int ids[], float xs[],
+                                                   float ys[], int* tapcounts)
 {
     for (int i = 0; i < num; ++i)
     {
         int id = ids[i];
+        int tapcount = tapcounts ? tapcounts[i] : 1;
         float x = xs[i];
         float y = ys[i];
 
@@ -273,7 +279,7 @@ void CCEGLViewProtocol::getSetOfTouchesEndOrCancel(CCSet& set, int num, int ids[
         {
             CCLOGINFO("Ending touches with id: %d, x=%f, y=%f", id, x, y);
 			pTouch->setTouchInfo(pIndex->getValue(), (x - m_obViewPortRect.origin.x) / m_fScaleX, 
-								(y - m_obViewPortRect.origin.y) / m_fScaleY);
+								(y - m_obViewPortRect.origin.y) / m_fScaleY, tapcount);
 
             set.addObject(pTouch);
 
@@ -283,7 +289,6 @@ void CCEGLViewProtocol::getSetOfTouchesEndOrCancel(CCSet& set, int num, int ids[
             removeUsedIndexBit(pIndex->getValue());
 
             s_TouchesIntergerDict.removeObjectForKey(id);
-
         } 
         else
         {
@@ -300,17 +305,19 @@ void CCEGLViewProtocol::getSetOfTouchesEndOrCancel(CCSet& set, int num, int ids[
     }
 }
 
-void CCEGLViewProtocol::handleTouchesEnd(int num, int ids[], float xs[], float ys[])
+void CCEGLViewProtocol::handleTouchesEnd(int num, int ids[], float xs[],
+                                         float ys[], int* tapcounts)
 {
     CCSet set;
-    getSetOfTouchesEndOrCancel(set, num, ids, xs, ys);
+    getSetOfTouchesEndOrCancel(set, num, ids, xs, ys, tapcounts);
     m_pDelegate->touchesEnded(&set, NULL);
 }
 
-void CCEGLViewProtocol::handleTouchesCancel(int num, int ids[], float xs[], float ys[])
+void CCEGLViewProtocol::handleTouchesCancel(int num, int ids[], float xs[],
+                                            float ys[], int* tapcounts)
 {
     CCSet set;
-    getSetOfTouchesEndOrCancel(set, num, ids, xs, ys);
+    getSetOfTouchesEndOrCancel(set, num, ids, xs, ys, tapcounts);
     m_pDelegate->touchesCancelled(&set, NULL);
 }
 
