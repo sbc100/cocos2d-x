@@ -42,7 +42,7 @@ public:
      * @js ctor
      */
     CCTouch()
-        : m_nId(0),
+        : m_nId(0), m_tapcount(0),
         m_startPointCaptured(false)
     {}
 
@@ -61,9 +61,10 @@ public:
     /** returns the start touch location in screen coordinates */
     CCPoint getStartLocationInView() const;
     
-    void setTouchInfo(int id, float x, float y)
+    void setTouchInfo(int id, float x, float y, int tapcount)
     {
         m_nId = id;
+        m_tapcount = tapcount;
         m_prevPoint = m_point;
         m_point.x   = x;
         m_point.y   = y;
@@ -81,8 +82,14 @@ public:
         return m_nId;
     }
 
+    int getTapCount() const
+    {
+        return m_tapcount;
+    }
+
 private:
     int m_nId;
+    int m_tapcount;
     bool m_startPointCaptured;
     CCPoint m_startPoint;
     CCPoint m_point;
