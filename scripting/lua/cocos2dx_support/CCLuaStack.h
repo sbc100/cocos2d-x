@@ -130,13 +130,17 @@ public:
     virtual void pushString(const char* stringValue);
     virtual void pushString(const char* stringValue, int length);
     virtual void pushNil(void);
+    virtual void pushUserType(void* objectValue, const char* typeName);
     virtual void pushCCObject(CCObject* objectValue, const char* typeName);
     virtual void pushCCLuaValue(const CCLuaValue& value);
     virtual void pushCCLuaValueDict(const CCLuaValueDict& dict);
     virtual void pushCCLuaValueArray(const CCLuaValueArray& array);
     virtual bool pushFunctionByHandler(int nHandler);
     virtual int executeFunction(int numArgs);
-    virtual bool executeAssert(bool cond, const char *msg);
+
+    virtual int executeFunctionReturnArray(int nHandler,int nNumArgs,int nNummResults,CCArray* pResultArray);
+
+    virtual bool handleAssert(const char *msg);
 
 protected:
     CCLuaStack(void)

@@ -180,19 +180,8 @@ void CCLuaStack::removeScriptHandler(int nHandler)
 
 int CCLuaStack::executeString(const char *codes)
 {
-    ++m_callFromLua;
-    int nRet = luaL_dostring(m_state, codes);
-    --m_callFromLua;
-    CC_ASSERT(m_callFromLua >= 0);
-    lua_gc(m_state, LUA_GCCOLLECT, 0);
-
-    if (nRet != 0)
-    {
-        CCLOG("[LUA ERROR] %s", lua_tostring(m_state, -1));
-        lua_pop(m_state, 1);
-        return nRet;
-    }
-    return 0;
+    luaL_loadstring(m_state, codes);
+    return executeFunction(0);
 }
 
 int CCLuaStack::executeScriptFile(const char* filename)
@@ -258,6 +247,11 @@ void CCLuaStack::pushString(const char* stringValue, int length)
 void CCLuaStack::pushNil(void)
 {
     lua_pushnil(m_state);
+}
+
+void CCLuaStack::pushUserType(void* objectValue, const char* typeName)
+{
+    tolua_pushusertype(m_state, objectValue, typeName);
 }
 
 void CCLuaStack::pushCCObject(CCObject* objectValue, const char* typeName)
