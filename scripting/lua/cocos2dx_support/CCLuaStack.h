@@ -122,6 +122,7 @@ public:
     virtual void pushString(const char* stringValue);
     virtual void pushString(const char* stringValue, int length);
     virtual void pushNil(void);
+    virtual void pushUserType(void* objectValue, const char* typeName);
     virtual void pushCCObject(CCObject* objectValue, const char* typeName);
     virtual void pushCCLuaValue(const CCLuaValue& value);
     virtual void pushCCLuaValueDict(const CCLuaValueDict& dict);

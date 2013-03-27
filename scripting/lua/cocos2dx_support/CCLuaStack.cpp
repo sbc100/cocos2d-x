@@ -200,6 +200,11 @@ void CCLuaStack::pushNil(void)
     lua_pushnil(m_state);
 }
 
+void CCLuaStack::pushUserType(void* objectValue, const char* typeName)
+{
+    tolua_pushusertype(m_state, objectValue, typeName);
+}
+
 void CCLuaStack::pushCCObject(CCObject* objectValue, const char* typeName)
 {
     toluafix_pushusertype_ccobject(m_state, objectValue->m_uID, &objectValue->m_nLuaID, objectValue, typeName);
