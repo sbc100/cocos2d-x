@@ -658,7 +658,7 @@ public:
     /** 
      * Removes a child from the container by tag value with a cleanup.
      *
-     * @see removeChildByTag(int, bool)
+     * @see removeChildByTag(int)
      *
      * @param tag       An interger number that identifies a child node
      */
