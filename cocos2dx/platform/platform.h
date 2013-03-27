@@ -26,6 +26,7 @@ THE SOFTWARE.
 #define __PLATFORM_H__
 
 #include "CCThread.h"
+#include "CCStdC.h"
 #include "CCPlatformMacros.h"
 
 NS_CC_BEGIN
@@ -48,7 +49,13 @@ struct CC_DLL cc_timeval
 class CC_DLL CCTime
 {
 public:
-    static int gettimeofdayCocos2d(struct cc_timeval *tp, void *tzp);
+    /**
+     * Return a monotinc measure of time in milliseconds since some fixed time.
+     * (Usually program startup).  This value should not be effected by changes
+     * to the system clock.
+     */
+    static double getTime();
+    static int gettimeofdayCocos2d(struct cc_timeval *tp, void *tzp=NULL);
     static double timersubCocos2d(struct cc_timeval *start, struct cc_timeval *end);
 };
 
