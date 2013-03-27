@@ -28,6 +28,13 @@ THE SOFTWARE.
 
 NS_CC_BEGIN
 
+double CCTime::getTime()
+{
+    struct cc_timeval tp;
+    gettimeofdayCocos2d(&tp);
+    return double(tp.tv_sec) + double(tp.tv_usec) / 1000 / 1000;
+}
+
 int CCTime::gettimeofdayCocos2d(struct cc_timeval *tp, void *tzp)
 {
     CC_UNUSED_PARAM(tzp);
@@ -40,11 +47,11 @@ int CCTime::gettimeofdayCocos2d(struct cc_timeval *tp, void *tzp)
 
 double CCTime::timersubCocos2d(struct cc_timeval *start, struct cc_timeval *end)
 {
-    if (! start || ! end)
+    if (!start || !end)
     {
         return 0;
     }
-    
+
     return ((end->tv_sec*1000.0+end->tv_usec/1000.0) - (start->tv_sec*1000.0+start->tv_usec/1000.0));
 }
 

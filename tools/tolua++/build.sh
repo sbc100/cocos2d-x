@@ -14,4 +14,6 @@ if [ -z "${TOLUA}" ]; then
 fi
 
 cd ${SCRIPT_DIR}
-${TOLUA} -L basic.lua -o ../../scripting/lua/cocos2dx_support/LuaCocos2d.cpp Cocos2d.pkg
+CMD="${TOLUA} -L basic.lua -o ../../scripting/lua/cocos2dx_support/LuaCocos2d.cpp Cocos2d.pkg"
+echo $CMD
+$CMD

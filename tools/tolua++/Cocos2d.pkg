@@ -2,6 +2,7 @@ $#include "LuaCocos2d.h"
 
 $pfile "matrix.pkg"
 $pfile "ccTypes.pkg"
+$pfile "CCTime.pkg"
 $pfile "CCObject.pkg"
 $pfile "CCCommon.pkg"
 $pfile "CCGeometry.pkg"
