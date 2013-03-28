@@ -159,6 +159,8 @@ int CCLuaEngine::executeSchedule(int nHandler, float dt, CCNode* pNode/* = NULL*
 int CCLuaEngine::executeLayerTouchEvent(CCLayer* pLayer, int eventType, CCTouch *pTouch)
 {
     CCTouchScriptHandlerEntry* pScriptHandlerEntry = pLayer->getScriptTouchHandlerEntry();
+    if (!pScriptHandlerEntry)
+        return 0;
     int nHandler = pScriptHandlerEntry->getHandler();
     if (!nHandler) return 0;
     
@@ -195,7 +197,8 @@ int CCLuaEngine::executeLayerTouchEvent(CCLayer* pLayer, int eventType, CCTouch 
 int CCLuaEngine::executeLayerTouchesEvent(CCLayer* pLayer, int eventType, CCSet *pTouches)
 {
     CCTouchScriptHandlerEntry* pScriptHandlerEntry = pLayer->getScriptTouchHandlerEntry();
-    if (!pScriptHandlerEntry) return 0;
+    if (!pScriptHandlerEntry)
+        return 0;
     int nHandler = pScriptHandlerEntry->getHandler();
     if (!nHandler) return 0;
     
@@ -240,6 +243,8 @@ int CCLuaEngine::executeLayerTouchesEvent(CCLayer* pLayer, int eventType, CCSet 
 int CCLuaEngine::executeLayerKeypadEvent(CCLayer* pLayer, int eventType)
 {
     CCScriptHandlerEntry* pScriptHandlerEntry = pLayer->getScriptKeypadHandlerEntry();
+    if (!pScriptHandlerEntry)
+        return 0;
     int nHandler = pScriptHandlerEntry->getHandler();
     if (!nHandler) return 0;
     
@@ -262,6 +267,8 @@ int CCLuaEngine::executeLayerKeypadEvent(CCLayer* pLayer, int eventType)
 int CCLuaEngine::executeAccelerometerEvent(CCLayer* pLayer, CCAcceleration* pAccelerationValue)
 {
     CCScriptHandlerEntry* pScriptHandlerEntry = pLayer->getScriptAccelerateHandlerEntry();
+    if (!pScriptHandlerEntry)
+        return 0;
     int nHandler = pScriptHandlerEntry->getHandler();
     if (!nHandler) return 0;
     
