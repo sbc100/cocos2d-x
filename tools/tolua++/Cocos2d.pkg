@@ -12,6 +12,7 @@ $pfile "CCString.pkg"
 $pfile "CCPointExtension.pkg"
 $pfile "CCEGLViewProtocol.pkg"
 
+$pfile "CCProtocols.pkg"
 $pfile "CCFileUtils.pkg"
 $pfile "CCDrawingPrimitives.pkg"
 $pfile "CCAffineTransform.pkg"

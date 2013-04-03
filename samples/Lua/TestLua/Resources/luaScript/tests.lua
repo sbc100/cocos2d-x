@@ -13,15 +13,17 @@ require "luaScript/DrawPrimitivesTest/DrawPrimitivesTest"
 require "luaScript/NodeTest/NodeTest"
 require "luaScript/TouchesTest/TouchesTest"
 require "luaScript/SpriteTest/SpriteTest"
-
+require "luaScript/LayerTest/LayerTest"
 require "luaScript/PerformanceTest/PerformanceTest"
 require "luaScript/LabelTest/LabelTest"
+require "luaScript/ParallaxTest/ParallaxTest"
+require "luaScript/TileMapTest/TileMapTest"
 ----------------------------------------------------
 
 -- tests scene
 Test_Table =
 {
-	"TEST_ACTIONS",
+    "TEST_ACTIONS",
     "TEST_TRANSITIONS",
     "TEST_PROGRESS_ACTIONS",
     "TEST_EFFECTS",
@@ -35,13 +37,13 @@ Test_Table =
     "TEST_TOUCHES",
 --  "TEST_MENU",
 --  "TEST_ACTION_MANAGER",
---  "TEST_LAYER",
+    "TEST_LAYER",
 --  "TEST_SCENE",
---  "TEST_PARALLAX",
---  "TEST_TILE_MAP",
+    "TEST_PARALLAX",
+    "TEST_TILE_MAP",
 --  "TEST_INTERVAL",
 --  "TEST_CHIPMUNKACCELTOUCH",
-	"TEST_LABEL",
+    "TEST_LABEL",
 --  "TEST_TEXT_INPUT",
     "TEST_SPRITE",
 --  "TEST_SCHEDULER",
@@ -85,13 +87,13 @@ Test_Name =
     "TouchesTest",
 --  "MenuTest",
 --  "ActionManagerTest",
---  "LayerTest",
+    "LayerTest",
 --  "SceneTest",
---  "ParallaxTest",
---  "TileMapTest",
+    "ParallaxTest",
+    "TileMapTest",
 --  "IntervalTest",
 --  "ChipmunkAccelTouchTest",
-	"LabelTest",
+    "LabelTest",
 --  "TextInputTest",
     "SpriteTest",
 --  "SchdulerTest",

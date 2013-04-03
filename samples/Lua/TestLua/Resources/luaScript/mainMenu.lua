@@ -43,13 +43,13 @@ local function CreateTestScene(nIdx)
     elseif nIdx == Test_Table.TEST_ACTION_MANAGER then
 		scene = ActionManagerTest()
     elseif nIdx == Test_Table.TEST_LAYER then
-		scene = LayerTest()
+		scene = LayerTestMain()
     elseif nIdx == Test_Table.TEST_SCENE then
 		scene = SceneTest()
     elseif nIdx == Test_Table.TEST_PARALLAX then
-		scene = ParallaxTest()
+		scene = ParallaxTestMain()
     elseif nIdx == Test_Table.TEST_TILE_MAP then
-		scene = TileMapTest()
+		scene = TileMapTestMain()
     elseif nIdx == Test_Table.TEST_INTERVAL then
 		scene = IntervalTest()
     elseif nIdx == Test_Table.TEST_CHIPMUNKACCELTOUCH then
