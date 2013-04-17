@@ -1,6 +1,8 @@
 cocos2d-x
 =========
 
+[![Build Status](https://travis-ci.org/sbc100/cocos2d-x.png?branch=travis)](https://travis-ci.org/sbc100/cocos2d-x)
+
 How to build for WinRT (Windows 8.0)
 
 Do not download the zip version of the cocos2d-x repo. You need to clone the repo using git.
