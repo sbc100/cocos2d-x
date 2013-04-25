@@ -32,7 +32,7 @@ extern "C"
     int loader_Android(lua_State *L)
     {
         std::string filename(luaL_checkstring(L, 1));
-        int pos = filename.rfind(".lua");
+        size_t pos = filename.rfind(".lua");
         if (pos != std::string::npos)
         {
             filename = filename.substr(0, pos);
@@ -56,8 +56,8 @@ extern "C"
         lua_getfield(L, -1, "path");
         std::string searchpath(lua_tostring(L, -1));
         lua_pop(L, 1);
-        int begin = 0;
-        int next = searchpath.find_first_of(";", 0);
+        size_t begin = 0;
+        size_t next = searchpath.find_first_of(";", 0);
         
         do
         {
@@ -79,7 +79,7 @@ extern "C"
             
             begin = next + 1;
             next = searchpath.find_first_of(";", begin);
-        } while (begin < (int)searchpath.length());
+        } while (begin < searchpath.length());
         
         if (codeBuffer)
         {
