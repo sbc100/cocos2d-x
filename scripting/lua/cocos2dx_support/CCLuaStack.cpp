@@ -386,12 +386,6 @@ int CCLuaStack::executeFunction(int numArgs)
     }
     // remove return value from stack
     lua_pop(m_state, 1);                                                /* L: ... [G] */
-    
-    if (traceback)
-    {
-        lua_pop(m_state, 1); // remove __G__TRACKBACK__ from stack      /* L: ... */
-    }
-    
     return ret;
 }
 
