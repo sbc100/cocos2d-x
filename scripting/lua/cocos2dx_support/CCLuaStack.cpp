@@ -33,11 +33,10 @@ extern "C" {
 }
 
 #include "LuaCocos2d.h"
+#include "Cocos2dxLuaLoader.h"
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
 #include "platform/ios/CCLuaObjcBridge.h"
-#elif (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-#include "Cocos2dxLuaLoader.h"
 #endif
 
 namespace {
@@ -118,9 +117,11 @@ bool CCLuaStack::init(void)
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
     CCLuaObjcBridge::luaopen_luaoc(m_state);
-#elif (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-    addLuaLoader(loader_Android);
 #endif
+    
+    // add cocos2dx loader
+    addLuaLoader(cocos2dx_lua_loader);
+
     return true;
 }
 
@@ -190,8 +191,9 @@ int CCLuaStack::executeScriptFile(const char* filename)
     code.append("\"");
     return executeString(code.c_str());
 #else
+    std::string fullPath = CCFileUtils::sharedFileUtils()->fullPathForFilename(filename);
     ++m_callFromLua;
-    int nRet = luaL_dofile(m_state, filename);
+    int nRet = luaL_dofile(m_state, fullPath.c_str());
     --m_callFromLua;
     CC_ASSERT(m_callFromLua >= 0);
     // lua_gc(m_state, LUA_GCCOLLECT, 0);
