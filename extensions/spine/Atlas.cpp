@@ -119,7 +119,7 @@ static int readValue (const char* end, Str* str) {
 
 /* Returns the number of tuple values read (2, 4, or 0 for failure). */
 static int readTuple (const char* end, Str tuple[]) {
-	Str str =  { 0, 0 };
+	Str str;
 	readLine(0, end, &str);
 	if (!beginPast(&str, ':')) return 0;
 	int i = 0;
