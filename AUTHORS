@@ -12,8 +12,26 @@ Developers:
     Rolando Abarca
         Javascript Binding and testjs
 
+    silverscania
+        Pass correct parameter to glPixelStorei when creating a texture
+
+    FlagellumDei
+        Center the window correctly on windows
+
+    ggggamer
+        fixed memory leak of preloadEffect on windows
+
+    CodeSnooker
+        Added Method to create a CCMenuItemToggle from a CCArray with a target selector
+
+    wagaf-d
+        Move ccpX functions to CCPoint methods and operators
+
     sergey-shambir
         Added CC_DISABLE_COPY macro
+        Added __attribute__(__format__()) for CCLog and CCString
+        Refactoring network extension and fixing unlikely memory leaks.
+        Adding PUT/DELETE methods for CCHttpRequest.
 
     savdalion 
         Added example for russian language in TestCpp
@@ -50,6 +68,7 @@ Developers:
         Fix CCUserDefault.cpp compiling on Android.
         Fixing CCFileUtils 'createXXXXWithContentsOfFile' path lookup issue.
         Add CCDirector::popToSceneStackLevel(int level).
+        Fixing a bug that custom font can't be loaded correctly if using full path of filename on android.
 
     Waiter
         fix an error that OpenSLEngine can't load resources from SD card
@@ -103,6 +122,8 @@ Developers:
          CCTableView crashes if a CCTableViewDelegate is not provided.
          Fixing a bug that _realOpacity isn't assigned in CCLayerColor::initWithColor.
          CCScrollView TouchPriority Fix
+         Add encrypted PVR.CCZ support to ZipUtils + Tests
+         Fix for broken of ccArrayGetIndexOfObject after merging this commit(076f38c).
 
     Weeds (Andre Rudlaff)
         Used fontconfig to enhance font rendering on linux.
@@ -148,6 +169,8 @@ Developers:
         Improvements to JS Bindings.
         Synchronizing CCBReader to version 5.
         Adding OpenGL Bindings to Javascript.
+        Fixing a bug that nested ccb-files are not positioned correctly.
+        Fixing a bug that crash when loading valid project.
 
     Jianfeng Zou (NetDragon Inc)
         contributes CCListView and CCTextureWatcher.
@@ -254,6 +277,7 @@ Developers:
         Fixing a crash for call runAnimation() in CCBAnimationManagerDelegate::completedAnimationSequenceNamed.
         Fixing a bug that CCControl's touch priority is not set correctly; m_nDefaultTouchPriority is never used.
         Fixing a syntax error for RENDER_IN_SUBPIXEL macro.
+        Implement CCDictionary::writeToFile().
 
     xyhl515
         Fixed a bug that CCControlSwitch::setOn(isOn,false) doesn't work.
@@ -308,6 +332,7 @@ Developers:
 
     Zecken (gelldur)
         Fixing a profiling compilation error in CCParticleBatchNode.
+        Fixing linking errors for TestCPP with libcurl on linux.
 
     flamingo (flaming0)
         Null pointer check in order to prevent crashes.
@@ -353,12 +378,42 @@ Developers:
 
     jotel (Jaroslaw Lewandowski)
         Fixing a bug that wrong type of argument signature is used in setAccelerometerIntervalJNI function.
+        Fix for broken of ccArrayGetIndexOfObject after merging this commit(076f38c).
 
     MarcelBloemendaal
         Adding secureTextEntry property to CCTextFieldTTF.
 
     brawsome
         Adding new macro CCB_MEMBERVARIABLEASSIGNER_GLUE_WEAK to CCBMemberVariableAssigner.h.
+        Adding CCLOG before original path is returned in CCFileUtils::fullPathForFileName to aid in debugging.
+        Optmization to ccArrayGetIndexOfObject.
+
+    sunzhuoshi
+        Adding support for javascript bytecode.
+
+    ptekchand (Pranav Tekchand)
+        Supporting negative node scales for CCScrollView.
+
+    James Gregory (j4m3z0r, Zynga)
+        Initial Emscripten port.
+
+    coolengineer (Hojin Choi)
+        Refactoring callback selector for HttpResponse.
+
+    djh-
+        Fixing a bug that displayed color of CCDrawNode is incorrect when VAO is disabled.
+
+    acai (beingstudio)
+        Fix of null pointer access in CCBAnimationManager::getRunningSequenceName.
+
+    metalgit92
+        Adding const qualification to some CCNode's getters
+
+    Clarinexus
+        Fixing a bug that setColor and setOpacity of CCControlButton and CCScale9Sprite are broken.
+
+    Xander84
+        Fixing a bug in CCBValue::getByteValue.
 
 Retired Core Developers:
     WenSheng Yang
