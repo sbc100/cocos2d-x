@@ -65,13 +65,24 @@ else
 DEFINES =
 endif
 
+ifeq ($(NACL_GLIBC),1)
+TARGET = $(LIB_DIR)/libbox2d.so
+CXXFLAGS += -fPIC
+else
 TARGET = $(LIB_DIR)/libbox2d.a
+endif
 
 all: $(TARGET)
 
+ifeq ($(NACL_GLIBC),1)
+$(TARGET): $(OBJECTS) $(CORE_MAKEFILE_LIST)
+	@mkdir -p $(@D)
+	$(LOG_LDSO)$(NACL_CXX) -shared $(CXXFLAGS) -o $(TARGET) $(OBJECTS)
+else
 $(TARGET): $(OBJECTS) $(CORE_MAKEFILE_LIST)
 	@mkdir -p $(@D)
 	$(LOG_AR)$(NACL_AR) $(ARFLAGS) $(TARGET) $(OBJECTS)
+endif
 
 $(OBJ_DIR)/%.o: ../%.cpp $(CORE_MAKEFILE_LIST)
 	@mkdir -p $(@D)

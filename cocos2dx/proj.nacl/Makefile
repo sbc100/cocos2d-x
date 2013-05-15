@@ -136,13 +136,25 @@ include cocos2dx.mk
 
 CXXFLAGS += -Wno-sequence-point
 
+ifeq ($(NACL_GLIBC),1)
+TARGET = $(LIB_DIR)/libcocos2d.so
+CXXFLAGS += -fPIC
+CCFLAGS += -fPIC
+else
 TARGET = $(LIB_DIR)/libcocos2d.a
+endif
 
 all: $(TARGET)
 
+ifeq ($(NACL_GLIBC),1)
+$(TARGET): $(OBJECTS) $(CORE_MAKEFILE_LIST)
+	@mkdir -p $(@D)
+	$(LOG_LDSO)$(NACL_CXX) -shared $(CXXFLAGS) -o $@ $(OBJECTS)
+else
 $(TARGET): $(OBJECTS) $(CORE_MAKEFILE_LIST)
 	@mkdir -p $(@D)
 	$(LOG_AR)$(NACL_AR) $(ARFLAGS) $@ $(OBJECTS)
+endif
 
 $(OBJ_DIR)/%.o: ../%.cpp $(CORE_MAKEFILE_LIST)
 	@mkdir -p $(@D)
