@@ -113,7 +113,13 @@ NMF = $(BIN_DIR)/$(APP_NAME).nmf
 
 all: $(NMF)
 
-$(TARGET): $(OBJECTS) $(LIB_DIR)/libcocos2d.a $(LIB_DIR)/libcocosdenshion.a $(CORE_MAKEFILE_LIST)
+ifeq ($(NACL_GLIBC),1)
+LIB_DEPS = $(COCOS_LIB) $(LIB_DIR)/libcocosdenshion.so $(LIB_DIR)/libbox2d.so
+else
+LIB_DEPS = $(COCOS_LIB) $(LIB_DIR)/libcocosdenshion.a $(LIB_DIR)/libbox2d.a
+endif
+
+$(TARGET): $(OBJECTS) $(LIB_DEPS) $(CORE_MAKEFILE_LIST)
 	@mkdir -p $(@D)
 	$(LOG_LINK)$(NACL_CXX) $(CXXFLAGS) $(LDFLAGS) $(OBJECTS) -o $@ $(SHAREDLIBS) $(STATICLIBS)
 

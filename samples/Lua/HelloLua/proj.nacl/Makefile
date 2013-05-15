@@ -26,7 +26,7 @@ NMF = $(BIN_DIR)/$(APP_NAME).nmf
 
 all: $(NMF)
 
-$(TARGET): $(OBJECTS) $(LIB_DIR)/libcocos2d.a
+$(TARGET): $(OBJECTS) $(COCOS_LIB)
 	@mkdir -p $(@D)
 	$(LOG_LINK)$(NACL_CXX) $(CXXFLAGS) $(LDFLAGS) $(OBJECTS) -o $@ $(SHAREDLIBS) $(STATICLIBS)
 

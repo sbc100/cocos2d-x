@@ -47,16 +47,23 @@ endif
 NACLPORTS_ROOT ?= $(NACL_SDK_ROOT)/ports
 NACLPORTS_INCLUDE ?= $(NACLPORTS_ROOT)/include
 OUT_DIR ?= obj
-OBJ_DIR ?= $(OUT_DIR)/$(NACL_ARCH)
+OBJ_DIR ?= $(OUT_DIR)/$(NACL_LIBC)_$(NACL_ARCH)
 LIB_DIR ?= $(COCOS_ROOT)/lib/nacl/$(ARCH_DIR)
 
 NMF_FLAGS = --objdump=i686-nacl-objdump
+NMF_FLAGS += -L$(LIB_DIR)
 NMF_FLAGS += -L$(NACL_SDK_ROOT)/toolchain/linux_x86_$(NACL_LIBC)/x86_64-nacl/lib32/
 NMF_FLAGS += -L$(NACL_SDK_ROOT)/toolchain/linux_x86_$(NACL_LIBC)/x86_64-nacl/lib64/
 NMF_FLAGS += -L$(NACL_SDK_ROOT)/lib/$(NACL_LIBC)_x86_32/Release
 NMF_FLAGS += -L$(NACL_SDK_ROOT)/lib/$(NACL_LIBC)_x86_64/Release
 NMF_FLAGS += -L$(NACLPORTS_ROOT)/lib/$(NACL_LIBC)_x86_32/Release
 NMF_FLAGS += -L$(NACLPORTS_ROOT)/lib/$(NACL_LIBC)_x86_64/Release
+
+ifeq ($(NACL_GLIBC),1)
+COCOS_LIB = $(LIB_DIR)/libcocos2d.so
+else
+COCOS_LIB = $(LIB_DIR)/libcocos2d.a
+endif
 
 ifdef USE_BOX2D
 DEFINES += -DCC_ENABLE_BOX2D_INTEGRATION=1
@@ -97,6 +104,7 @@ LOG_CC = @echo " CC $@";
 LOG_CXX = @echo " CXX $@";
 LOG_AR = @echo " AR $@";
 LOG_LINK = @echo " LINK $@";
+LOG_LDSO = @echo " LDSO $@";
 endif
 
 # The default library search path consists of the cocos2dx library path, the
