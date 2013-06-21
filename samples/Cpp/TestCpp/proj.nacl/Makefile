@@ -55,12 +55,12 @@ SOURCES = ../Classes/AccelerometerTest/AccelerometerTest.cpp \
 	../Classes/ExtensionsTest/TableViewTest/CustomTableViewCell.cpp \
 	../Classes/ExtensionsTest/ExtensionsTest.cpp \
 	../Classes/ExtensionsTest/NotificationCenterTest/NotificationCenterTest.cpp \
-    ../Classes/ExtensionsTest/ComponentsTest/ComponentsTestScene.cpp \
-    ../Classes/ExtensionsTest/ComponentsTest/EnemyController.cpp \
-    ../Classes/ExtensionsTest/ComponentsTest/GameOverScene.cpp \
-    ../Classes/ExtensionsTest/ComponentsTest/PlayerController.cpp \
-    ../Classes/ExtensionsTest/ComponentsTest/ProjectileController.cpp \
-    ../Classes/ExtensionsTest/ComponentsTest/SceneController.cpp \
+	../Classes/ExtensionsTest/ComponentsTest/ComponentsTestScene.cpp \
+	../Classes/ExtensionsTest/ComponentsTest/EnemyController.cpp \
+	../Classes/ExtensionsTest/ComponentsTest/GameOverScene.cpp \
+	../Classes/ExtensionsTest/ComponentsTest/PlayerController.cpp \
+	../Classes/ExtensionsTest/ComponentsTest/ProjectileController.cpp \
+	../Classes/ExtensionsTest/ComponentsTest/SceneController.cpp \
 	../Classes/ExtensionsTest/ArmatureTest/ArmatureScene.cpp \
 	../Classes/FileUtilsTest/FileUtilsTest.cpp \
 	../Classes/FontTest/FontTest.cpp \
@@ -68,14 +68,11 @@ SOURCES = ../Classes/AccelerometerTest/AccelerometerTest.cpp \
 	../Classes/KeypadTest/KeypadTest.cpp \
 	../Classes/LabelTest/LabelTest.cpp \
 	../Classes/LayerTest/LayerTest.cpp \
-	../Classes/MenuTest/MenuTest.cpp \
 	../Classes/MotionStreakTest/MotionStreakTest.cpp \
 	../Classes/MutiTouchTest/MutiTouchTest.cpp \
 	../Classes/NodeTest/NodeTest.cpp \
 	../Classes/ParallaxTest/ParallaxTest.cpp \
 	../Classes/ParticleTest/ParticleTest.cpp \
-	../Classes/PerformanceTest/PerformanceNodeChildrenTest.cpp \
-	../Classes/PerformanceTest/PerformanceParticleTest.cpp \
 	../Classes/PerformanceTest/PerformanceSpriteTest.cpp \
 	../Classes/PerformanceTest/PerformanceTest.cpp \
 	../Classes/PerformanceTest/PerformanceTextureTest.cpp \
@@ -101,11 +98,18 @@ SOURCES = ../Classes/AccelerometerTest/AccelerometerTest.cpp \
 	../Classes/DataVisitorTest/DataVisitorTest.cpp \
 	../Classes/ConfigurationTest/ConfigurationTest.cpp \
 	../Classes/controller.cpp \
-	../Classes/testBasic.cpp \
 	../Classes/AppDelegate.cpp \
+	../Classes/testBasic.cpp \
 	../Classes/BaseTest.cpp \
 	../Classes/VisibleRect.cpp \
 	main.cpp
+
+
+ifeq ($(NACL_ARCH),arm)
+SOURCES += ../Classes/MenuTest/MenuTest.cpp \
+	../Classes/PerformanceTest/PerformanceNodeChildrenTest.cpp \
+	../Classes/PerformanceTest/PerformanceParticleTest.cpp
+endif
 
 include $(COCOS2DX_PATH)/../extensions/proj.nacl/Makefile
 SOURCES += $(addprefix $(COCOS_ROOT)/extensions/, $(EXTENSIONS_SOURCES))

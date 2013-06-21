@@ -7,6 +7,18 @@ TestScene::TestScene(bool bPortrait)
     Scene::init();
 }
 
+static void MainMenuCallback(Object* sender) {
+    Scene *pScene = new Scene();
+    if (pScene && pScene->init())
+    {
+        Layer* pLayer = new TestController();
+        pScene->addChild(pLayer);
+        pLayer->release();
+        Director::sharedDirector()->replaceScene(pScene);
+        pScene->release();
+    }
+}
+
 void TestScene::onEnter()
 {
     Scene::onEnter();
@@ -17,6 +29,9 @@ void TestScene::onEnter()
 //#else
     LabelTTF* label = LabelTTF::create("MainMenu", "Arial", 20);
 //#endif
+#ifdef MISSING_LAMBDA
+    MenuItemLabel* pMenuItem = MenuItemLabel::create(label, MainMenuCallback);
+#else
     MenuItemLabel* pMenuItem = MenuItemLabel::create(label, [](Object *sender) {
         /*
             ******    GCC Compiler issue on Android and Linux (CLANG compiler is ok)   ******
@@ -36,16 +51,9 @@ void TestScene::onEnter()
         */
 
 //        Scene *pScene = Scene::create();
-        Scene *pScene = new Scene();
-        if (pScene && pScene->init())
-        {
-            Layer* pLayer = new TestController();
-            pScene->addChild(pLayer);
-            pLayer->release();
-            Director::sharedDirector()->replaceScene(pScene);
-            pScene->release();
-        }
+        MainMenuCallback(sender);
 	});
+#endif
 
     Menu* pMenu =Menu::create(pMenuItem, NULL);
 

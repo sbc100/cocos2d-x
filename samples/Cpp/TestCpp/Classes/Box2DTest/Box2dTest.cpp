@@ -115,6 +115,7 @@ void Box2DTestLayer::initPhysics()
 
 void Box2DTestLayer::createResetButton()
 {
+#ifndef MISSING_LAMBDA
     MenuItemImage *reset = MenuItemImage::create("Images/r1.png", "Images/r2.png", [](Object *sender) {
 		Scene* s = new Box2DTestScene();
 		Box2DTestLayer* child = new Box2DTestLayer();
@@ -128,7 +129,7 @@ void Box2DTestLayer::createResetButton()
 
     menu->setPosition(ccp(VisibleRect::bottom().x, VisibleRect::bottom().y + 30));
     this->addChild(menu, -1);
-
+#endif
 }
 
 void Box2DTestLayer::draw()

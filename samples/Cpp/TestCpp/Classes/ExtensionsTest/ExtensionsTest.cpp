@@ -28,6 +28,7 @@ static struct {
 	const char *name;
 	std::function<void(Object* sender)> callback;
 } g_extensionsTests[] = {
+#ifndef MISSING_LAMBDA
 	{ "NotificationCenterTest", [](Object* sender) { runNotificationCenterTest(); }
 	},
 	{ "CCControlButtonTest", [](Object *sender){
@@ -64,6 +65,7 @@ static struct {
                                              pScene->release();
                                         }
     },
+#endif
 };
 
 static const int g_maxTests = sizeof(g_extensionsTests) / sizeof(g_extensionsTests[0]);

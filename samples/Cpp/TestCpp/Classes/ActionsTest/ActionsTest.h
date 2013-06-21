@@ -3,13 +3,11 @@
 
 #include "../testBasic.h"
 #include "../BaseTest.h"
-////----#include "cocos2d.h"
 
 USING_NS_CC;
 
 
-enum
-{
+enum {
     ACTION_MANUAL_LAYER = 0,
     ACTION_MOVE_LAYER,
     ACTION_SCALE_LAYER,
@@ -51,7 +49,7 @@ enum
     ACTION_ISSUE1327_LAYER,
     ACTION_ISSUE1398_LAYER,
     ACTION_LAYER_COUNT,
-	ACTION_REMOVE_SELF,
+    ACTION_REMOVE_SELF,
 };
 
 

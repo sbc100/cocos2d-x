@@ -37,6 +37,11 @@ THE SOFTWARE.
 #include <sys/time.h>
 #include <stdint.h>
 
+// nullptr is missing before gcc 4.6.
+#if defined(__GNUC__) &&  __GNUC__ < 4 || __GNUC__ == 4 && __GNUC_MINOR__ < 6
+#define nullptr NULL
+#endif
+
 #ifndef MIN
 #define MIN(x,y) (((x) > (y)) ? (y) : (x))
 #endif  // MIN

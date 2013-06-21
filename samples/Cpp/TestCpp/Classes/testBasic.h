@@ -9,7 +9,7 @@ using namespace std;
 
 class TestScene : public Scene
 {
-public: 
+public:
     TestScene(bool bPortrait = false);
     virtual void onEnter();
 
@@ -17,14 +17,24 @@ public:
 };
 
 typedef Layer* (*NEWTESTFUNC)();
+
 #define TESTLAYER_CREATE_FUNC(className) \
 static Layer* create##className() \
 { return new className(); }
 
 #define CF(className) create##className
 
-// C++ 11
+// GCC < 4.6 does not support lambda expressions
+#if defined(__GNUC__) &&  __GNUC__ < 4 || __GNUC__ == 4 && __GNUC_MINOR__ < 6
+#define MISSING_LAMBDA
+#endif
 
+#ifdef MISSING_LAMBDA
+// Don't use C++11 lambdas
+#define CL(__className__) CF(__className__)
+#else
+// Use C++11 lamdas
 #define CL(__className__) [](){ return new __className__();}
+#endif
 
 #endif

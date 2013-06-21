@@ -12,16 +12,18 @@ enum
     kItemTagBasic = 1000,
 };
 
-struct {
+static struct {
 	const char *name;
 	std::function<void(Object*)> callback;
 } g_testsName[] =
 {
-    { "PerformanceNodeChildrenTest", [](Object*sender){runNodeChildrenTest();} },
-	{ "PerformanceParticleTest",[](Object*sender){runParticleTest();} },
-	{ "PerformanceSpriteTest",[](Object*sender){runSpriteTest();} },
-	{ "PerformanceTextureTest",[](Object*sender){runTextureTest();} },
-	{ "PerformanceTouchesTest",[](Object*sender){runTouchesTest();} },
+#ifndef MISSING_LAMBDA
+  { "PerformanceNodeChildrenTest", (void(*)(Object*))runNodeChildrenTest },
+	{ "PerformanceParticleTest", (void(*)(Object*))runParticleTest },
+#endif
+	{ "PerformanceSpriteTest", (void(*)(Object*))runSpriteTest },
+	{ "PerformanceTextureTest", (void(*)(Object*))runTextureTest },
+	{ "PerformanceTouchesTest", (void(*)(Object*))runTouchesTest },
 };
 
 static const int g_testMax = sizeof(g_testsName)/sizeof(g_testsName[0]);

@@ -5,6 +5,14 @@
 // Test #1 by Jason Booth (slipster216)
 // Test #3 by David Deaco (ddeaco)
 
+#ifdef __native_client__
+TESTLAYER_CREATE_FUNC(RenderTextureSave)
+TESTLAYER_CREATE_FUNC(RenderTextureIssue937)
+TESTLAYER_CREATE_FUNC(RenderTextureZbuffer)
+TESTLAYER_CREATE_FUNC(RenderTextureTestDepthStencil)
+TESTLAYER_CREATE_FUNC(RenderTextureTargetNode)
+TESTLAYER_CREATE_FUNC(SpriteRenderTextureBug)
+#endif
 
 static std::function<Layer*()> createFunctions[] = {
     CL(RenderTextureSave),

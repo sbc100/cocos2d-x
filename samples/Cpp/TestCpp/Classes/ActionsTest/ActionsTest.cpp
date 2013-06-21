@@ -2,6 +2,55 @@
 #include "../testResource.h"
 #include "cocos2d.h"
 
+#ifdef MISSING_LAMBDA
+TESTLAYER_CREATE_FUNC(ActionManual)
+TESTLAYER_CREATE_FUNC(ActionMove)
+TESTLAYER_CREATE_FUNC(ActionRotate)
+TESTLAYER_CREATE_FUNC(ActionScale)
+TESTLAYER_CREATE_FUNC(ActionSkew)
+TESTLAYER_CREATE_FUNC(ActionRotationalSkew)
+TESTLAYER_CREATE_FUNC(ActionRotationalSkewVSStandardSkew)
+TESTLAYER_CREATE_FUNC(ActionSkewRotateScale)
+TESTLAYER_CREATE_FUNC(ActionJump)
+TESTLAYER_CREATE_FUNC(ActionCardinalSpline)
+TESTLAYER_CREATE_FUNC(ActionCatmullRom)
+TESTLAYER_CREATE_FUNC(ActionBezier)
+TESTLAYER_CREATE_FUNC(ActionBlink)
+TESTLAYER_CREATE_FUNC(ActionFade)
+TESTLAYER_CREATE_FUNC(ActionTint)
+TESTLAYER_CREATE_FUNC(ActionAnimate)
+TESTLAYER_CREATE_FUNC(ActionSequence)
+TESTLAYER_CREATE_FUNC(ActionSequence2)
+TESTLAYER_CREATE_FUNC(ActionRemoveSelf)
+TESTLAYER_CREATE_FUNC(ActionSpawn)
+TESTLAYER_CREATE_FUNC(ActionReverse)
+TESTLAYER_CREATE_FUNC(ActionDelayTime)
+TESTLAYER_CREATE_FUNC(ActionRepeat)
+TESTLAYER_CREATE_FUNC(ActionRepeatForever)
+TESTLAYER_CREATE_FUNC(ActionRotateToRepeat)
+TESTLAYER_CREATE_FUNC(ActionRotateJerk)
+TESTLAYER_CREATE_FUNC(ActionCallFunction)
+TESTLAYER_CREATE_FUNC(ActionCallFunc)
+TESTLAYER_CREATE_FUNC(ActionCallFuncND)
+TESTLAYER_CREATE_FUNC(ActionReverseSequence)
+TESTLAYER_CREATE_FUNC(ActionReverseSequence2)
+TESTLAYER_CREATE_FUNC(ActionOrbit)
+TESTLAYER_CREATE_FUNC(ActionFollow)
+TESTLAYER_CREATE_FUNC(ActionTargeted)
+TESTLAYER_CREATE_FUNC(ActionMoveStacked)
+TESTLAYER_CREATE_FUNC(ActionMoveJumpStacked)
+TESTLAYER_CREATE_FUNC(ActionMoveBezierStacked)
+TESTLAYER_CREATE_FUNC(ActionCardinalSplineStacked)
+TESTLAYER_CREATE_FUNC(ActionCatmullRomStacked)
+TESTLAYER_CREATE_FUNC(PauseResumeActions)
+TESTLAYER_CREATE_FUNC(Issue1305)
+TESTLAYER_CREATE_FUNC(Issue1305_2)
+TESTLAYER_CREATE_FUNC(Issue1288)
+TESTLAYER_CREATE_FUNC(Issue1288_2)
+TESTLAYER_CREATE_FUNC(Issue1327)
+TESTLAYER_CREATE_FUNC(Issue1398)
+#endif
+
 static std::function<Layer*()> createFunctions[] = {
 
     CL(ActionManual),
@@ -22,7 +71,7 @@ static std::function<Layer*()> createFunctions[] = {
     CL(ActionAnimate),
     CL(ActionSequence),
     CL(ActionSequence2),
-	CL(ActionRemoveSelf),
+    CL(ActionRemoveSelf),
     CL(ActionSpawn),
     CL(ActionReverse),
     CL(ActionDelayTime),
@@ -902,6 +951,7 @@ void ActionCallFunction::onEnter()
 	FiniteTimeAction*  action1 = Sequence::create(
 													  MoveBy::create(2, ccp(200,0)),
 													  CallFunc::create( std::bind(&ActionCallFunction::callback1, this) ),
+#ifndef MISSING_LAMBDA
 													  CallFunc::create(
 																			 // lambda
 																			 [&](){
@@ -910,6 +960,7 @@ void ActionCallFunction::onEnter()
 																				 label->setPosition(ccp( s.width/4*1,s.height/2-40));
 																				 this->addChild(label);
 																			 }  ),
+#endif
 													  NULL);
 
     FiniteTimeAction*  action2 = Sequence::create(

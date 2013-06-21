@@ -7,6 +7,12 @@
 
 #define IDC_PAUSE    200
 
+static void PauseCallback(Object* sender) {
+  if(Director::sharedDirector()->isPaused())
+    Director::sharedDirector()->resume();
+  else
+    Director::sharedDirector()->pause();
+}
 
 
 IntervalLayer::IntervalLayer()
@@ -57,12 +63,7 @@ IntervalLayer::IntervalLayer()
     addChild(sprite);
     sprite->runAction( RepeatForever::create(Sequence::create(jump, jump->reverse(), NULL) ));
     // pause button
-    MenuItem* item1 = MenuItemFont::create("Pause", [&](Object* sender) {
-		if(Director::sharedDirector()->isPaused())
-			Director::sharedDirector()->resume();
-		else
-			Director::sharedDirector()->pause();
-	});
+    MenuItem* item1 = MenuItemFont::create("Pause", PauseCallback);
     Menu* menu = Menu::create(item1, NULL);
     menu->setPosition( ccp(s.width/2, s.height-50) );
 

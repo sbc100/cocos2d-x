@@ -6,6 +6,23 @@ enum
     kTagLayer = 1,
 };
 
+#ifdef __native_client__
+TESTLAYER_CREATE_FUNC(LayerTestCascadingOpacityA)
+TESTLAYER_CREATE_FUNC(LayerTestCascadingOpacityB)
+TESTLAYER_CREATE_FUNC(LayerTestCascadingOpacityC)
+TESTLAYER_CREATE_FUNC(LayerTestCascadingColorA)
+TESTLAYER_CREATE_FUNC(LayerTestCascadingColorB)
+TESTLAYER_CREATE_FUNC(LayerTestCascadingColorC)
+TESTLAYER_CREATE_FUNC(LayerTest1)
+TESTLAYER_CREATE_FUNC(LayerTest2)
+TESTLAYER_CREATE_FUNC(LayerTestBlend)
+TESTLAYER_CREATE_FUNC(LayerGradient)
+TESTLAYER_CREATE_FUNC(LayerIgnoreAnchorPointPos)
+TESTLAYER_CREATE_FUNC(LayerIgnoreAnchorPointRot)
+TESTLAYER_CREATE_FUNC(LayerIgnoreAnchorPointScale)
+TESTLAYER_CREATE_FUNC(LayerExtendedBlendOpacityTest)
+#endif
+
 static std::function<Layer*()> createFunctions[] = {
     CL(LayerTestCascadingOpacityA),
     CL(LayerTestCascadingOpacityB),

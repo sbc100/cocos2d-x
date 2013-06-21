@@ -9,79 +9,165 @@
 #include "testResource.h"
 #include "tests.h"
 
-
-struct {
-	const char *test_name;
-	std::function<TestScene*()> callback;
-} g_aTestNames[] = {
-
-	{ "Accelerometer", []() { return new AccelerometerTestScene(); } },
-	{ "ActionManagerTest", [](){return new ActionManagerTestScene(); } },
-	{ "ActionsEaseTest", [](){return new ActionsEaseTestScene();} },
-	{ "ActionsProgressTest", [](){return new ProgressActionsTestScene(); } },
-	{ "ActionsTest", [](){ return new ActionsTestScene(); } },
-	{ "Box2dTest", []() { return new Box2DTestScene(); } },
-	{ "Box2dTestBed", []() { return new Box2dTestBedScene(); } },
-	{ "BugsTest", []() { return new BugsTestScene(); } },
+#ifdef MISSING_LAMBDA
+#define CREATE_SCENE_FUNC(NAME) static TestScene* create_##NAME() { return new NAME(); }
+CREATE_SCENE_FUNC(AccelerometerTestScene)
+CREATE_SCENE_FUNC(ActionManagerTestScene)
+CREATE_SCENE_FUNC(ActionsEaseTestScene)
+CREATE_SCENE_FUNC(ProgressActionsTestScene)
+CREATE_SCENE_FUNC(ActionsTestScene)
+CREATE_SCENE_FUNC(Box2DTestScene)
+CREATE_SCENE_FUNC(Box2dTestBedScene)
+CREATE_SCENE_FUNC(BugsTestScene)
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_MARMALADE)
-	{ "ChipmunkTest", []() { return new ChipmunkAccelTouchTestScene(); } },
+CREATE_SCENE_FUNC(ChipmunkAccelTouchTestScene)
 #endif
-	{ "ClickAndMoveTest", [](){return new ClickAndMoveTestScene(); } },
+CREATE_SCENE_FUNC(ClickAndMoveTestScene)
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_MARMALADE)
-	{ "ClippingNodeTest", []() { return new ClippingNodeTestScene(); } },
+CREATE_SCENE_FUNC(ClippingNodeTestScene)
 #endif
-	{ "CocosDenshionTest", []() { return new CocosDenshionTestScene(); } },
-	{ "ConfigurationTest", []() { return new ConfigurationTestScene(); } },
+CREATE_SCENE_FUNC(CocosDenshionTestScene)
+CREATE_SCENE_FUNC(ConfigurationTestScene)
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_EMSCRIPTEN)
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_NACL)
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_MARMALADE)
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_BADA)
-	{ "CurlTest", []() { return new CurlTestScene(); } },
+CREATE_SCENE_FUNC(CurlTestScene)
 #endif
 #endif
 #endif
 #endif
-	{ "CurrentLanguageTest", []() { return new CurrentLanguageTestScene(); } },
-	{ "DrawPrimitivesTest", [](){return new DrawPrimitivesTestScene();} },
-	{ "EffectAdvancedTest", []() { return new EffectAdvanceScene(); } },
-	{ "EffectsTest", [](){return new EffectTestScene();} },
-	{ "ExtensionsTest", []() { return new ExtensionsTestScene(); } },
-	{ "FileUtilsTest", []() { return new FileUtilsTestScene(); } },
-	{ "FontTest", []() { return new FontTestScene(); } },
-	{ "IntervalTest", [](){return new IntervalTestScene(); } },
+CREATE_SCENE_FUNC(CurrentLanguageTestScene)
+CREATE_SCENE_FUNC(DrawPrimitivesTestScene)
+CREATE_SCENE_FUNC(EffectAdvanceScene)
+CREATE_SCENE_FUNC(EffectTestScene)
+CREATE_SCENE_FUNC(ExtensionsTestScene)
+CREATE_SCENE_FUNC(FileUtilsTestScene)
+CREATE_SCENE_FUNC(FontTestScene)
+CREATE_SCENE_FUNC(IntervalTestScene)
 #ifdef KEYBOARD_SUPPORT
-	{ "KeyboardTest", []() { return new KeyboardTestScene(); } },
+CREATE_SCENE_FUNC(KeyboardTestScene)
 #endif
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_BADA)
-	{ "KeypadTest", []() { return new KeypadTestScene(); } },
+CREATE_SCENE_FUNC(KeypadTestScene)
 #endif
-	{ "LabelTest", [](){return new AtlasTestScene(); } },
-	{ "LayerTest", [](){return new LayerTestScene();} },
-	{ "MenuTest", [](){return new MenuTestScene();} },
-	{ "MotionStreakTest", [](){return new MotionStreakTestScene();} },
-	{ "MutiTouchTest", []() { return new MutiTouchTestScene(); } },
-	{ "NodeTest", [](){return new CocosNodeTestScene();} },
-	{ "ParallaxTest", [](){return new ParallaxTestScene(); } },
-	{ "ParticleTest", [](){return new ParticleTestScene(); } },
-	{ "PerformanceTest", []() { return new PerformanceTestScene(); } },
-	{ "RenderTextureTest", [](){return new RenderTextureScene(); } },
-	{ "RotateWorldTest", [](){return new RotateWorldTestScene(); } },
-	{ "SceneTest", [](){return new SceneTestScene();} },
-	{ "SchedulerTest", [](){return new SchedulerTestScene(); } },
-	{ "ShaderTest", []() { return new ShaderTestScene(); } },
-	{ "SpineTest", []() { return new SpineTestScene(); } },
-	{ "SpriteTest", [](){return new SpriteTestScene(); } },
-	{ "TextInputTest", [](){return new TextInputTestScene(); } },
-	{ "Texture2DTest", [](){return new TextureTestScene(); } },
+CREATE_SCENE_FUNC(AtlasTestScene)
+CREATE_SCENE_FUNC(LayerTestScene)
+#ifndef MISSING_LAMBDA
+CREATE_SCENE_FUNC(MenuTestScene)
+#endif
+CREATE_SCENE_FUNC(MotionStreakTestScene)
+CREATE_SCENE_FUNC(MutiTouchTestScene)
+CREATE_SCENE_FUNC(CocosNodeTestScene)
+CREATE_SCENE_FUNC(ParallaxTestScene)
+CREATE_SCENE_FUNC(ParticleTestScene)
+#ifndef MISSING_LAMBDA
+CREATE_SCENE_FUNC(PerformanceTestScene)
+#endif
+CREATE_SCENE_FUNC(RenderTextureScene)
+CREATE_SCENE_FUNC(RotateWorldTestScene)
+CREATE_SCENE_FUNC(SceneTestScene)
+CREATE_SCENE_FUNC(SchedulerTestScene)
+CREATE_SCENE_FUNC(ShaderTestScene)
+CREATE_SCENE_FUNC(SpineTestScene)
+CREATE_SCENE_FUNC(SpriteTestScene)
+CREATE_SCENE_FUNC(TextInputTestScene)
+CREATE_SCENE_FUNC(TextureTestScene)
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_MARMALADE)
-	{ "TextureCacheTest", []() { return new TextureCacheTestScene(); } },
+CREATE_SCENE_FUNC(TextureCacheTestScene)
 #endif
-	{ "TexturePackerEncryption", []() { return new TextureAtlasEncryptionTestScene(); } },
-	{ "TileMapTest", [](){return new TileMapTestScene(); } },
-	{ "TouchesTest", [](){return new PongScene();} },
-	{ "TransitionsTest", [](){return new TransitionsTestScene();} },
-	{ "UserDefaultTest", []() { return new UserDefaultTestScene(); } },
-	{ "ZwoptexTest", []() { return new ZwoptexTestScene(); } },
+CREATE_SCENE_FUNC(TextureAtlasEncryptionTestScene)
+CREATE_SCENE_FUNC(TileMapTestScene)
+#ifndef MISSING_LAMBDA
+CREATE_SCENE_FUNC(PongScene)
+#endif
+CREATE_SCENE_FUNC(TransitionsTestScene)
+CREATE_SCENE_FUNC(UserDefaultTestScene)
+CREATE_SCENE_FUNC(ZwoptexTestScene)
+#define TEST_FUNC(NAME) create_##NAME
+#else
+#define TEST_FUNC(NAME) [](){ return new NAME(); }
+#endif
+
+
+static struct {
+	const char *test_name;
+	std::function<TestScene*()> callback;
+} g_aTestNames[] = {
+
+	{ "Accelerometer", TEST_FUNC(AccelerometerTestScene) },
+	{ "ActionManagerTest", TEST_FUNC(ActionManagerTestScene) },
+	{ "ActionsEaseTest", TEST_FUNC(ActionsEaseTestScene) },
+	{ "ActionsProgressTest", TEST_FUNC(ProgressActionsTestScene) },
+	{ "ActionsTest", TEST_FUNC(ActionsTestScene) },
+	{ "Box2dTest", TEST_FUNC(Box2DTestScene) },
+	{ "Box2dTestBed", TEST_FUNC(Box2dTestBedScene) },
+	{ "BugsTest", TEST_FUNC(BugsTestScene) },
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_MARMALADE)
+	{ "ChipmunkTest", TEST_FUNC(ChipmunkAccelTouchTestScene) },
+#endif
+	{ "ClickAndMoveTest", TEST_FUNC(ClickAndMoveTestScene) },
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_MARMALADE)
+	{ "ClippingNodeTest", TEST_FUNC(ClippingNodeTestScene) },
+#endif
+	{ "CocosDenshionTest", TEST_FUNC(CocosDenshionTestScene) },
+	{ "ConfigurationTest", TEST_FUNC(ConfigurationTestScene) },
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_EMSCRIPTEN)
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_NACL)
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_MARMALADE)
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_BADA)
+	{ "CurlTest", TEST_FUNC(CurlTestScene) },
+#endif
+#endif
+#endif
+#endif
+	{ "CurrentLanguageTest", TEST_FUNC(CurrentLanguageTestScene) },
+	{ "DrawPrimitivesTest", TEST_FUNC(DrawPrimitivesTestScene) },
+	{ "EffectAdvancedTest", TEST_FUNC(EffectAdvanceScene) },
+	{ "EffectsTest", TEST_FUNC(EffectTestScene) },
+	{ "ExtensionsTest", TEST_FUNC(ExtensionsTestScene) },
+	{ "FileUtilsTest", TEST_FUNC(FileUtilsTestScene) },
+	{ "FontTest", TEST_FUNC(FontTestScene) },
+	{ "IntervalTest", TEST_FUNC(IntervalTestScene) },
+#ifdef KEYBOARD_SUPPORT
+	{ "KeyboardTest", TEST_FUNC(KeyboardTestScene) },
+#endif
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_BADA)
+	{ "KeypadTest", TEST_FUNC(KeypadTestScene) },
+#endif
+	{ "LabelTest", TEST_FUNC(AtlasTestScene) },
+	{ "LayerTest", TEST_FUNC(LayerTestScene) },
+#ifndef MISSING_LAMBDA
+	{ "MenuTest", TEST_FUNC(MenuTestScene) },
+#endif
+	{ "MotionStreakTest", TEST_FUNC(MotionStreakTestScene) },
+	{ "MutiTouchTest", TEST_FUNC(MutiTouchTestScene) },
+	{ "NodeTest", TEST_FUNC(CocosNodeTestScene) },
+	{ "ParallaxTest", TEST_FUNC(ParallaxTestScene) },
+	{ "ParticleTest", TEST_FUNC(ParticleTestScene) },
+#ifndef MISSING_LAMBDA
+	{ "PerformanceTest", TEST_FUNC(PerformanceTestScene) },
+#endif
+	{ "RenderTextureTest", TEST_FUNC(RenderTextureScene) },
+	{ "RotateWorldTest", TEST_FUNC(RotateWorldTestScene) },
+	{ "SceneTest", TEST_FUNC(SceneTestScene) },
+	{ "SchedulerTest", TEST_FUNC(SchedulerTestScene) },
+	{ "ShaderTest", TEST_FUNC(ShaderTestScene) },
+	{ "SpineTest", TEST_FUNC(SpineTestScene) },
+	{ "SpriteTest", TEST_FUNC(SpriteTestScene) },
+	{ "TextInputTest", TEST_FUNC(TextInputTestScene) },
+	{ "Texture2DTest", TEST_FUNC(TextureTestScene) },
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_MARMALADE)
+	{ "TextureCacheTest", TEST_FUNC(TextureCacheTestScene) },
+#endif
+	{ "TexturePackerEncryption", TEST_FUNC(TextureAtlasEncryptionTestScene) },
+	{ "TileMapTest", TEST_FUNC(TileMapTestScene) },
+#ifndef MISSING_LAMBDA
+	{ "TouchesTest", TEST_FUNC(PongScene) },
+#endif
+	{ "TransitionsTest", TEST_FUNC(TransitionsTestScene) },
+	{ "UserDefaultTest", TEST_FUNC(UserDefaultTestScene) },
+	{ "ZwoptexTest", TEST_FUNC(ZwoptexTestScene) },
 };
 
 static int g_testCount = sizeof(g_aTestNames) / sizeof(g_aTestNames[0]);

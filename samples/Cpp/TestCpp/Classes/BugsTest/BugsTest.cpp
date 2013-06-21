@@ -27,19 +27,35 @@ enum
 
 static Point s_tCurPos = PointZero;
 
-struct {
+#ifdef MISSING_LAMBDA
+#define BUG_FUNC(name) void func_##name(Object*) TEST_BUG(name)
+BUG_FUNC(350)
+BUG_FUNC(422)
+BUG_FUNC(458)
+BUG_FUNC(624)
+BUG_FUNC(886)
+BUG_FUNC(899)
+BUG_FUNC(914)
+BUG_FUNC(1159)
+BUG_FUNC(1174)
+#define TEST_BUG_FUNC(NAME) func_##name
+#else
+#define TEST_BUG_FUNC(NAME) [](Object* sender) TEST_BUG(NAME)
+#endif
+
+static struct {
 	const char *test_name;
 	std::function<void(Object*)> callback;
 } g_bugs[] = {
-	{ "Bug-350", [](Object* sender){ TEST_BUG(350)} },
-	{ "Bug-422", [](Object* sender){ TEST_BUG(422)} },
-	{ "Bug-458", [](Object* sender){ TEST_BUG(458)} },
-	{ "Bug-624", [](Object* sender){ TEST_BUG(624)} },
-	{ "Bug-886", [](Object* sender){ TEST_BUG(886)} },
-	{ "Bug-899", [](Object* sender){ TEST_BUG(899)} },
-	{ "Bug-914", [](Object* sender){ TEST_BUG(914)} },
-	{ "Bug-1159", [](Object* sender){ TEST_BUG(1159)} },
-	{ "Bug-1174", [](Object* sender){ TEST_BUG(1174)} },
+	{ "Bug-350", TEST_BUG_FUNC(350) },
+	{ "Bug-422", TEST_BUG_FUNC(422) },
+	{ "Bug-458", TEST_BUG_FUNC(458) },
+	{ "Bug-624", TEST_BUG_FUNC(624) },
+	{ "Bug-886", TEST_BUG_FUNC(886) },
+	{ "Bug-899", TEST_BUG_FUNC(899) },
+	{ "Bug-914", TEST_BUG_FUNC(914) },
+	{ "Bug-1159", TEST_BUG_FUNC(1159) },
+	{ "Bug-1174", TEST_BUG_FUNC(1174) },
 };
 
 static const int g_maxitems = sizeof(g_bugs) / sizeof(g_bugs[0]);
