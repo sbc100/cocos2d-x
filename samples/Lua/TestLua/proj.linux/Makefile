@@ -17,7 +17,7 @@ $(TARGET): $(OBJECTS) $(STATICLIBS) $(COCOS_LIBS) $(CORE_MAKEFILE_LIST)
 	@mkdir -p $(@D)
 	cp -R -n ../../../../samples/Cpp/TestCpp/Resources ../../../../samples/Lua/TestLua
 	cp -n ../../../../scripting/lua/script/* ../../../../samples/Lua/TestLua/Resources
-	$(LOG_LINK)$(CXX) $(CXXFLAGS) $(OBJECTS) -o $@ $(SHAREDLIBS) $(STATICLIBS) $(LIBS)
+	$(LOG_LINK)$(CXX) $(OBJECTS) -o $@ $(SHAREDLIBS) $(STATICLIBS) $(LIBS)
 
 $(OBJ_DIR)/%.o: ../%.cpp $(CORE_MAKEFILE_LIST)
 	@mkdir -p $(@D)

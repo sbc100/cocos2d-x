@@ -52,12 +52,12 @@ SOURCES = ../Classes/AccelerometerTest/AccelerometerTest.cpp \
 	../Classes/ExtensionsTest/ExtensionsTest.cpp \
 	../Classes/ExtensionsTest/NotificationCenterTest/NotificationCenterTest.cpp \
 	../Classes/ExtensionsTest/NetworkTest/HttpClientTest.cpp \
-    ../Classes/ExtensionsTest/ComponentsTest/ComponentsTestScene.cpp \
-    ../Classes/ExtensionsTest/ComponentsTest/EnemyController.cpp \
-    ../Classes/ExtensionsTest/ComponentsTest/GameOverScene.cpp \
-    ../Classes/ExtensionsTest/ComponentsTest/PlayerController.cpp \
-    ../Classes/ExtensionsTest/ComponentsTest/ProjectileController.cpp \
-    ../Classes/ExtensionsTest/ComponentsTest/SceneController.cpp \
+	../Classes/ExtensionsTest/ComponentsTest/ComponentsTestScene.cpp \
+	../Classes/ExtensionsTest/ComponentsTest/EnemyController.cpp \
+	../Classes/ExtensionsTest/ComponentsTest/GameOverScene.cpp \
+	../Classes/ExtensionsTest/ComponentsTest/PlayerController.cpp \
+	../Classes/ExtensionsTest/ComponentsTest/ProjectileController.cpp \
+	../Classes/ExtensionsTest/ComponentsTest/SceneController.cpp \
 	../Classes/ExtensionsTest/ArmatureTest/ArmatureScene.cpp \
 	../Classes/FontTest/FontTest.cpp \
 	../Classes/IntervalTest/IntervalTest.cpp \
@@ -111,7 +111,8 @@ COCOS_LIBS = $(LIB_DIR)/libcocos2d.so $(LIB_DIR)/libcocosdenshion.so
 include ../../../../cocos2dx/proj.linux/cocos2dx.mk
 
 
-INCLUDES +=	 -I../ \
+INCLUDES += \
+	-I../ \
 	-I../../ \
 	-I../Classes \
 	-I$(COCOS_ROOT)/CocosDenshion/include \
@@ -128,7 +129,7 @@ STATICLIBS += \
 ####### Build rules
 $(TARGET): $(OBJECTS) $(STATICLIBS) $(COCOS_LIBS) $(CORE_MAKEFILE_LIST)
 	@mkdir -p $(@D)
-	$(LOG_LINK)$(CXX) $(CXXFLAGS) $(OBJECTS) -o $@ $(SHAREDLIBS) $(STATICLIBS) $(LIBS)
+	$(LOG_LINK)$(CXX) $(OBJECTS) -o $@ $(SHAREDLIBS) $(STATICLIBS) $(LIBS)
 
 ####### Compile
 $(OBJ_DIR)/%.o: ../%.cpp $(CORE_MAKEFILE_LIST)

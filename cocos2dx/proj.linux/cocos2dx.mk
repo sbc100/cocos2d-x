@@ -1,7 +1,13 @@
 all:
 
+ifdef USE_CLANG
+CC = clang
+CXX = clang++
+else
 CC = gcc
 CXX = g++
+endif
+
 # Remove -Wall, because it enables -Wunused-function, and this warning exists in webp.h
 # when enable c++11. I don't know why.
 # GCC 4.6 is primary platform for cocos2d v.3, because it's default compiler for Android, 

@@ -41,7 +41,7 @@ all: $(NMF)
 
 $(TARGET): $(OBJECTS) $(LIB_DIR)/libcocos2d.a
 	@mkdir -p $(@D)
-	$(LOG_LINK)$(NACL_CXX) $(CXXFLAGS) $(LDFLAGS) $(OBJECTS) -o $@ $(SHAREDLIBS) $(STATICLIBS)
+	$(LOG_LINK)$(NACL_CXX) $(LDFLAGS) $(OBJECTS) -o $@ $(SHAREDLIBS) $(STATICLIBS)
 
 $(OBJ_DIR)/%.o: ../%.cpp
 	@mkdir -p $(@D)
