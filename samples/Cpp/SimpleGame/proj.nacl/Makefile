@@ -15,7 +15,7 @@ include $(COCOS_ROOT)/cocos2dx/proj.nacl/cocos2dx.mk
 SHAREDLIBS += -lbox2d
 
 APP_NAME = SimpleGame
-TARGET = $(BIN_DIR)/$(APP_NAME)_$(NACL_ARCH).nexe
+TARGET = $(BIN_DIR)/$(APP_NAME)$(TARGET_SUFFIX)
 NMF = $(BIN_DIR)/$(APP_NAME).nmf
 
 all: $(NMF)
@@ -33,7 +33,7 @@ $(OBJ_DIR)/%.o: %.cpp
 	$(LOG_CXX)$(NACL_CXX) -MMD $(CXXFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@
 
 $(NMF): $(TARGET)
-	$(NACL_SDK_ROOT)/tools/create_nmf.py -o $@ $(BIN_DIR)/*.nexe $(NMF_FLAGS) -s $(BIN_DIR)
+	$(NACL_SDK_ROOT)/tools/create_nmf.py -o $@ $(BIN_DIR)/*$(EXE_EXT) $(NMF_FLAGS) -s $(BIN_DIR)
 
 run: all
 	/bin/cp -ar ../Resources/ .

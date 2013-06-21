@@ -9,7 +9,7 @@ SOURCES = main.cpp \
 include $(COCOS_ROOT)/cocos2dx/proj.nacl/cocos2dx.mk
 
 APP_NAME = HelloCpp
-TARGET = $(BIN_DIR)/$(APP_NAME)_$(NACL_ARCH).nexe
+TARGET = $(BIN_DIR)/$(APP_NAME)$(TARGET_SUFFIX)
 NMF = $(BIN_DIR)/$(APP_NAME).nmf
 
 all: $(NMF)
@@ -27,7 +27,7 @@ $(OBJ_DIR)/%.o: %.cpp $(CORE_MAKEFILE_LIST)
 	$(LOG_CXX)$(NACL_CXX) -MMD $(CXXFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@
 
 $(NMF): $(TARGET)
-	$(NACL_SDK_ROOT)/tools/create_nmf.py -o $@ $(BIN_DIR)/*.nexe -s $(BIN_DIR) $(NMF_FLAGS)
+	$(NACL_SDK_ROOT)/tools/create_nmf.py -o $@ $(BIN_DIR)/*$(EXE_EXT) -s $(BIN_DIR) $(NMF_FLAGS)
 
 run: all
 	/bin/cp -ar ../Resources/ .

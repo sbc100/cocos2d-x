@@ -56,7 +56,12 @@ ifeq ($(NACL_ARCH),arm)
 # The arm compiler in nacl is more recent and more fussy than the X86 ones.
 CXXFLAGS += -Wno-unused-but-set-variable -Wno-maybe-uninitialized
 else
+ifeq ($(NACL_ARCH),pnacl)
+# The pnacl compiler (clang) in nacl is more recent and more fussy than the X86 ones.
+CXXFLAGS += -Wno-uninitialized -Wno-unused-variable
+else
 CXXFLAGS += -Wno-uninitialized
+endif
 endif
 
 ifeq ($(DEBUG), 1)
