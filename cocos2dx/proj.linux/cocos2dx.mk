@@ -2,7 +2,7 @@ all:
 
 CC = gcc
 CXX = g++
-CCFLAGS += -MMD -Wall -Werror -fPIC
+CFLAGS += -MMD -Wall -Werror -fPIC
 CXXFLAGS += -MMD -Wall -Werror -fPIC
 ARFLAGS = cr
 
@@ -43,14 +43,14 @@ INCLUDES += -I$(COCOS_SRC)/platform/third_party/linux
 endif
 
 ifeq ($(DEBUG), 1)
-CCFLAGS += -g3 -O0
+CFLAGS += -g3 -O0
 CXXFLAGS += -g3 -O0
 DEFINES += -D_DEBUG -DCOCOS2D_DEBUG=1
 OBJ_DIR := $(OBJ_DIR)/debug
 LIB_DIR := $(LIB_DIR)/debug
 BIN_DIR := $(BIN_DIR)/debug
 else
-CCFLAGS += -O3
+CFLAGS += -O3
 CXXFLAGS += -O3
 DEFINES += -DNDEBUG
 OBJ_DIR := $(OBJ_DIR)/release

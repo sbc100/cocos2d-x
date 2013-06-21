@@ -40,7 +40,7 @@ COCOS_ROOT = ../../..
 
 include $(COCOS_ROOT)/cocos2dx/proj.nacl/cocos2dx.mk
 
-CCFLAGS = -Wno-uninitialized
+CFLAGS = -Wno-uninitialized
 
 TARGET = $(LIB_DIR)/liblua.a
 all: $(TARGET)
@@ -50,4 +50,8 @@ $(TARGET): $(OBJECTS) $(CORE_MAKEFILE_LIST)
 
 $(OBJ_DIR)/%.o: ../%.c $(CORE_MAKEFILE_LIST)
 	@mkdir -p $(@D)
-	$(LOG_CC)$(NACL_CC) -MMD $(CCFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+	$(LOG_CC)$(NACL_CC) -MMD $(CFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+
+$(OBJ_DIR)/%.o: ../%.cpp $(CORE_MAKEFILE_LIST)
+	@mkdir -p $(@D)
+	$(LOG_CXX)$(NACL_CXX) -MMD $(CXXFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@

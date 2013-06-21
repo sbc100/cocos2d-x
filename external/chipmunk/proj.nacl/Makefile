@@ -1,3 +1,4 @@
+CFLAGS += -std=gnu99
 INCLUDES = -I../include/chipmunk
 
 SOURCES = ../src/chipmunk.c \
@@ -44,4 +45,4 @@ $(TARGET): $(OBJECTS) $(CORE_MAKEFILE_LIST)
 
 $(OBJ_DIR)/%.o: ../%.c $(CORE_MAKEFILE_LIST)
 	@mkdir -p $(@D)
-	$(LOG_CC)$(NACL_CC) -MMD $(CCFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+	$(LOG_CC)$(NACL_CC) -MMD $(CFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@

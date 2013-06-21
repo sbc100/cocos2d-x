@@ -16,7 +16,7 @@ PACKAGER := $(EMSCRIPTEN_ROOT)/tools/file_packager.py
 CC := EMSCRIPTEN=$(EMSCRIPTEN_ROOT) $(COCOS_ROOT)/external/emscripten/emcc
 CXX := EMSCRIPTEN=$(EMSCRIPTEN_ROOT) $(COCOS_ROOT)/external/emscripten/em++
 AR := EMSCRIPTEN=$(EMSCRIPTEN_ROOT) $(COCOS_ROOT)/external/emscripten/emar
-CCFLAGS += -MMD -Wall -fPIC -Qunused-arguments -Wno-overloaded-virtual -Qunused-variable -s TOTAL_MEMORY=268435456 -s VERBOSE=1
+CFLAGS += -MMD -Wall -fPIC -Qunused-arguments -Wno-overloaded-virtual -Qunused-variable -s TOTAL_MEMORY=268435456 -s VERBOSE=1
 CXXFLAGS += -MMD -Wall -fPIC -Qunused-arguments -Wno-overloaded-virtual -Qunused-variable -s TOTAL_MEMORY=268435456 -s VERBOSE=1
 ARFLAGS = cr
 
@@ -42,14 +42,14 @@ LBITS := $(shell getconf LONG_BIT)
 INCLUDES += -I$(COCOS_SRC)/platform/third_party/linux
 
 ifeq ($(DEBUG), 1)
-CCFLAGS += -g -O0 -s ASSERTIONS=1 -s SAFE_HEAP=1 --jcache -s GL_UNSAFE_OPTS=0
+CFLAGS += -g -O0 -s ASSERTIONS=1 -s SAFE_HEAP=1 --jcache -s GL_UNSAFE_OPTS=0
 CXXFLAGS += -g -O0 -s ASSERTIONS=1 -s SAFE_HEAP=1 --jcache -s GL_UNSAFE_OPTS=0
 DEFINES += -D_DEBUG -DCOCOS2D_DEBUG=1 -DCP_USE_DOUBLES=0
 OBJ_DIR := $(OBJ_DIR)/debug
 LIB_DIR := $(LIB_DIR)/debug
 BIN_DIR := $(BIN_DIR)/debug
 else
-CCFLAGS += -O2 --jcache -s GL_UNSAFE_OPTS=0 -s ASM_JS=1
+CFLAGS += -O2 --jcache -s GL_UNSAFE_OPTS=0 -s ASM_JS=1
 CXXFLAGS += -O2 --jcache -s GL_UNSAFE_OPTS=0 -s ASM_JS=1
 DEFINES += -DNDEBUG -DCP_USE_DOUBLES=0
 OBJ_DIR := $(OBJ_DIR)/release

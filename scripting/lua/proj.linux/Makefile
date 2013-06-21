@@ -62,4 +62,4 @@ $(OBJ_DIR)/%.o: ../%.cpp $(CORE_MAKEFILE_LIST)
 
 $(OBJ_DIR)/%.o: ../%.c $(CORE_MAKEFILE_LIST)
 	@mkdir -p $(@D)
-	$(LOG_CC)$(CC) $(CCFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@
+	$(LOG_CC)$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@

@@ -32,7 +32,7 @@ else
 NACL_AR ?= $(NACL_ARCH)-nacl-ar
 NACL_CC ?= $(NACL_ARCH)-nacl-gcc
 NACL_CXX ?= $(NACL_ARCH)-nacl-g++
-CCFLAGS += -Wno-deprecated-declarations
+CFLAGS += -Wno-deprecated-declarations
 # GCC 4.6 is primary platform for cocos2d v.3, because it's default compiler for Android,
 # Blackberry, some Linux distributions.It supports all important features of c++11, but have
 # no flag "-std=c++11" (which was turned on in version 4.7).
@@ -109,7 +109,7 @@ INCLUDES += -I$(COCOS_SRC) \
 
 ifeq ($(DEBUG), 1)
 BIN_DIR = bin/debug
-CCFLAGS += -g3 -O0
+CFLAGS += -g3 -O0
 CXXFLAGS += -g3 -O0
 LIB_DIR := $(LIB_DIR)/Debug
 OBJ_DIR := $(OBJ_DIR)/Debug
@@ -118,7 +118,7 @@ PORTS_MULTILIB_DIR := $(PORTS_ARCH_DIR)/Debug
 DEFINES += -D_DEBUG -DCOCOS2D_DEBUG=1
 else
 BIN_DIR = bin/release
-CCFLAGS += -O3
+CFLAGS += -O3
 CXXFLAGS += -O3
 LIB_DIR := $(LIB_DIR)/Release
 OBJ_DIR := $(OBJ_DIR)/Release
@@ -142,12 +142,12 @@ LDFLAGS += -L$(NACL_SDK_ROOT)/lib/$(MULTILIB_DIR)
 LDFLAGS += -L$(NACLPORTS_ROOT)/lib/$(PORTS_MULTILIB_DIR)
 
 # Some cococs sources use #pragma mark
-CCFLAGS += -Wno-unknown-pragmas
+CFLAGS += -Wno-unknown-pragmas
 CXXFLAGS += -Wno-unknown-pragmas
 
 ifeq ($(NACL_ARCH),arm)
 # Don't warn about mangling of 'va_list' on arm builds
-CCFLAGS += -Wno-psabi
+CFLAGS += -Wno-psabi
 CXXFLAGS += -Wno-psabi
 endif
 

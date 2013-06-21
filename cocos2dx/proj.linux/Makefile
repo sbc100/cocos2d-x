@@ -136,7 +136,7 @@ COCOS_ROOT = ../..
 include cocos2dx.mk
 
 CXXFLAGS += -Wno-sequence-point
-CCFLAGS += -Wno-sequence-point
+CFLAGS += -Wno-sequence-point
 
 TARGET := $(LIB_DIR)/$(TARGET)
 
@@ -152,4 +152,4 @@ $(OBJ_DIR)/%.o: ../%.cpp $(CORE_MAKEFILE_LIST)
 
 $(OBJ_DIR)/%.o: ../%.c $(CORE_MAKEFILE_LIST)
 	@mkdir -p $(@D)
-	$(LOG_CC)$(CC) $(CCFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@
+	$(LOG_CC)$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@

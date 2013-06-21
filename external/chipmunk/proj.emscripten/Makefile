@@ -52,4 +52,4 @@ $(TARGET): $(OBJECTS) $(CORE_MAKEFILE_LIST)
 
 $(OBJ_DIR)/%.o: ../src/%.cpp $(CORE_MAKEFILE_LIST)
 	@mkdir -p $(@D)
-	$(CC) $(CCFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@
+	$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@
