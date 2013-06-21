@@ -33,7 +33,7 @@ include ../../../cocos2dx/proj.linux/cocos2dx.mk
 TARGET = $(LIB_DIR)/libchipmunk.a
 INCLUDES = -I../include/chipmunk
 DEFINES = -DLINUX
-CCFLAGS += -std=gnu99
+CFLAGS += -std=gnu99
 OBJECTS := $(subst src/,,$(OBJECTS))
 
 all: $(TARGET)
@@ -44,4 +44,4 @@ $(TARGET): $(OBJECTS) $(CORE_MAKEFILE_LIST)
 
 $(OBJ_DIR)/%.o: ../src/%.c $(CORE_MAKEFILE_LIST)
 	@mkdir -p $(@D)
-	$(LOG_CC)$(CC) $(CCFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@
+	$(LOG_CC)$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@
