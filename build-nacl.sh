@@ -41,12 +41,18 @@ make NACL_GLIBC=1 NACL_ARCH=i686 DEBUG=1 $*
 make NACL_GLIBC=1 NACL_ARCH=i686 DEBUG=0 $*
 set +x
 
+export PATH=${NACL_SDK_ROOT}/toolchain/linux_x86_pnacl/newlib/bin:${BASE_PATH}
+set -x
+make NACL_ARCH=pnacl DEBUG=1 $*
+make NACL_ARCH=pnacl DEBUG=0 $*
+set +x
+
 export PATH=${NACL_SDK_ROOT}/toolchain/linux_x86_newlib/bin:${BASE_PATH}
 set -x
-make NACL_GLIBC=0 NACL_ARCH=x86_64 DEBUG=1 $*
-make NACL_GLIBC=0 NACL_ARCH=x86_64 DEBUG=0 $*
-make NACL_GLIBC=0 NACL_ARCH=i686 DEBUG=1 $*
-make NACL_GLIBC=0 NACL_ARCH=i686 DEBUG=0 $*
+make NACL_ARCH=i686 DEBUG=1 $*
+make NACL_ARCH=i686 DEBUG=0 $*
+make NACL_ARCH=x86_64 DEBUG=1 $*
+make NACL_ARCH=x86_64 DEBUG=0 $*
 set +x
 
 export PATH=${NACL_SDK_ROOT}/toolchain/linux_arm_newlib/bin:${BASE_PATH}

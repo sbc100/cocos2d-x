@@ -21,11 +21,23 @@ NACL_LIBC = newlib
 endif
 
 NACL_ARCH ?= x86_64
+CCFLAGS += -Wall -Werror
+CXXFLAGS += -Wall -Werror -std=gnu++0x
+ifeq ($(NACL_ARCH),pnacl)
+NACL_AR ?= $(NACL_ARCH)-ar
+NACL_CC ?= $(NACL_ARCH)-clang
+NACL_CXX ?= $(NACL_ARCH)-clang++
+CXXFLAGS += -Wno-overloaded-virtual -Wno-unused-private-field
+else
 NACL_AR ?= $(NACL_ARCH)-nacl-ar
 NACL_CC ?= $(NACL_ARCH)-nacl-gcc
 NACL_CXX ?= $(NACL_ARCH)-nacl-g++
-CCFLAGS += -Wall -Werror
-CXXFLAGS += -Wall -Werror
+CCFLAGS += -Wno-deprecated-declarations
+# GCC 4.6 is primary platform for cocos2d v.3, because it's default compiler for Android,
+# Blackberry, some Linux distributions.It supports all important features of c++11, but have
+# no flag "-std=c++11" (which was turned on in version 4.7).
+CXXFLAGS += -Wno-deprecated-declarations
+endif
 ARFLAGS = cr
 
 THIS_MAKEFILE := $(CURDIR)/$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
@@ -38,10 +50,24 @@ COCOS_ROOT := $(realpath $(dir $(THIS_MAKEFILE))/../..)
 endif
 COCOS_SRC := $(COCOS_ROOT)/cocos2dx
 
-ifeq ($(NACL_ARCH), i686)
+ifeq ($(NACL_ARCH),pnacl)
+ARCH_DIR := $(NACL_ARCH)
+else
+ifeq ($(NACL_ARCH),i686)
 ARCH_DIR := $(NACL_LIBC)_x86_32
 else
 ARCH_DIR := $(NACL_LIBC)_$(NACL_ARCH)
+endif
+endif
+
+ifeq ($(NACL_ARCH),pnacl)
+PORTS_ARCH_DIR := $(NACL_LIBC)_$(NACL_ARCH)
+EXE_EXT := .pexe
+TARGET_SUFFIX = $(EXE_EXT)
+else
+PORTS_ARCH_DIR := $(ARCH_DIR)
+EXE_EXT := .nexe
+TARGET_SUFFIX = _$(NACL_ARCH)$(EXE_EXT)
 endif
 
 NACLPORTS_ROOT ?= $(NACL_SDK_ROOT)/ports
@@ -87,7 +113,8 @@ CCFLAGS += -g3 -O0
 CXXFLAGS += -g3 -O0
 LIB_DIR := $(LIB_DIR)/Debug
 OBJ_DIR := $(OBJ_DIR)/Debug
-MULTILIB_SUFFIX := $(ARCH_DIR)/Debug
+MULTILIB_DIR := $(ARCH_DIR)/Debug
+PORTS_MULTILIB_DIR := $(PORTS_ARCH_DIR)/Debug
 DEFINES += -D_DEBUG -DCOCOS2D_DEBUG=1
 else
 BIN_DIR = bin/release
@@ -95,7 +122,8 @@ CCFLAGS += -O3
 CXXFLAGS += -O3
 LIB_DIR := $(LIB_DIR)/Release
 OBJ_DIR := $(OBJ_DIR)/Release
-MULTILIB_SUFFIX := $(ARCH_DIR)/Release
+MULTILIB_DIR := $(ARCH_DIR)/Release
+PORTS_MULTILIB_DIR := $(PORTS_ARCH_DIR)/Release
 DEFINES += -DNDEBUG
 endif
 
@@ -110,8 +138,8 @@ endif
 # The default library search path consists of the cocos2dx library path, the
 # main nacl sdk library path and the naclports library path.
 LDFLAGS += -L$(LIB_DIR)
-LDFLAGS += -L$(NACL_SDK_ROOT)/lib/$(MULTILIB_SUFFIX)
-LDFLAGS += -L$(NACLPORTS_ROOT)/lib/$(MULTILIB_SUFFIX)
+LDFLAGS += -L$(NACL_SDK_ROOT)/lib/$(MULTILIB_DIR)
+LDFLAGS += -L$(NACLPORTS_ROOT)/lib/$(PORTS_MULTILIB_DIR)
 
 # Some cococs sources use #pragma mark
 CCFLAGS += -Wno-unknown-pragmas
