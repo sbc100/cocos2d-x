@@ -136,6 +136,10 @@ include cocos2dx.mk
 
 CXXFLAGS += -Wno-sequence-point
 
+ifeq ($(NACL_ARCH),pnacl)
+CXXFLAGS += -Wno-tautological-constant-out-of-range-compare
+endif
+
 TARGET = $(LIB_DIR)/libcocos2d.a
 
 all: $(TARGET)

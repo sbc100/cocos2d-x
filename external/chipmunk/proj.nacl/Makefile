@@ -1,15 +1,5 @@
-NACL_ARCH ?= x86_64
-NACL_AR ?= $(NACL_ARCH)-nacl-ar
-NACL_CC ?= $(NACL_ARCH)-nacl-gcc
-NACL_CXX ?= $(NACL_ARCH)-nacl-g++
-CCFLAGS = -Wall -std=gnu99
-CXXFLAGS = -Wall
-VISIBILITY =
-ARFLAGS = cr
-
-LIBS =
-
 INCLUDES = -I../include/chipmunk
+CCFLAGS += -Wall -std=gnu99
 
 SOURCES = ../src/chipmunk.c \
 ../src/cpBody.c \

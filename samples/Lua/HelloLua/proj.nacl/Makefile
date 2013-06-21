@@ -34,7 +34,7 @@ STATICLIBS += -llua -lnosys
 SHAREDLIBS += -lbox2d
 
 APP_NAME = HelloLua
-TARGET = $(BIN_DIR)/$(APP_NAME)_$(NACL_ARCH).nexe
+TARGET = $(BIN_DIR)/$(APP_NAME)$(TARGET_SUFFIX)
 NMF = $(BIN_DIR)/$(APP_NAME).nmf
 
 all: $(NMF)
@@ -60,7 +60,7 @@ $(OBJ_DIR)/%.o: $(COCOS_ROOT)/%.c
 	$(LOG_CC)$(NACL_CC) -MMD $(CCFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@
 
 $(NMF): $(TARGET)
-	$(NACL_SDK_ROOT)/tools/create_nmf.py -o $@ $(BIN_DIR)/*.nexe $(NMF_FLAGS) -s $(BIN_DIR)
+	$(NACL_SDK_ROOT)/tools/create_nmf.py -o $@ $(BIN_DIR)/*$(EXE_EXT) $(NMF_FLAGS) -s $(BIN_DIR)
 
 run: all
 	/bin/cp -ar ../Resources/ .
