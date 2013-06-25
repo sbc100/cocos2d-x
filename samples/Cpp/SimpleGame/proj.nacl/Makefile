@@ -22,7 +22,7 @@ all: $(NMF)
 
 $(TARGET): $(OBJECTS) $(COCOS_LIB) $(CORE_MAKEFILE_LIST)
 	@mkdir -p $(@D)
-	$(LOG_LINK)$(NACL_CXX) $(CXXFLAGS) $(LDFLAGS) $(OBJECTS) -o $@ $(SHAREDLIBS) $(STATICLIBS)
+	$(LOG_LINK)$(NACL_CXX) $(LDFLAGS) $(LDFLAGS) $(OBJECTS) -o $@ $(SHAREDLIBS) $(STATICLIBS)
 
 $(OBJ_DIR)/%.o: ../%.cpp
 	@mkdir -p $(@D)
