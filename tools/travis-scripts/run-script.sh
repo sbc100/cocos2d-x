@@ -4,6 +4,7 @@ set -e
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 COCOS2DX_ROOT="$DIR"/../..
+export NDK_ROOT=$HOME/bin/android-ndk
 
 if [ "$GEN_JSB"x = "YES"x ]; then
     if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
@@ -27,6 +28,13 @@ fi
 
 if [ "$PLATFORM"x = "nacl"x ]; then
     cd $COCOS2DX_ROOT
+    export NACL_SDK_ROOT=$HOME/bin/nacl_sdk/pepper_canary
+    if [ "${NACL_GLIBC}" = "1" ]; then
+        export PATH=$PATH:$NACL_SDK_ROOT/toolchain/linux_x86_glibc/bin
+    else
+        export PATH=$PATH:$NACL_SDK_ROOT/toolchain/linux_x86_newlib/bin
+    fi
+    export PATH=$PATH:$NACL_SDK_ROOT/toolchain/linux_arm_newlib/bin
     make -j4
 fi
 
