@@ -8,8 +8,6 @@ include $(COCOS_ROOT)/cocos2dx/proj.nacl/cocos2dx.mk
 
 ifeq ($(NACL_GLIBC),1)
 TARGET = $(LIB_DIR)/libcocosdenshion.so
-CXXFLAGS += -fPIC
-CCFLAGS += -fPIC
 else
 TARGET = $(LIB_DIR)/libcocosdenshion.a
 endif
