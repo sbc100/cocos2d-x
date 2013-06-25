@@ -58,7 +58,7 @@ public:
     /** returns the start touch location in screen coordinates */
     CCPoint getStartLocationInView() const;
     
-    void setTouchInfo(int id, float x, float y, int tapcount)
+    void setTouchInfo(int id, float x, float y, int tapcount=1)
     {
         m_nId = id;
         m_tapcount = tapcount;
