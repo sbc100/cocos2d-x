@@ -4,6 +4,8 @@ set -e
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 COCOS2DX_ROOT="$DIR"/../..
+CORES=`nproc`
+echo ${CORES}
 export NDK_ROOT=$HOME/bin/android-ndk
 
 if [ "$GEN_JSB"x = "YES"x ]; then
@@ -17,16 +19,16 @@ fi
 build_android()
 {
     cd $COCOS2DX_ROOT/samples/$1/$2/proj.android
-    ln -s ../../../../android_build_objs obj
-    ./build_native.sh
+    ln -sf ../../../../android_build_objs obj
+    ./build_native.sh -j ${CORES}
 }
 
 if [ "$PLATFORM"x = "android"x ]; then
     cd $COCOS2DX_ROOT/tools/travis-scripts
-    ./generate-jsbindings.sh
+    #./generate-jsbindings.sh
     
     cd $COCOS2DX_ROOT
-    mkdir android_build_objs
+    mkdir -p android_build_objs
     build_android Cpp HelloCpp
     build_android Cpp TestCpp
     build_android Cpp AssetsManagerTest
@@ -44,12 +46,12 @@ if [ "$PLATFORM"x = "nacl"x ]; then
         export PATH=$PATH:$NACL_SDK_ROOT/toolchain/linux_x86_newlib/bin
     fi
     export PATH=$PATH:$NACL_SDK_ROOT/toolchain/linux_arm_newlib/bin
-    make -j4
+    make -j${CORES}
 fi
 
 if [ "$PLATFORM"x = "linux"x ]; then
     cd $COCOS2DX_ROOT
-    make -j4
+    make -j${CORES}
 fi
 
 if [ "$PLATFORM"x = "emscripten"x ]; then
@@ -58,7 +60,7 @@ if [ "$PLATFORM"x = "emscripten"x ]; then
     export LLVM=$HOME/bin/clang+llvm-3.2/bin
     sudo mkdir -p /Library/Fonts
     sudo cp samples/Cpp/TestCpp/Resources/fonts/arial.ttf /Library/Fonts/Arial.ttf
-    make -f Makefile.emscripten -j 8
+    make -f Makefile.emscripten -j${CORES}
 fi
 
 if [ "$PLATFORM"x = "ios"x ]; then
