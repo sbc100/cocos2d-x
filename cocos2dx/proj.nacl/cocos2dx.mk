@@ -76,15 +76,6 @@ OUT_DIR ?= obj
 OBJ_DIR ?= $(OUT_DIR)/$(NACL_LIBC)_$(NACL_ARCH)
 LIB_DIR ?= $(COCOS_ROOT)/lib/nacl/$(ARCH_DIR)
 
-NMF_FLAGS = --objdump=i686-nacl-objdump
-NMF_FLAGS += -L$(LIB_DIR)
-NMF_FLAGS += -L$(NACL_SDK_ROOT)/toolchain/linux_x86_$(NACL_LIBC)/x86_64-nacl/lib32/
-NMF_FLAGS += -L$(NACL_SDK_ROOT)/toolchain/linux_x86_$(NACL_LIBC)/x86_64-nacl/lib64/
-NMF_FLAGS += -L$(NACL_SDK_ROOT)/lib/$(NACL_LIBC)_x86_32/Release
-NMF_FLAGS += -L$(NACL_SDK_ROOT)/lib/$(NACL_LIBC)_x86_64/Release
-NMF_FLAGS += -L$(NACLPORTS_ROOT)/lib/$(NACL_LIBC)_x86_32/Release
-NMF_FLAGS += -L$(NACLPORTS_ROOT)/lib/$(NACL_LIBC)_x86_64/Release
-
 ifeq ($(NACL_GLIBC),1)
 COCOS_LIB = $(LIB_DIR)/libcocos2d.so
 else
@@ -108,24 +99,23 @@ INCLUDES += -I$(COCOS_SRC) \
 	-isystem $(NACLPORTS_INCLUDE)/libxml2
 
 ifeq ($(DEBUG), 1)
+CONFIG = Debug
 BIN_DIR = bin/debug
 CFLAGS += -g3 -O0
 CXXFLAGS += -g3 -O0
-LIB_DIR := $(LIB_DIR)/Debug
-OBJ_DIR := $(OBJ_DIR)/Debug
-MULTILIB_DIR := $(ARCH_DIR)/Debug
-PORTS_MULTILIB_DIR := $(PORTS_ARCH_DIR)/Debug
 DEFINES += -D_DEBUG -DCOCOS2D_DEBUG=1
 else
+CONFIG = Release
 BIN_DIR = bin/release
 CFLAGS += -O3
 CXXFLAGS += -O3
-LIB_DIR := $(LIB_DIR)/Release
-OBJ_DIR := $(OBJ_DIR)/Release
-MULTILIB_DIR := $(ARCH_DIR)/Release
-PORTS_MULTILIB_DIR := $(PORTS_ARCH_DIR)/Release
 DEFINES += -DNDEBUG
 endif
+
+LIB_DIR := $(LIB_DIR)/$(CONFIG)
+OBJ_DIR := $(OBJ_DIR)/$(CONFIG)
+MULTILIB_DIR := $(ARCH_DIR)/$(CONFIG)
+PORTS_MULTILIB_DIR := $(PORTS_ARCH_DIR)/$(CONFIG)
 
 ifndef V
 LOG_CC = @echo " CC $@";
@@ -134,6 +124,16 @@ LOG_AR = @echo " AR $@";
 LOG_LINK = @echo " LINK $@";
 LOG_LDSO = @echo " LDSO $@";
 endif
+
+NMF_FLAGS = --objdump=i686-nacl-objdump
+NMF_FLAGS += -L$(COCOS_ROOT)/lib/nacl/glibc_x86_32/$(CONFIG)
+NMF_FLAGS += -L$(COCOS_ROOT)/lib/nacl/glibc_x86_64/$(CONFIG)
+NMF_FLAGS += -L$(NACL_SDK_ROOT)/toolchain/linux_x86_$(NACL_LIBC)/x86_64-nacl/lib32/
+NMF_FLAGS += -L$(NACL_SDK_ROOT)/toolchain/linux_x86_$(NACL_LIBC)/x86_64-nacl/lib64/
+NMF_FLAGS += -L$(NACL_SDK_ROOT)/lib/$(NACL_LIBC)_x86_32/Release
+NMF_FLAGS += -L$(NACL_SDK_ROOT)/lib/$(NACL_LIBC)_x86_64/Release
+NMF_FLAGS += -L$(NACLPORTS_ROOT)/lib/$(NACL_LIBC)_x86_32/Release
+NMF_FLAGS += -L$(NACLPORTS_ROOT)/lib/$(NACL_LIBC)_x86_64/Release
 
 # The default library search path consists of the cocos2dx library path, the
 # main nacl sdk library path and the naclports library path.
@@ -144,6 +144,11 @@ LDFLAGS += -L$(NACLPORTS_ROOT)/lib/$(PORTS_MULTILIB_DIR)
 # Some cococs sources use #pragma mark
 CFLAGS += -Wno-unknown-pragmas
 CXXFLAGS += -Wno-unknown-pragmas
+
+ifeq ($(NACL_GLIBC),1)
+CFLAGS += -fPIC
+CXXFLAGS += -fPIC
+endif
 
 ifeq ($(NACL_ARCH),arm)
 # Don't warn about mangling of 'va_list' on arm builds

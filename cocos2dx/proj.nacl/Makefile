@@ -142,8 +142,6 @@ endif
 
 ifeq ($(NACL_GLIBC),1)
 TARGET = $(LIB_DIR)/libcocos2d.so
-CXXFLAGS += -fPIC
-CCFLAGS += -fPIC
 else
 TARGET = $(LIB_DIR)/libcocos2d.a
 endif
