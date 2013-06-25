@@ -72,6 +72,11 @@ public:
     virtual void removeScriptHandler(int nHandler);
 
     /**
+     @brief Remove Lua function reference
+     */
+    virtual int reallocateScriptHandler(int nHandler);
+    
+    /**
      @brief Execute script code contained in the given string.
      @param codes holding the valid script code that should be executed.
      @return 0 if the string is excuted correctly.
@@ -129,7 +134,7 @@ public:
     virtual void pushCCLuaValueArray(const CCLuaValueArray& array);
     virtual bool pushFunctionByHandler(int nHandler);
     virtual int executeFunction(int numArgs);
-    virtual bool executeAssert(bool cond, const char *msg);
+    virtual bool handleAssert(const char *msg);
 
 protected:
     CCLuaStack(void)
