@@ -38,7 +38,10 @@ NS_CC_BEGIN
 class CC_DLL CCTouch : public CCObject
 {
 public:
-    CCTouch() 
+    /**
+     * @js ctor
+     */
+    CCTouch()
         : m_nId(0), m_tapcount(0),
         m_startPointCaptured(false)
     {}
@@ -71,7 +74,9 @@ public:
             m_startPointCaptured = true;
         }
     }
-
+    /**
+     *  @js getId
+     */
     int getID() const
     {
         return m_nId;
