@@ -96,7 +96,8 @@ INCLUDES += -I$(COCOS_SRC) \
 	-I$(COCOS_SRC)/platform/nacl \
 	-I$(NACL_SDK_ROOT)/include \
 	-isystem $(NACLPORTS_INCLUDE) \
-	-isystem $(NACLPORTS_INCLUDE)/libxml2
+	-isystem $(NACLPORTS_INCLUDE)/libxml2 \
+	-isystem $(NACLPORTS_INCLUDE)/freetype2
 
 ifeq ($(DEBUG), 1)
 CONFIG = Debug
@@ -157,7 +158,8 @@ CXXFLAGS += -Wno-psabi
 endif
 
 SOUNDLIBS := -lalut -lopenal -lvorbisfile -lvorbis -logg
-STATICLIBS += $(SOUNDLIBS) -lfreetype -lxml2 -lwebp -lpng -ljpeg -ltiff -llua -lchipmunk
+STATICLIBS += $(SOUNDLIBS) -lfreetype -lbz2 -lxml2 -lwebp
+STATICLIBS += -lpng -ljpeg -ltiff -llua -lchipmunk
 STATICLIBS += -lnacl_io -lppapi_gles2 -lppapi -lppapi_cpp
 SHAREDLIBS += -lpthread -lcocosdenshion -lcocos2d -lz
 
