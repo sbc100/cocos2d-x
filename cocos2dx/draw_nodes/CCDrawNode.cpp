@@ -69,10 +69,12 @@ static inline float v2fdot(const ccVertex2F &p0, const ccVertex2F &p1)
 	return  p0.x * p1.x + p0.y * p1.y;
 }
 
+#if 0
 static inline ccVertex2F v2fforangle(float _a_)
 {
 	return v2f(cosf(_a_), sinf(_a_));
 }
+#endif
 
 static inline ccVertex2F v2fnormalize(const ccVertex2F &p)
 {

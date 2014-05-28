@@ -39,6 +39,7 @@ const char* weapon_introduce_text[31] =
 	"Ambassador: 31.99$",
 };
 
+#if 0
 const int weapon_colors[31][3] =
 {
     { 247, 172, 188 },
@@ -80,6 +81,7 @@ const int weapon_colors[31][3] =
     { 110, 107, 65 },
     { 36,  104, 42 },
 };
+#endif
 
 CocosGUIExamplesWeaponScene::CocosGUIExamplesWeaponScene()
 {

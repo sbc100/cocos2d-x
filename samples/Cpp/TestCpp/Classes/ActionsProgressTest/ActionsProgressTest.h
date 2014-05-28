@@ -1,4 +1,4 @@
-#ifndef _ACTIONS__PROGRESS_TEST_H_
+#ifndef _ACTIONS_PROGRESS_TEST_H_
 #define _ACTIONS_PROGRESS_TEST_H_
 
 #include "../testBasic.h"
