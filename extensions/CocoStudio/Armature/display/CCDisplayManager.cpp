@@ -106,7 +106,7 @@ void CCDisplayManager::addDisplay(CCDisplayData *displayData, int index)
     if(index == m_iDisplayIndex)
     {
         m_iDisplayIndex = -1;
-        changeDisplayByIndex(index, false);
+        changeDisplayWithIndex(index, false);
     }
 }
 
@@ -129,6 +129,7 @@ void CCDisplayManager::addDisplay(CCNode *display, int index)
     {
         skin->setBone(m_pBone);
         displayData = CCSpriteDisplayData::create();
+        displayData->displayName = skin->getDisplayName();
 
         CCDisplayFactory::initSpriteDisplay(m_pBone, decoDisplay, skin->getDisplayName().c_str(), skin);
 
@@ -175,6 +176,7 @@ void CCDisplayManager::addDisplay(CCNode *display, int index)
     else if(CCArmature *armature = dynamic_cast<CCArmature *>(display))
     {
         displayData = CCArmatureDisplayData::create();
+        displayData->displayName = armature->getName();
         armature->setParentBone(m_pBone);
     }
     else
@@ -189,7 +191,7 @@ void CCDisplayManager::addDisplay(CCNode *display, int index)
     if(index == m_iDisplayIndex)
     {
         m_iDisplayIndex = -1;
-        changeDisplayByIndex(index, false);
+        changeDisplayWithIndex(index, false);
     }
 }
 
@@ -210,6 +212,16 @@ CCArray *CCDisplayManager::getDecorativeDisplayList()
 }
 
 void CCDisplayManager::changeDisplayByIndex(int index, bool force)
+{
+    changeDisplayWithIndex(index, force);
+}
+
+void CCDisplayManager::changeDisplayByName(const char *name, bool force)
+{
+    changeDisplayWithName(name, force);
+}
+
+void CCDisplayManager::changeDisplayWithIndex(int index, bool force)
 {
     CCAssert( (m_pDecoDisplayList ? index < (int)m_pDecoDisplayList->count() : true), "the _index value is out of range");
 
@@ -239,9 +251,21 @@ void CCDisplayManager::changeDisplayByIndex(int index, bool force)
     setCurrentDecorativeDisplay(decoDisplay);
 }
 
+void CCDisplayManager::changeDisplayWithName(const char *name, bool force)
+{
+    for (unsigned int i = 0; i<m_pDecoDisplayList->count(); i++)
+    {
+        if (static_cast<CCDecorativeDisplay*>(m_pDecoDisplayList->objectAtIndex(i))->getDisplayData()->displayName == name)
+        {
+            changeDisplayWithIndex(i, force);
+            break;
+        }
+    }
+}
+
 void CCDisplayManager::setCurrentDecorativeDisplay(CCDecorativeDisplay *decoDisplay)
 {
-#if ENABLE_PHYSICS_BOX2D_DETECT || ENABLE_PHYSICS_CHIPMUNK_DETECT
+#if ENABLE_PHYSICS_BOX2D_DETECT || ENABLE_PHYSICS_CHIPMUNK_DETECT || ENABLE_PHYSICS_SAVE_CALCULATED_VERTEX
     if (m_pCurrentDecoDisplay && m_pCurrentDecoDisplay->getColliderDetector())
     {
         m_pCurrentDecoDisplay->getColliderDetector()->setActive(false);
@@ -250,7 +274,7 @@ void CCDisplayManager::setCurrentDecorativeDisplay(CCDecorativeDisplay *decoDisp
 
     m_pCurrentDecoDisplay = decoDisplay;
 
-#if ENABLE_PHYSICS_BOX2D_DETECT || ENABLE_PHYSICS_CHIPMUNK_DETECT
+#if ENABLE_PHYSICS_BOX2D_DETECT || ENABLE_PHYSICS_CHIPMUNK_DETECT || ENABLE_PHYSICS_SAVE_CALCULATED_VERTEX
     if (m_pCurrentDecoDisplay && m_pCurrentDecoDisplay->getColliderDetector())
     {
         m_pCurrentDecoDisplay->getColliderDetector()->setActive(true);
@@ -275,6 +299,7 @@ void CCDisplayManager::setCurrentDecorativeDisplay(CCDecorativeDisplay *decoDisp
         if (CCArmature *armature = dynamic_cast<CCArmature *>(m_pDisplayRenderNode))
         {
             m_pBone->setChildArmature(armature);
+            armature->setParentBone(m_pBone);
         }
         else if (CCParticleSystemQuad *particle = dynamic_cast<CCParticleSystemQuad *>(m_pDisplayRenderNode))
         {

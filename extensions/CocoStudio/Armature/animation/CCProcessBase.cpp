@@ -40,12 +40,8 @@ CCProcessBase::CCProcessBase(void)
     , m_fCurrentFrame(0)
     , m_iCurFrameIndex(0)
     , m_bIsLoopBack(false)
+    , m_fAnimationInternal(1/60.0f)
 {
-    /*
-     *  set m_fAnimationInternal defualt value to CCDirector::sharedDirector()
-     *  ->getAnimationInterval(), in line with game update speed
-     */
-    m_fAnimationInternal = CCDirector::sharedDirector()->getAnimationInterval();
 }
 
 
@@ -71,8 +67,6 @@ void CCProcessBase::stop()
 {
     m_bIsComplete = true;
     m_bIsPlaying = false;
-    m_fCurrentFrame = 0;
-    m_fCurrentPercent = 0;
 }
 
 void CCProcessBase::play(int durationTo, int durationTween,  int loop, int tweenEasing)
@@ -153,7 +147,7 @@ void CCProcessBase::gotoFrame(int frameIndex)
 
 int CCProcessBase::getCurrentFrameIndex()
 {
-    m_iCurFrameIndex = m_iRawDuration * m_fCurrentPercent;
+    m_iCurFrameIndex = (m_iRawDuration-1) * m_fCurrentPercent;
     return m_iCurFrameIndex;
 }
 

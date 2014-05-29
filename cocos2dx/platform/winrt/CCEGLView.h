@@ -39,6 +39,8 @@ THE SOFTWARE.
 
 #include "esUtil.h"
 
+using namespace Windows::Foundation;
+
 NS_CC_BEGIN
 
 class CCEGL;
@@ -54,7 +56,8 @@ public:
 	void setIMEKeyboardState(bool bOpen);
     void swapBuffers();
 
-
+	void ReleasePointerPressed();
+	void EnablePointerPressed();
 private:
 	CCPoint GetCCPoint(Windows::UI::Core::PointerEventArgs^ args);
 
@@ -69,8 +72,10 @@ private:
 	void OnLogicalDpiChanged(Platform::Object^ sender);
 	void OnOrientationChanged(Platform::Object^ sender);
 	void OnDisplayContentsInvalidated(Platform::Object^ sender);
-	void OnRendering(Platform::Object^ sender, Platform::Object^ args);
-	void ResizeWindow();
+    void OnRendering(Platform::Object^ sender, Platform::Object^ args);
+    void OnSuspending();
+    void ResizeWindow();
+    
 
 	void ShowKeyboard(Windows::UI::ViewManagement::InputPane^ inputPane, Windows::UI::ViewManagement::InputPaneVisibilityEventArgs^ args);
 	void HideKeyboard(Windows::UI::ViewManagement::InputPane^ inputPane, Windows::UI::ViewManagement::InputPaneVisibilityEventArgs^ args);
@@ -81,11 +86,15 @@ private:
 	Windows::Foundation::EventRegistrationToken m_eventToken;
 	bool m_lastPointValid;
 	bool m_textInputEnabled;
+	Microsoft::WRL::ComPtr<IWinrtEglWindow> m_eglWindow;
 	ESContext m_esContext;
 	Windows::UI::Xaml::Controls::TextBox^ m_textBox;
 	Windows::UI::Xaml::Controls::Button^ m_dummy;
+	Windows::Foundation::EventRegistrationToken m_pointerPressedEvent;
 	friend CCEGLView;
 };
+
+ref class CCEditBoxParam;
 
 class CC_DLL CCEGLView : public CCEGLViewProtocol
 {
@@ -104,12 +113,17 @@ public:
     virtual bool Create(Windows::UI::Core::CoreWindow^ window, Windows::UI::Xaml::Controls::SwapChainBackgroundPanel^ panel);
 	void UpdateForWindowSizeChange();
 	void OnRendering();
+    void OnSuspending();
 
+	void openEditBox(CCEditBoxParam^ param);
+	void SetCocosEditBoxHandler(EventHandler<Platform::Object^>^ handler);
+	void OnCloseEditBox();
+	
 private:
 	Windows::Foundation::EventRegistrationToken m_eventToken;
 	Windows::Foundation::Point m_lastPoint;
 	bool m_lastPointValid;
-
+	EventHandler<Platform::Object^>^ m_editBoxhandler;
 public:
 
     // winrt platform functions

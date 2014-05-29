@@ -27,7 +27,9 @@
 
 #include "../BaseClasses/UIWidget.h"
 
-NS_CC_EXT_BEGIN
+NS_CC_BEGIN
+
+namespace ui {
 
 typedef enum
 {
@@ -44,32 +46,36 @@ typedef enum
     LAYOUT_RELATIVE
 }LayoutType;
 
+typedef enum {
+    LAYOUT_CLIPPING_STENCIL,
+    LAYOUT_CLIPPING_SCISSOR
+}LayoutClippingType;
 
 /**
  *  @js NA
  *  @lua NA
  */
-class UILayout : public UIWidget
+class CC_EX_DLL Layout : public Widget
 {
+    
+    DECLARE_CLASS_GUI_INFO
+    
 public:
     /**
      * Default constructor
      */
-    UILayout();
+    Layout();
     
     /**
      * Default destructor
      */
-    virtual ~UILayout();
+    virtual ~Layout();
     
     /**
      * Allocates and initializes a layout.
      */
-    static UILayout* create();
-    
-    //override "hitTest" method of widget.
-    virtual bool hitTest(const CCPoint &pt);
-    
+    static Layout* create();
+        
     //background
     /**
      * Sets a background image for layout
@@ -88,12 +94,16 @@ public:
      */
     void setBackGroundImageCapInsets(const CCRect& capInsets);
     
+    const CCRect& getBackGroundImageCapInsets();
+    
     /**
      * Sets Color Type for layout.
      *
      * @param type   @see LayoutBackGroundColorType.
      */
     void setBackGroundColorType(LayoutBackGroundColorType type);
+    
+    LayoutBackGroundColorType getBackGroundColorType();
     
     /**
      * Sets background iamge use scale9 renderer.
@@ -102,12 +112,16 @@ public:
      */
     void setBackGroundImageScale9Enabled(bool enabled);
     
+    bool isBackGroundImageScale9Enabled();
+    
     /**
      * Sets background color for layout, if color type is LAYOUT_COLOR_SOLID
      *
      * @param color
      */
     void setBackGroundColor(const ccColor3B &color);
+    
+    const ccColor3B& getBackGroundColor();
     
     /**
      * Sets background color for layout, if color type is LAYOUT_COLOR_GRADIENT
@@ -118,12 +132,18 @@ public:
      */
     void setBackGroundColor(const ccColor3B &startColor, const ccColor3B &endColor);
     
+    const ccColor3B& getBackGroundStartColor();
+    
+    const ccColor3B& getBackGroundEndColor();
+    
     /**
      * Sets background opacity layout.
      *
      * @param opacity
      */
-    void setBackGroundColorOpacity(int opacity);
+    void setBackGroundColorOpacity(GLubyte opacity);
+    
+    GLubyte getBackGroundColorOpacity();
     
     /**
      * Sets background color vector for layout, if color type is LAYOUT_COLOR_GRADIENT
@@ -132,11 +152,15 @@ public:
      */
     void setBackGroundColorVector(const CCPoint &vector);
     
-    //override "setColor" method of widget.
-    virtual void setColor(const ccColor3B &color);
+    const CCPoint& getBackGroundColorVector();
     
-    //override "setOpacity" method of widget.
-    virtual void setOpacity(int opacity);
+    void setBackGroundImageColor(const ccColor3B& color);
+    
+    void setBackGroundImageOpacity(GLubyte opacity);
+    
+    const ccColor3B& getBackGroundImageColor();
+    
+    GLubyte getBackGroundImageOpacity();
     
     /**
      * Remove the background image of layout.
@@ -157,7 +181,11 @@ public:
      *
      * @param clipping enabled.
      */
-    virtual void setClippingEnabled(bool able);
+    virtual void setClippingEnabled(bool enabled);
+    
+    void setClippingType(LayoutClippingType type);
+    
+    LayoutClippingType getClippingType();
     
     /**
      * Gets if layout is clipping enabled.
@@ -167,16 +195,9 @@ public:
     virtual bool isClippingEnabled();
     
     /**
-     * Gets the content size of widget.
-     *
-     * Content size is widget's texture size.
-     */
-    virtual const CCSize& getContentSize() const;
-    
-    /**
      * Returns the "class name" of widget.
      */
-    virtual const char* getDescription() const;
+    virtual std::string getDescription() const;
     
     /**
      * Sets LayoutType.
@@ -195,86 +216,101 @@ public:
      * @return LayoutType
      */
     virtual LayoutType getLayoutType() const;
-    
-    virtual void doLayout();
-    
-    /**
-     * Adds a child to the container.
-     *
-     * @param child A child widget
-     */
-    virtual bool addChild(UIWidget* child);
-    
-    /*Compatible*/
-    /**
-     * These methods will be removed
-     */
-    void setBackGroundImageScale9Enable(bool is){setBackGroundImageScale9Enabled(is);};
-    virtual void setClippingEnable(bool is){setClippingEnabled(is);};
-    /************/
 
+    virtual void addChild(CCNode * child);
+    /**
+     * Adds a child to the container with a z-order
+     *
+     * If the child is added to a 'running' node, then 'onEnter' and 'onEnterTransitionDidFinish' will be called immediately.
+     *
+     * @param child     A child node
+     * @param zOrder    Z order for drawing priority. Please refer to setZOrder(int)
+     */
+    virtual void addChild(CCNode * child, int zOrder);
+    /**
+     * Adds a child to the container with z order and tag
+     *
+     * If the child is added to a 'running' node, then 'onEnter' and 'onEnterTransitionDidFinish' will be called immediately.
+     *
+     * @param child     A child node
+     * @param zOrder    Z order for drawing priority. Please refer to setZOrder(int)
+     * @param tag       A interger to identify the node easily. Please refer to setTag(int)
+     */
+    virtual void addChild(CCNode* child, int zOrder, int tag);
+    
+    virtual void removeChild(CCNode* child);
+    
+    virtual void removeChild(CCNode* widget, bool cleanup);
+    
+    virtual void removeAllChildren();
+    
+    virtual void removeAllChildrenWithCleanup(bool cleanup);
+    
+    virtual void visit();
+    
+    virtual void sortAllChildren();
+    
+    void requestDoLayout();
+    
+    virtual void onEnter();
+    virtual void onExit();
+    
+    virtual bool hitTest(const CCPoint &pt);
 protected:
     //override "init" method of widget.
     virtual bool init();
-    
-    //override "initRenderer" method of widget.
-    virtual void initRenderer();
-    
+        
     //override "onSizeChanged" method of widget.
     virtual void onSizeChanged();
     
     //init background image renderer.
     void addBackGroundImage();
     
-    void supplyTheLayoutParameterLackToChild(UIWidget* child);
-    virtual UIWidget* createCloneInstance();
-    virtual void copySpecialProperties(UIWidget* model);
-    virtual void copyClonedWidgetChildren(UIWidget* model);
+    void supplyTheLayoutParameterLackToChild(Widget* child);
+    virtual Widget* createCloneInstance();
+    virtual void copySpecialProperties(Widget* model);
+    virtual void copyClonedWidgetChildren(Widget* model);
+    
+    void stencilClippingVisit();
+    void scissorClippingVisit();
+    
+    void setStencilClippingSize(const CCSize& size);
+    const CCRect& getClippingRect();
+    virtual void doLayout();
+    void updateBackGroundImageColor();
+    void updateBackGroundImageOpacity();
+    void updateBackGroundImageRGBA();
 protected:
-    bool m_bClippingEnabled;
+    bool _clippingEnabled;
     
     //background
-    bool m_bBackGroundScale9Enabled;
-    CCNode* m_pBackGroundImage;
-    std::string m_strBackGroundImageFileName;
-    CCRect m_backGroundImageCapInsets;
-    LayoutBackGroundColorType m_colorType;
-    TextureResType m_eBGImageTexType;
-    CCLayerColor* m_pColorRender;
-    CCLayerGradient* m_pGradientRender;
-    ccColor3B m_cColor;
-    ccColor3B m_gStartColor;
-    ccColor3B m_gEndColor;
-    CCPoint m_AlongVector;
-    int m_nCOpacity;
-    CCSize m_backGroundImageTextureSize;
-    LayoutType m_eLayoutType;
+    bool _backGroundScale9Enabled;
+    CCNode* _backGroundImage;
+    std::string _backGroundImageFileName;
+    CCRect _backGroundImageCapInsets;
+    LayoutBackGroundColorType _colorType;
+    TextureResType _bgImageTexType;
+    CCLayerColor* _colorRender;
+    CCLayerGradient* _gradientRender;
+    ccColor3B _cColor;
+    ccColor3B _gStartColor;
+    ccColor3B _gEndColor;
+    CCPoint _alongVector;
+    GLubyte _cOpacity;
+    CCSize _backGroundImageTextureSize;
+    LayoutType _layoutType;
+    LayoutClippingType _clippingType;
+    CCDrawNode* _clippingStencil;
+    bool _handleScissor;
+    bool _scissorRectDirty;
+    CCRect _clippingRect;
+    Layout* _clippingParent;
+    bool _doLayoutDirty;
+    bool _clippingRectDirty;
+    ccColor3B _backGroundImageColor;
+    GLubyte _backGroundImageOpacity;
 };
-/**
- *  @js NA
- *  @lua NA
- */
-class UIRectClippingNode : public CCClippingNode
-{
-public:
-    virtual ~UIRectClippingNode();
-    virtual bool init();
-    static UIRectClippingNode* create();
-    void setClippingSize(const CCSize& size);
-    void setClippingEnabled(bool enabled);
-    virtual void visit();
-    void setEnabled(bool enabled);
-    bool isEnabled() const;
-protected:
-    CCDrawNode* m_pInnerStencil;
-    bool m_bEnabled;
-private:
-    UIRectClippingNode();
-    CCPoint rect[4];
-    CCSize m_clippingSize;
-    bool m_bClippingEnabled;
-};
-
-NS_CC_EXT_END
-
+    
+}
+NS_CC_END
 #endif /* defined(__Layout__) */

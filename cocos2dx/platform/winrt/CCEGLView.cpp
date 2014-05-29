@@ -35,6 +35,11 @@ THE SOFTWARE.
 #include "CCApplication.h"
 #include "CCWinRTUtils.h"
 
+#if (_MSC_VER >= 1800)
+#include <d3d11_2.h>
+#endif
+
+
 using namespace Platform;
 using namespace Windows::Foundation;
 using namespace Windows::Foundation::Collections;
@@ -62,12 +67,30 @@ void WinRTWindow::Initialize(CoreWindow^ window, SwapChainBackgroundPanel^ panel
 	m_window = window;
 
  	esInitContext ( &m_esContext );
-	m_esContext.hWnd = WINRT_EGL_WINDOW(panel);
+
+    ANGLE_D3D_FEATURE_LEVEL featureLevel = ANGLE_D3D_FEATURE_LEVEL::ANGLE_D3D_FEATURE_LEVEL_9_1;
+
+#if (_MSC_VER >= 1800)
+    // WinRT on Windows 8.1 can compile shaders at run time so we don't care about the DirectX feature level
+    featureLevel = ANGLE_D3D_FEATURE_LEVEL::ANGLE_D3D_FEATURE_LEVEL_ANY;
+#endif
+
+
+    HRESULT result = CreateWinrtEglWindow(WINRT_EGL_IUNKNOWN(panel), featureLevel, m_eglWindow.GetAddressOf());
+	
+	if (!SUCCEEDED(result))
+	{
+		CCLOG("Unable to create Angle EGL Window: %d", result);
+		return;
+	}
+
+	m_esContext.hWnd = m_eglWindow;
     // width and height are ignored and determined from the CoreWindow the SwapChainBackgroundPanel is in.
     esCreateWindow ( &m_esContext, TEXT("Cocos2d-x"), 0, 0, ES_WINDOW_RGB | ES_WINDOW_ALPHA | ES_WINDOW_DEPTH | ES_WINDOW_STENCIL );
 
-	m_window->PointerPressed +=
-        ref new TypedEventHandler<CoreWindow^, PointerEventArgs^>(this, &WinRTWindow::OnPointerPressed);
+	m_pointerPressedEvent = m_window->PointerPressed += 
+		ref new TypedEventHandler<CoreWindow^, PointerEventArgs^>(this, &WinRTWindow::OnPointerPressed);
+        
     m_window->PointerReleased +=
         ref new TypedEventHandler<CoreWindow^, PointerEventArgs^>(this, &WinRTWindow::OnPointerReleased);
     m_window->PointerMoved +=
@@ -123,6 +146,22 @@ void WinRTWindow::swapBuffers()
 {
 	eglSwapBuffers(m_esContext.eglDisplay, m_esContext.eglSurface);  
 }
+
+
+
+void WinRTWindow::OnSuspending()
+{
+#if (_MSC_VER >= 1800)
+    Microsoft::WRL::ComPtr<ID3D11Device> device = m_eglWindow->GetAngleD3DDevice();
+    Microsoft::WRL::ComPtr<IDXGIDevice3> dxgiDevice;
+    HRESULT result = device.As(&dxgiDevice);
+    if (SUCCEEDED(result))
+    {
+        dxgiDevice->Trim();
+    }
+#endif
+}
+
 
 void WinRTWindow::ResizeWindow()
 {
@@ -296,6 +335,17 @@ void WinRTWindow::OnRendering(Object^ sender, Object^ args)
 	CCEGLView::sharedOpenGLView()->OnRendering();
 }
 
+void WinRTWindow::ReleasePointerPressed()
+{
+	m_window->PointerPressed -= m_pointerPressedEvent;
+}
+
+void WinRTWindow::EnablePointerPressed()
+{
+	m_pointerPressedEvent = m_window->PointerPressed += 
+		ref new TypedEventHandler<CoreWindow^, PointerEventArgs^>(this, &WinRTWindow::OnPointerPressed);
+}
+
 
 CCEGLView::CCEGLView()
 	: m_window(nullptr)
@@ -388,7 +438,13 @@ void CCEGLView::centerWindow()
 	// not implemented in WinRT. Window is always full screen
 }
 
-
+void CCEGLView::OnSuspending()
+{
+    if (m_winRTWindow)
+    {
+        m_winRTWindow->OnSuspending();
+    }
+}
 
 CCEGLView* CCEGLView::sharedOpenGLView()
 {
@@ -467,5 +523,28 @@ void CCEGLView::UpdateForWindowSizeChange()
         CCDirector::sharedDirector()->setProjection(CCDirector::sharedDirector()->getProjection());
    }
 }
+
+void CCEGLView::openEditBox(CCEditBoxParam^ param)
+{
+	m_winRTWindow->ReleasePointerPressed();
+
+	if (m_editBoxhandler)
+	{		
+		m_editBoxhandler->Invoke(nullptr, param);
+	}	
+}
+
+void CCEGLView::SetCocosEditBoxHandler( EventHandler<Object^>^ handler )
+{
+	m_editBoxhandler = handler;
+}
+
+void CCEGLView::OnCloseEditBox()
+{
+	m_winRTWindow->EnablePointerPressed();
+}
+
+
+
 
 NS_CC_END

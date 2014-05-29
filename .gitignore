@@ -33,6 +33,7 @@ ipch/
 *.opensdf
 Generated Files
 AppPackages
+SubmissionInfo
 *.hps
 
 # Ignore files build by ndk and eclipse
@@ -43,7 +44,7 @@ gen/
 assets/
 local.properties
 
-# Ignore specific winrt files 
+# Ignore specific winrt files
 cocos2dx/platform/third_party/winrt/freetype/src
 cocos2dx/platform/third_party/winrt/libpng/lpng142
 cocos2dx/platform/third_party/winrt/libjpeg/jpeg-8b
@@ -78,7 +79,6 @@ build_*_vc10/
 *.mode*v*
 *.pbxuser
 *.xcbkptlist
-*.xcscheme
 *.xcworkspacedata
 *.xcuserstate
 xcschememanagement.plist
@@ -111,3 +111,17 @@ tools/jenkins_scripts/mac/android/userconf.ini
 
 # CTags
 tags
+/CocosDenshion/third_party/
+/cocos2dx/platform/third_party/
+/external/emscripten/
+/external/libwebsockets/
+/external/sqlite3/
+/scripting/javascript/spidermonkey-android/
+/scripting/javascript/spidermonkey-ios/
+/scripting/javascript/spidermonkey-win32/
+/scripting/lua/luajit/
+/tools/tojs/win32/
+/tools/tolua++/tolua++.Mac.zip
+/tools/tolua++/tolua++.rar
+/v*-deps-*.zip
+/external/version.json

@@ -28,14 +28,14 @@
 #include "cocos2d.h"
 #include "ExtensionMacros.h"
 #include "CCActionFrame.h"
-#include "../Json/CSContentJsonDictionary.h"
-
+#include "../Json/DictionaryHelper.h"
+#include "../Json/rapidjson/document.h"
 NS_CC_EXT_BEGIN
 /**
 *   @js NA
 *   @lua NA
 */
-class ActionNode:public CCObject
+class CC_EX_DLL ActionNode:public CCObject
 {
 public:
     
@@ -142,15 +142,14 @@ public:
      * Play the action.
      */
 	virtual void playAction();
-    
+
     /**
      * Stop the action.
      */
 	virtual void stopAction();
 	
     /*init properties with a json dictionary*/
-    virtual void initWithDictionary(cs::CSJsonDictionary* dic,CCObject* root);
-
+	virtual void initWithDictionary(const rapidjson::Value& dic,CCObject* root);
     /**
      * Gets if the action is done once time.
      *
@@ -175,7 +174,7 @@ protected:
 	virtual CCSpawn * refreshActionProperty();
 	virtual void runAction();
 	virtual void initActionNodeFromRoot(CCObject* root);
-	virtual void easingToFrame(float duration,float delayTime,ActionFrame* destFrame);
+	virtual void easingToFrame(float duration,float delayTime,ActionFrame* srcFrame,ActionFrame* destFrame);
 };
 
 NS_CC_EXT_END

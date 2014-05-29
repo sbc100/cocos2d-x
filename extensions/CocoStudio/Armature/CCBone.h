@@ -35,9 +35,9 @@ NS_CC_EXT_BEGIN
 
 class CCArmature;
 /**
-*   @lua NA
-*/
-class CCBone : public CCNodeRGBA
+ * @lua NA
+ */
+class CC_EX_DLL CCBone : public CCNodeRGBA
 {
 public:
     /**
@@ -54,7 +54,13 @@ public:
     static CCBone *create(const char *name);
 
 public:
+    /**
+     *  @js ctor
+     */
     CCBone();
+    /**
+     *  @js NA
+     */
     virtual ~CCBone(void);
 
     /**
@@ -85,7 +91,14 @@ public:
 
     void removeDisplay(int index);
 
-    void changeDisplayByIndex(int index, bool force);
+    /**
+     * @deprecated please use changeDisplayWithIndex and changeDisplayWithName
+     */
+    CC_DEPRECATED_ATTRIBUTE void changeDisplayByIndex(int index, bool force);
+    CC_DEPRECATED_ATTRIBUTE void changeDisplayByName(const char *name, bool force);
+
+    void changeDisplayWithIndex(int index, bool force);
+    void changeDisplayWithName(const char *name, bool force);
 
     /**
      * Add a child to this bone, and it will let this child call setParent(CCBone *parent) function to set self to it's parent
@@ -144,8 +157,19 @@ public:
      * Whether or not the bone's transform property changed. if true, the bone will update the transform.
      */
     virtual inline void setTransformDirty(bool dirty) { m_bBoneTransformDirty = dirty; }
-
     virtual inline bool isTransformDirty() { return m_bBoneTransformDirty; }
+
+    /*
+     * Set blend function
+     */
+    virtual void setBlendFunc(const ccBlendFunc& blendFunc);
+    virtual ccBlendFunc getBlendFunc(void) { return m_sBlendFunc; }
+
+    /*
+     * Set if blend function is dirty 
+     */
+    virtual void setBlendDirty(bool dirty) { m_bBlendDirty = dirty; }
+    virtual bool isBlendDirty(void) { return m_bBlendDirty; }
 
     virtual CCAffineTransform nodeToArmatureTransform();
     virtual CCAffineTransform nodeToWorldTransform();
@@ -158,8 +182,11 @@ public:
      */
     virtual CCArray *getColliderBodyList();
 
+#if ENABLE_PHYSICS_BOX2D_DETECT || ENABLE_PHYSICS_CHIPMUNK_DETECT
     virtual void setColliderFilter(CCColliderFilter *filter);
     virtual CCColliderFilter *getColliderFilter();
+#endif
+
 public:
     /*
      *  The origin state of the CCBone. Display's state is effected by m_pBoneData, m_pNode, m_pTweenData
@@ -181,7 +208,6 @@ public:
      */
     CC_SYNTHESIZE(bool, m_bIgnoreMovementBoneData, IgnoreMovementBoneData)
 
-    CC_SYNTHESIZE(CCBlendType, m_eBlendType, BlendType)
 protected:
     virtual void applyParentTransform(CCBone *parent);
 
@@ -206,6 +232,9 @@ protected:
 
     //! Data version
     float m_fDataVersion;
+
+    ccBlendFunc m_sBlendFunc; 
+    bool m_bBlendDirty;
 };
 
 NS_CC_EXT_END

@@ -49,7 +49,7 @@ typedef void (CCObject::*SEL_FrameEventCallFunc)(CCBone *, const char *, int, in
 #define movementEvent_selector(_SELECTOR) (SEL_MovementEventCallFunc)(&_SELECTOR)
 #define frameEvent_selector(_SELECTOR) (SEL_FrameEventCallFunc)(&_SELECTOR)
 
-struct CCFrameEvent
+struct CC_EX_DLL CCFrameEvent
 {
     CCBone *bone;
     const char *frameEventName;
@@ -57,10 +57,17 @@ struct CCFrameEvent
     int currentFrameIndex;
 };
 
+struct CC_EX_DLL CCMovementEvent
+{
+    CCArmature *armature;
+    MovementEventType movementType;
+    const char *movementID;
+};
+
 /**
  *  @lua NA
  */
-class  CCArmatureAnimation : public CCProcessBase
+class  CC_EX_DLL CCArmatureAnimation : public CCProcessBase
 {
 public:
     /**
@@ -69,7 +76,13 @@ public:
      */
     static CCArmatureAnimation *create(CCArmature *armature);
 public:
+    /**
+     *  @js ctor
+     */
     CCArmatureAnimation();
+    /**
+     *  @js NA
+     */
     virtual ~CCArmatureAnimation(void);
 
     /**
@@ -94,7 +107,7 @@ public:
     virtual float getSpeedScale() const;
 
     //! The animation update speed
-    virtual void setAnimationInternal(float animationInternal);
+    CC_DEPRECATED_ATTRIBUTE virtual void setAnimationInternal(float animationInternal) {};
 
     using CCProcessBase::play;
     /**
@@ -125,13 +138,30 @@ public:
      *         2  : fade in and out
      *
      */
-    void play(const char *animationName, int durationTo = -1, int durationTween = -1,  int loop = -1, int tweenEasing = TWEEN_EASING_MAX);
+    virtual void play(const char *animationName, int durationTo = -1, int durationTween = -1,  int loop = -1, int tweenEasing = TWEEN_EASING_MAX);
 
     /**
      * Play animation by index, the other param is the same to play.
+     * Deprecated, please use playWithIndex
      * @param  animationIndex  the animation index you want to play
      */
-    void playByIndex(int animationIndex,  int durationTo = -1, int durationTween = -1,  int loop = -1, int tweenEasing = TWEEN_EASING_MAX);
+    CC_DEPRECATED_ATTRIBUTE virtual void playByIndex(int animationIndex,  int durationTo = -1, int durationTween = -1,  int loop = -1, int tweenEasing = TWEEN_EASING_MAX);
+    virtual void playWithIndex(int animationIndex,  int durationTo = -1, int durationTween = -1,  int loop = -1, int tweenEasing = TWEEN_EASING_MAX);
+
+    /**
+     * Play several animation by names
+     */
+    virtual void playWithNames(const std::vector<std::string>& movementNames, int durationTo = -1, bool loop = true);
+
+    /**
+     * Play several animation by indexes
+     */
+    virtual void playWithIndexes(const std::vector<int>& movementIndexes, int durationTo = -1, bool loop = true);
+
+
+    // For bindings
+    virtual void playWithArray(cocos2d::CCArray *movementNames, int durationTo = -1, bool loop = true);
+    virtual void playWithIndexArray(cocos2d::CCArray *movementIndexes, int durationTo = -1, bool loop = true);
 
     /**
      * Go to specified frame and play current movement.
@@ -194,7 +224,6 @@ public:
      * Returns a user assigned CCObject
      *
      * @return A user assigned CCObject
-     * @js NA
      */
     virtual CCObject* getUserObject();
     /**
@@ -227,6 +256,13 @@ protected:
      */
     void frameEvent(CCBone *bone, const char *frameEventName, int originFrameIndex, int currentFrameIndex);
 
+    /**
+     * Emit a movement event
+     */
+    void movementEvent(CCArmature *armature, MovementEventType movementType, const char *movementID);
+
+    void updateMovementList();
+
     inline bool isIgnoreFrameEvent() { return m_bIgnoreFrameEvent; }
 
     friend class CCTween;
@@ -250,6 +286,14 @@ protected:
     bool m_bIgnoreFrameEvent;
 
     std::queue<CCFrameEvent*> m_sFrameEventQueue;
+    std::queue<CCMovementEvent*> m_sMovementEventQueue;
+
+    std::vector<std::string> m_sMovementList;
+
+    bool m_bOnMovementList;
+    bool m_bMovementListLoop;
+    unsigned int m_uMovementIndex;
+	int m_iMovementListDurationTo;
 
     CCObject *m_pUserObject;
 protected:

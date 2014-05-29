@@ -38,7 +38,7 @@ NS_CC_EXT_BEGIN
 /**
  *  @lua NA
  */
-class  CCArmature : public CCNodeRGBA, public CCBlendProtocol
+class  CC_EX_DLL CCArmature : public CCNodeRGBA, public CCBlendProtocol
 {
 
 public:
@@ -128,6 +128,9 @@ public:
 
     virtual CCAffineTransform nodeToParentTransform();
 
+    virtual void onEnter();
+    virtual void onExit();
+
     /**
      * Set contentsize and Calculate anchor point.
      */
@@ -147,8 +150,11 @@ public:
 
     virtual CCTextureAtlas *getTexureAtlasWithTexture(CCTexture2D *texture);
 
-
+#if ENABLE_PHYSICS_BOX2D_DETECT || ENABLE_PHYSICS_CHIPMUNK_DETECT
     virtual void setColliderFilter(CCColliderFilter *filter);
+#elif ENABLE_PHYSICS_SAVE_CALCULATED_VERTEX
+    virtual void drawContour();
+#endif
 
 #if ENABLE_PHYSICS_BOX2D_DETECT
     /**
@@ -170,11 +176,6 @@ protected:
      */
     CCBone *createBone(const char *boneName );
 
-    /**! Update blend function
-     * @js NA
-     */
-    void updateBlendType(CCBlendType blendType);
-
     CC_SYNTHESIZE(CCArmatureData *, m_pArmatureData, ArmatureData);
 
     CC_SYNTHESIZE(CCBatchNode *, m_pBatchNode, BatchNode);
@@ -195,7 +196,7 @@ protected:
 
     static std::map<int, CCArmature *> m_sArmatureIndexDic;	//! Use to save armature zorder info,
 
-    ccBlendFunc m_sBlendFunc;                    //! It's required for CCTextureProtocol inheritance
+    ccBlendFunc m_sBlendFunc;                    
 
     CCPoint m_pOffsetPoint;
 

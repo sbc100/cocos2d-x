@@ -45,9 +45,20 @@ bool AppDelegate::applicationDidFinishLaunching()
     tolua_s = pStack->getLuaState();
     tolua_web_socket_open(tolua_s);
 #endif
-    
+        
     std::vector<std::string> searchPaths;
     searchPaths.push_back("cocosbuilderRes");
+    searchPaths.insert(searchPaths.begin(), "ccs-res");
+    searchPaths.insert(searchPaths.begin(), "ccs-res/scenetest/ArmatureComponentTest");
+    searchPaths.insert(searchPaths.begin(), "ccs-res/scenetest/AttributeComponentTest");
+    searchPaths.insert(searchPaths.begin(), "ccs-res/scenetest/BackgroundComponentTest");
+    searchPaths.insert(searchPaths.begin(), "ccs-res/scenetest/EffectComponentTest");
+    searchPaths.insert(searchPaths.begin(), "ccs-res/scenetest/LoadSceneEdtiorFileTest");
+    searchPaths.insert(searchPaths.begin(), "ccs-res/scenetest/ParticleComponentTest");
+    searchPaths.insert(searchPaths.begin(), "ccs-res/scenetest/SpriteComponentTest");
+    searchPaths.insert(searchPaths.begin(), "ccs-res/scenetest/TmxMapComponentTest");
+    searchPaths.insert(searchPaths.begin(), "ccs-res/scenetest/UIComponentTest");
+    searchPaths.insert(searchPaths.begin(), "ccs-res/scenetest/TriggerTest");
 
 #if CC_TARGET_PLATFORM == CC_PLATFORM_BLACKBERRY
     searchPaths.push_back("TestCppResources");

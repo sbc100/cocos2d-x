@@ -128,7 +128,7 @@ void CCTween::play(CCMovementBoneData *movementBoneData, int durationTo, int dur
         m_pTweenData->scaleY += 1;
     }
 
-    if (m_iRawDuration == 0 )
+    if (m_iRawDuration == 0 || m_pMovementBoneData->frameList.count() == 1)
     {
         m_eLoopType = SINGLE_FRAME;
         if(durationTo == 0)
@@ -177,7 +177,7 @@ void CCTween::gotoAndPlay(int frameIndex)
     m_bIsPlaying = true;
     m_bIsComplete = m_bIsPause = false;
 
-    m_fCurrentPercent = (float)m_iCurFrameIndex / (float)m_iRawDuration;
+    m_fCurrentPercent = (float)m_iCurFrameIndex / ((float)m_iRawDuration - 1);
     m_fCurrentFrame = m_iNextFrameIndex * m_fCurrentPercent;
 }
 
@@ -196,7 +196,6 @@ void CCTween::updateHandler()
         case SINGLE_FRAME:
         {
             m_fCurrentPercent = 1;
-            m_bIsComplete = true;
             m_bIsPlaying = false;
         }
         break;
@@ -265,6 +264,9 @@ void CCTween::updateHandler()
         default:
         {
             m_fCurrentFrame = fmodf(m_fCurrentFrame, m_iNextFrameIndex);
+
+            m_iTotalDuration = 0;
+            m_iBetweenDuration = 0;
         }
         break;
         }
@@ -331,7 +333,7 @@ void CCTween::arriveKeyFrame(CCFrameData *keyFrameData)
 
         if (!displayManager->getForceChangeDisplay())
         {
-            displayManager->changeDisplayByIndex(displayIndex, false);
+            displayManager->changeDisplayWithIndex(displayIndex, false);
         }
 
         //! Update bone zorder, bone's zorder is determined by frame zorder and bone zorder
@@ -339,7 +341,7 @@ void CCTween::arriveKeyFrame(CCFrameData *keyFrameData)
         m_pBone->updateZOrder();
 
         //! Update blend type
-        m_pBone->setBlendType(keyFrameData->blendType);
+        m_pBone->setBlendFunc(keyFrameData->blendFunc);
 
         //! Update child armature's movement
         CCArmature *childAramture = m_pBone->getChildArmature();
@@ -395,7 +397,7 @@ float CCTween::updateFrameData(float currentPercent)
         currentPercent = fmodf(currentPercent, 1);
     }
 
-    float playedTime = (float)m_iRawDuration * currentPercent;
+    float playedTime = (float)(m_iRawDuration - 1) * currentPercent;
 
 
     //! If play to current frame's front or back, then find current frame again
@@ -476,9 +478,9 @@ float CCTween::updateFrameData(float currentPercent)
      */
 
     CCTweenType tweenType = (m_eFrameTweenEasing != Linear) ? m_eFrameTweenEasing : m_eTweenEasing;
-    if (tweenType != TWEEN_EASING_MAX && tweenType != Linear)
+    if (tweenType != TWEEN_EASING_MAX && tweenType != Linear && !m_bPassLastFrame)
     {
-        currentPercent = CCTweenFunction::tweenTo(0, 1, currentPercent, 1, tweenType);
+        currentPercent = CCTweenFunction::tweenTo(currentPercent, tweenType, m_pFrom->easingParams);
     }
 
     return currentPercent;

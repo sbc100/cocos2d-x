@@ -25,11 +25,14 @@
 #include "UILayoutParameter.h"
 #include "UILayout.h"
 
-NS_CC_EXT_BEGIN
+NS_CC_BEGIN
 
-UILayoutParameter* UILayoutParameter::create()
+namespace ui {
+
+
+LayoutParameter* LayoutParameter::create()
 {
-    UILayoutParameter* parameter = new UILayoutParameter();
+    LayoutParameter* parameter = new LayoutParameter();
     if (parameter)
     {
         parameter->autorelease();
@@ -39,24 +42,41 @@ UILayoutParameter* UILayoutParameter::create()
     return NULL;
 }
 
-void UILayoutParameter::setMargin(const UIMargin &margin)
+void LayoutParameter::setMargin(const Margin &margin)
 {
-    m_margin = margin;
+    _margin = margin;
 }
 
-const UIMargin& UILayoutParameter::getMargin() const
+const Margin& LayoutParameter::getMargin() const
 {
-    return m_margin;
+    return _margin;
 }
 
-LayoutParameterType UILayoutParameter::getLayoutType() const
+LayoutParameterType LayoutParameter::getLayoutType() const
 {
-    return m_eLayoutParameterType;
+    return _layoutParameterType;
+}
+    
+LayoutParameter* LayoutParameter::clone()
+{
+    LayoutParameter* clonedParameter = createCloneInstance();
+    clonedParameter->copyProperties(this);
+    return clonedParameter;
+}
+    
+LayoutParameter* LayoutParameter::createCloneInstance()
+{
+    return LayoutParameter::create();
+}
+    
+void LayoutParameter::copyProperties(LayoutParameter *model)
+{
+    _margin = model->_margin;
 }
 
-UILinearLayoutParameter* UILinearLayoutParameter::create()
+LinearLayoutParameter* LinearLayoutParameter::create()
 {
-    UILinearLayoutParameter* parameter = new UILinearLayoutParameter();
+    LinearLayoutParameter* parameter = new LinearLayoutParameter();
     if (parameter)
     {
         parameter->autorelease();
@@ -66,19 +86,34 @@ UILinearLayoutParameter* UILinearLayoutParameter::create()
     return NULL;
 }
 
-void UILinearLayoutParameter::setGravity(UILinearGravity gravity)
+void LinearLayoutParameter::setGravity(LinearGravity gravity)
 {
-    m_eLinearGravity = gravity;
+    _linearGravity = gravity;
 }
 
-UILinearGravity UILinearLayoutParameter::getGravity() const
+LinearGravity LinearLayoutParameter::getGravity() const
 {
-    return m_eLinearGravity;
+    return _linearGravity;
+}
+    
+LayoutParameter* LinearLayoutParameter::createCloneInstance()
+{
+    return LinearLayoutParameter::create();
 }
 
-UIRelativeLayoutParameter* UIRelativeLayoutParameter::create()
+void LinearLayoutParameter::copyProperties(LayoutParameter *model)
 {
-    UIRelativeLayoutParameter* parameter = new UIRelativeLayoutParameter();
+    LayoutParameter::copyProperties(model);
+    LinearLayoutParameter* parameter = dynamic_cast<LinearLayoutParameter*>(model);
+    if (parameter)
+    {
+        setGravity(parameter->_linearGravity);
+    }
+}
+
+RelativeLayoutParameter* RelativeLayoutParameter::create()
+{
+    RelativeLayoutParameter* parameter = new RelativeLayoutParameter();
     if (parameter)
     {
         parameter->autorelease();
@@ -88,34 +123,53 @@ UIRelativeLayoutParameter* UIRelativeLayoutParameter::create()
     return NULL;
 }
 
-void UIRelativeLayoutParameter::setAlign(UIRelativeAlign align)
+void RelativeLayoutParameter::setAlign(RelativeAlign align)
 {
-    m_eRelativeAlign = align;
+    _relativeAlign = align;
 }
 
-UIRelativeAlign UIRelativeLayoutParameter::getAlign() const
+RelativeAlign RelativeLayoutParameter::getAlign() const
 {
-    return m_eRelativeAlign;
+    return _relativeAlign;
 }
 
-void UIRelativeLayoutParameter::setRelativeToWidgetName(const char *name)
+void RelativeLayoutParameter::setRelativeToWidgetName(const char *name)
 {
-    m_strRelativeWidgetName = name;
+    _relativeWidgetName = name;
 }
 
-const char* UIRelativeLayoutParameter::getRelativeToWidgetName() const
+const char* RelativeLayoutParameter::getRelativeToWidgetName() const
 {
-    return m_strRelativeWidgetName.c_str();
+    return _relativeWidgetName.c_str();
 }
 
-void UIRelativeLayoutParameter::setRelativeName(const char* name)
+void RelativeLayoutParameter::setRelativeName(const char* name)
 {
-    m_strRelativeLayoutName = name;
+    _relativeLayoutName = name;
 }
 
-const char* UIRelativeLayoutParameter::getRelativeName() const
+const char* RelativeLayoutParameter::getRelativeName() const
 {
-    return m_strRelativeLayoutName.c_str();
+    return _relativeLayoutName.c_str();
+}
+    
+LayoutParameter* RelativeLayoutParameter::createCloneInstance()
+{
+    return RelativeLayoutParameter::create();
 }
 
-NS_CC_EXT_END
+void RelativeLayoutParameter::copyProperties(LayoutParameter *model)
+{
+    LayoutParameter::copyProperties(model);
+    RelativeLayoutParameter* parameter = dynamic_cast<RelativeLayoutParameter*>(model);
+    if (parameter)
+    {
+        setAlign(parameter->_relativeAlign);
+        setRelativeName(parameter->_relativeLayoutName.c_str());
+        setRelativeToWidgetName(parameter->_relativeWidgetName.c_str());
+    }
+}
+
+}
+
+NS_CC_END

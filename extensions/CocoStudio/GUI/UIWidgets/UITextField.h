@@ -27,13 +27,15 @@
 
 #include "../BaseClasses/UIWidget.h"
 
+NS_CC_BEGIN
 
-NS_CC_EXT_BEGIN
+namespace ui {
+
 /**
  *  @js NA
  *  @lua NA
  */
-class UICCTextField: public CCTextFieldTTF, public CCTextFieldDelegate
+class CC_EX_DLL UICCTextField: public CCTextFieldTTF, public CCTextFieldDelegate
 {
 public:
     UICCTextField();
@@ -74,14 +76,14 @@ public:
     void setDeleteBackward(bool deleteBackward);
     bool getDeleteBackward();
 protected:
-    bool m_bMaxLengthEnabled;
-    int m_nMaxLength;
-    bool m_bPasswordEnabled;
-    std::string m_strPasswordStyleText;
-    bool m_bAttachWithIME;
-    bool m_bDetachWithIME;
-    bool m_bInsertText;
-    bool m_bDeleteBackward;
+    bool _maxLengthEnabled;
+    int _maxLength;
+    bool _passwordEnabled;
+    std::string _passwordStyleText;
+    bool _attachWithIME;
+    bool _detachWithIME;
+    bool _insertText;
+    bool _deleteBackward;
 };
 
 typedef enum
@@ -95,37 +97,33 @@ typedef enum
 typedef void (CCObject::*SEL_TextFieldEvent)(CCObject*, TextFiledEventType);
 #define textfieldeventselector(_SELECTOR) (SEL_TextFieldEvent)(&_SELECTOR)
 
-/*******Compatible*******/
-typedef void (CCObject::*SEL_TextFieldAttachWithIMEEvent)(CCObject*);
-#define coco_TextField_AttachWithIME_selector(_SELECTOR) (SEL_TextFieldAttachWithIMEEvent)(&_SELECTOR)
-typedef void (CCObject::*SEL_TextFieldDetachWithIMEEvent)(CCObject*);
-#define coco_TextField_DetachWithIME_selector(_SELECTOR) (SEL_TextFieldDetachWithIMEEvent)(&_SELECTOR)
-typedef void (CCObject::*SEL_TextFieldInsertTextEvent)(CCObject*);
-#define coco_TextField_InsertText_selector(_SELECTOR) (SEL_TextFieldInsertTextEvent)(&_SELECTOR)
-typedef void (CCObject::*SEL_TextFieldDeleteBackwardEvent)(CCObject*);
-#define coco_TextField_DeleteBackward_selector(_SELECTOR) (SEL_TextFieldDeleteBackwardEvent)(&_SELECTOR)
-/************************/
-
-/** class UITextField : public UIWidget
+/** class UITextField : public Widget
 *   @js NA
 *   @lua NA
 */
-class UITextField : public UIWidget
+class CC_EX_DLL TextField : public Widget
 {
+    
+    DECLARE_CLASS_GUI_INFO
+    
 public:
-    UITextField();
-    virtual ~UITextField();
-    static UITextField* create();
-    virtual bool init();
-    virtual void initRenderer();
+    TextField();
+    virtual ~TextField();
+    static TextField* create();
     void setTouchSize(const CCSize &size);
-    void setText(const char* text);
-    void setPlaceHolder(const char* value);
+    CCSize getTouchSize();
+    void setTouchAreaEnabled(bool enable);
+    virtual bool hitTest(const CCPoint &pt);
+    void setText(const std::string& text);
+    void setPlaceHolder(const std::string& value);
+    const char* getPlaceHolder();
     void setFontSize(int size);
-    void setFontName(const char* name);
+    int getFontSize();
+    void setFontName(const std::string& name);
+    const char* getFontName();
     virtual void didNotSelectSelf();
     const char* getStringValue();
-    virtual bool onTouchBegan(const CCPoint &touchPoint);
+    virtual bool onTouchBegan(CCTouch *touch, CCEvent *unused_event);
     void setMaxLengthEnabled(bool enable);
     bool isMaxLengthEnabled();
     void setMaxLength(int length);
@@ -133,6 +131,7 @@ public:
     void setPasswordEnabled(bool enable);
     bool isPasswordEnabled();
     void setPasswordStyleText(const char* styleText);
+    const char* getPasswordStyleText();
     virtual void update(float dt);
     bool getAttachWithIME();
     void setAttachWithIME(bool attach);
@@ -144,66 +143,53 @@ public:
     void setDeleteBackward(bool deleteBackward);
     void addEventListenerTextField(CCObject* target, SEL_TextFieldEvent selecor);
 
-    /*******Compatible*******/
-    void addAttachWithIMEEvent(CCObject* target, SEL_TextFieldAttachWithIMEEvent selecor);
-    void addDetachWithIMEEvent(CCObject* target, SEL_TextFieldDetachWithIMEEvent selecor);
-    void addInsertTextEvent(CCObject* target, SEL_TextFieldInsertTextEvent selecor);
-    void addDeleteBackwardEvent(CCObject* target, SEL_TextFieldDeleteBackwardEvent selecor);
-    /**************/
     virtual void setAnchorPoint(const CCPoint &pt);
-    virtual void setColor(const ccColor3B &color);
-    virtual void setOpacity(int opacity);
     
     /**
      * Returns the "class name" of widget.
      */
-    virtual const char* getDescription() const;
-    /*compatibel*/
-    /**
-     * These methods will be removed
-     */
-    void setMaxLengthEnable(bool is){setMaxLengthEnabled(is);};
-    void setPasswordEnable(bool is){setPasswordEnabled(is);};
-    /************/
+    virtual std::string getDescription() const;
+
     virtual const CCSize& getContentSize() const;
     virtual CCNode* getVirtualRenderer();
     void attachWithIME();
+    virtual void onEnter();
+    
+    void setTextAreaSize(const CCSize &size);
+    void setTextHorizontalAlignment(CCTextAlignment alignment);
+    void setTextVerticalAlignment(CCVerticalTextAlignment alignment);
+    /*=*/
+    
 protected:
+    virtual bool init();
+    virtual void initRenderer();
     // event
     void attachWithIMEEvent();
     void detachWithIMEEvent();
     void insertTextEvent();
     void deleteBackwardEvent();
     virtual void onSizeChanged();
+    virtual void updateTextureColor();
+    virtual void updateTextureOpacity();
+    virtual void updateTextureRGBA();
     void textfieldRendererScaleChangedWithSize();
-    virtual UIWidget* createCloneInstance();
-    virtual void copySpecialProperties(UIWidget* model);
+    virtual Widget* createCloneInstance();
+    virtual void copySpecialProperties(Widget* model);
 protected:
-    UICCTextField* m_pTextFieldRenderer;
+    UICCTextField* _textFieldRenderer;
 
-    float m_fTouchWidth;
-    float m_fTouchHeight;
-    bool m_bUseTouchArea;
+    float _touchWidth;
+    float _touchHeight;
+    bool _useTouchArea;
     
-    CCObject* m_pTextFieldEventListener;
-    SEL_TextFieldEvent m_pfnTextFieldEventSelector;
+    CCObject* _textFieldEventListener;
+    SEL_TextFieldEvent _textFieldEventSelector;
     
-    std::string m_strPasswordStyleText;
-
-    /*******Compatible*******/
-    CCObject* m_pAttachWithIMEListener;
-    CCObject* m_pDetachWithIMEListener;
-    CCObject* m_pInsertTextListener;
-    CCObject* m_pDeleteBackwardListener;
-    
-    SEL_TextFieldAttachWithIMEEvent m_pfnAttachWithIMESelector;
-    SEL_TextFieldDetachWithIMEEvent m_pfnDetachWithIMESelector;
-    SEL_TextFieldInsertTextEvent m_pfnInsertTextSelector;
-    SEL_TextFieldDeleteBackwardEvent m_pfnDeleteBackwardSelector;
-    /**************/
-
+    std::string _passwordStyleText;
 };
 
-NS_CC_EXT_END
+}
 
-#endif /* defined(__CocoGUI__UITextField__) */
+NS_CC_END
+
+#endif /* defined(__TextField__) */
