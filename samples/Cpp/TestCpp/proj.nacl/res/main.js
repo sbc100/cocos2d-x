@@ -9,8 +9,6 @@ chrome.app.runtime.onLaunched.addListener(function() {
      height: height,
      minWidth: width,
      minHeight: height,
-     type: 'panel',
-     left: (screenWidth-width)/2,
-     top: (screenHeight-height)/2
+     type: 'panel'
   });
 });
