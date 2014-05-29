@@ -49,7 +49,7 @@ class CCBone;
 class CCColliderFilter
 {
 public:
-    ~CCColliderFilter() { }
+    virtual ~CCColliderFilter() { }
 
 #if ENABLE_PHYSICS_BOX2D_DETECT
 public:
