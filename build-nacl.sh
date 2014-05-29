@@ -33,20 +33,24 @@ mkdir -p $OUTPUT_RELEASE
 export MAKEFLAGS="-j10 PLATFORM=nacl"
 
 BASE_PATH=${PATH}
-export PATH=${NACL_SDK_ROOT}/toolchain/linux_x86_glibc/bin:${BASE_PATH}
-set -x
-make NACL_GLIBC=1 NACL_ARCH=x86_64 DEBUG=1 $*
-make NACL_GLIBC=1 NACL_ARCH=x86_64 DEBUG=0 $*
-make NACL_GLIBC=1 NACL_ARCH=i686 DEBUG=1 $*
-make NACL_GLIBC=1 NACL_ARCH=i686 DEBUG=0 $*
-set +x
+
+if [ "${NACL_GLIBC}" = "1" ]; then
+  export PATH=${NACL_SDK_ROOT}/toolchain/linux_x86_glibc/bin:${BASE_PATH}
+  set -x
+  make NACL_GLIBC=1 NACL_ARCH=x86_64 DEBUG=1 $*
+  make NACL_GLIBC=1 NACL_ARCH=x86_64 DEBUG=0 $*
+  make NACL_GLIBC=1 NACL_ARCH=i686 DEBUG=1 $*
+  make NACL_GLIBC=1 NACL_ARCH=i686 DEBUG=0 $*
+  set +x
+  exit 0
+fi
 
 export PATH=${NACL_SDK_ROOT}/toolchain/linux_x86_newlib/bin:${BASE_PATH}
 set -x
-make NACL_ARCH=i686 DEBUG=1 $*
-make NACL_ARCH=i686 DEBUG=0 $*
 make NACL_ARCH=x86_64 DEBUG=1 $*
 make NACL_ARCH=x86_64 DEBUG=0 $*
+make NACL_ARCH=i686 DEBUG=1 $*
+make NACL_ARCH=i686 DEBUG=0 $*
 set +x
 
 export PATH=${NACL_SDK_ROOT}/toolchain/linux_arm_newlib/bin:${BASE_PATH}
