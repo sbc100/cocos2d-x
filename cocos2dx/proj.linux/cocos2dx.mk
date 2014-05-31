@@ -2,7 +2,7 @@ all:
 
 CC = gcc
 CXX = g++
-CCFLAGS += -MMD -Wall -fPIC # -Werror
+CFLAGS += -MMD -Wall -fPIC # -Werror
 CXXFLAGS += -MMD -Wall -fPIC # -Werror
 ARFLAGS = cr
 

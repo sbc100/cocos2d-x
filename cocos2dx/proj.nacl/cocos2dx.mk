@@ -21,7 +21,7 @@ NACL_LIBC = newlib
 endif
 
 NACL_ARCH ?= x86_64
-CCFLAGS += -Wall # -Werror
+CFLAGS += -Wall # -Werror
 # GCC 4.6 is primary platform for cocos2d v.3, because it's default compiler for Android,
 # Blackberry, some Linux distributions.It supports all important features of c++11, but have
 # no flag "-std=c++11" (which was turned on in version 4.7).
