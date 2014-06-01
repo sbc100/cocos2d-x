@@ -14,12 +14,6 @@ endif
 
 all:
 
-ifeq ($(NACL_GLIBC),1)
-NACL_LIBC = glibc
-else
-NACL_LIBC = newlib
-endif
-
 NACL_ARCH ?= x86_64
 CFLAGS += -Wall # -Werror
 # GCC 4.6 is primary platform for cocos2d v.3, because it's default compiler for Android,
@@ -54,14 +48,14 @@ ifeq ($(NACL_ARCH),pnacl)
 ARCH_DIR := $(NACL_ARCH)
 else
 ifeq ($(NACL_ARCH),i686)
-ARCH_DIR := $(NACL_LIBC)_x86_32
+ARCH_DIR := $(TOOLCHAIN)_x86_32
 else
-ARCH_DIR := $(NACL_LIBC)_$(NACL_ARCH)
+ARCH_DIR := $(TOOLCHAIN)_$(NACL_ARCH)
 endif
 endif
 
 ifeq ($(NACL_ARCH),pnacl)
-PORTS_ARCH_DIR := $(NACL_LIBC)_$(NACL_ARCH)
+PORTS_ARCH_DIR := newlib_pnacl
 EXE_EXT := .pexe
 TARGET_SUFFIX = $(EXE_EXT)
 else
@@ -73,10 +67,10 @@ endif
 NACLPORTS_ROOT ?= $(NACL_SDK_ROOT)/ports
 NACLPORTS_INCLUDE ?= $(NACLPORTS_ROOT)/include
 OUT_DIR ?= obj
-OBJ_DIR ?= $(OUT_DIR)/$(NACL_LIBC)_$(NACL_ARCH)
+OBJ_DIR ?= $(OUT_DIR)/$(TOOLCHAIN)_$(NACL_ARCH)
 LIB_DIR ?= $(COCOS_ROOT)/lib/nacl/$(ARCH_DIR)
 
-ifeq ($(NACL_GLIBC),1)
+ifeq ($(TOOLCHAIN),glibc)
 COCOS_LIB = $(LIB_DIR)/libcocos2d.so
 else
 COCOS_LIB = $(LIB_DIR)/libcocos2d.a
@@ -95,6 +89,7 @@ INCLUDES += -I$(COCOS_SRC) \
 	-I$(COCOS_SRC)/platform \
 	-I$(COCOS_SRC)/platform/nacl \
 	-I$(NACL_SDK_ROOT)/include \
+	-I$(NACL_SDK_ROOT)/include/$(TOOLCHAIN) \
 	-isystem $(NACLPORTS_INCLUDE) \
 	-isystem $(NACLPORTS_INCLUDE)/libxml2 \
 	-isystem $(NACLPORTS_INCLUDE)/freetype2
@@ -126,15 +121,14 @@ LOG_LINK = @echo " LINK $@";
 LOG_LDSO = @echo " LDSO $@";
 endif
 
-NMF_FLAGS = --objdump=i686-nacl-objdump
 NMF_FLAGS += -L$(COCOS_ROOT)/lib/nacl/glibc_x86_32/$(CONFIG)
 NMF_FLAGS += -L$(COCOS_ROOT)/lib/nacl/glibc_x86_64/$(CONFIG)
-NMF_FLAGS += -L$(NACL_SDK_ROOT)/toolchain/linux_x86_$(NACL_LIBC)/x86_64-nacl/lib32/
-NMF_FLAGS += -L$(NACL_SDK_ROOT)/toolchain/linux_x86_$(NACL_LIBC)/x86_64-nacl/lib64/
-NMF_FLAGS += -L$(NACL_SDK_ROOT)/lib/$(NACL_LIBC)_x86_32/Release
-NMF_FLAGS += -L$(NACL_SDK_ROOT)/lib/$(NACL_LIBC)_x86_64/Release
-NMF_FLAGS += -L$(NACLPORTS_ROOT)/lib/$(NACL_LIBC)_x86_32/Release
-NMF_FLAGS += -L$(NACLPORTS_ROOT)/lib/$(NACL_LIBC)_x86_64/Release
+NMF_FLAGS += -L$(NACL_SDK_ROOT)/toolchain/linux_x86_$(TOOLCHAIN)/x86_64-nacl/lib32/
+NMF_FLAGS += -L$(NACL_SDK_ROOT)/toolchain/linux_x86_$(TOOLCHAIN)/x86_64-nacl/lib64/
+NMF_FLAGS += -L$(NACL_SDK_ROOT)/lib/$(TOOLCHAIN)_x86_32/Release
+NMF_FLAGS += -L$(NACL_SDK_ROOT)/lib/$(TOOLCHAIN)_x86_64/Release
+NMF_FLAGS += -L$(NACLPORTS_ROOT)/lib/$(TOOLCHAIN)_x86_32/Release
+NMF_FLAGS += -L$(NACLPORTS_ROOT)/lib/$(TOOLCHAIN)_x86_64/Release
 
 # The default library search path consists of the cocos2dx library path, the
 # main nacl sdk library path and the naclports library path.
@@ -146,7 +140,7 @@ LDFLAGS += -L$(NACLPORTS_ROOT)/lib/$(PORTS_MULTILIB_DIR)
 CFLAGS += -Wno-unknown-pragmas
 CXXFLAGS += -Wno-unknown-pragmas
 
-ifeq ($(NACL_GLIBC),1)
+ifeq ($(TOOLCHAIN),glibc)
 CFLAGS += -fPIC
 CXXFLAGS += -fPIC
 endif

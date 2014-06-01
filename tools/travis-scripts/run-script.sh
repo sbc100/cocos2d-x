@@ -40,8 +40,10 @@ fi
 if [ "$PLATFORM"x = "nacl"x ]; then
     cd $COCOS2DX_ROOT
     export NACL_SDK_ROOT=$HOME/bin/nacl_sdk/pepper_canary
-    if [ "${NACL_GLIBC}" = "1" ]; then
+    if [ "${TOOLCHAIN}" = "glibc" ]; then
         export PATH=$PATH:$NACL_SDK_ROOT/toolchain/linux_x86_glibc/bin
+    elif [ "${TOOLCHAIN}" = "pnacl" ]; then
+        export PATH=$PATH:$NACL_SDK_ROOT/toolchain/linux_pnacl/bin
     else
         export PATH=$PATH:$NACL_SDK_ROOT/toolchain/linux_x86_newlib/bin
     fi

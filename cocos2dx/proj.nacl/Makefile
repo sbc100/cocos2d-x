@@ -1,10 +1,6 @@
 COCOS_ROOT = ../..
 COCOS_SRC_ROOT = $(COCOS_ROOT)/cocos2dx
 
-INCLUDES = \
-	-I$(NACL_SDK_ROOT)/include \
-	-I$(NACL_SDK_ROOT)/include/newlib
-
 SOURCES = ../actions/CCAction.cpp \
 ../actions/CCActionCamera.cpp \
 ../actions/CCActionEase.cpp \
@@ -140,7 +136,7 @@ ifeq ($(NACL_ARCH),pnacl)
 CXXFLAGS += -Wno-tautological-constant-out-of-range-compare
 endif
 
-ifeq ($(NACL_GLIBC),1)
+ifeq ($(TOOLCHAIN),glibc)
 TARGET = $(LIB_DIR)/libcocos2d.so
 else
 TARGET = $(LIB_DIR)/libcocos2d.a
@@ -148,7 +144,7 @@ endif
 
 all: $(TARGET)
 
-ifeq ($(NACL_GLIBC),1)
+ifeq ($(TOOLCHAIN),glibc)
 $(TARGET): $(OBJECTS) $(CORE_MAKEFILE_LIST)
 	@mkdir -p $(@D)
 	$(LOG_LDSO)$(NACL_CXX) -shared $(CXXFLAGS) -o $@ $(OBJECTS)

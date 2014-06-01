@@ -169,7 +169,7 @@ NMF = $(BIN_DIR)/$(APP_NAME).nmf
 
 all: $(NMF)
 
-ifeq ($(NACL_GLIBC),1)
+ifeq ($(TOOLCHAIN),glibc)
 LIB_DEPS = $(COCOS_LIB) $(LIB_DIR)/libcocosdenshion.so $(LIB_DIR)/libbox2d.so
 else
 LIB_DEPS = $(COCOS_LIB) $(LIB_DIR)/libcocosdenshion.a $(LIB_DIR)/libbox2d.a

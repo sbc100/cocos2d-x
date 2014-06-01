@@ -33,34 +33,35 @@ mkdir -p $OUTPUT_RELEASE
 export MAKEFLAGS="-j10 PLATFORM=nacl"
 
 BASE_PATH=${PATH}
+export TOOLCHAIN=${TOOLCHAIN:-newlib}
+echo $TOOLCHAIN
 
-if [ "${NACL_GLIBC}" = "1" ]; then
+if [ "${TOOLCHAIN}" = "glibc" ]; then
   export PATH=${NACL_SDK_ROOT}/toolchain/linux_x86_glibc/bin:${BASE_PATH}
   set -x
-  make NACL_GLIBC=1 NACL_ARCH=x86_64 DEBUG=1 $*
-  make NACL_GLIBC=1 NACL_ARCH=x86_64 DEBUG=0 $*
-  make NACL_GLIBC=1 NACL_ARCH=i686 DEBUG=1 $*
-  make NACL_GLIBC=1 NACL_ARCH=i686 DEBUG=0 $*
+  make NACL_ARCH=x86_64 DEBUG=1 $*
+  make NACL_ARCH=x86_64 DEBUG=0 $*
+  make NACL_ARCH=i686 DEBUG=1 $*
+  make NACL_ARCH=i686 DEBUG=0 $*
   set +x
-  exit 0
+elif [ "${TOOLCHAIN}" = "newlib" ]; then
+  export PATH=${NACL_SDK_ROOT}/toolchain/linux_x86_newlib/bin:${BASE_PATH}
+  set -x
+  make NACL_ARCH=x86_64 DEBUG=1 $*
+  make NACL_ARCH=x86_64 DEBUG=0 $*
+  make NACL_ARCH=i686 DEBUG=1 $*
+  make NACL_ARCH=i686 DEBUG=0 $*
+  set +x
+
+  export PATH=${NACL_SDK_ROOT}/toolchain/linux_arm_newlib/bin:${BASE_PATH}
+  set -x
+  make NACL_ARCH=arm DEBUG=1 $*
+  make NACL_ARCH=arm DEBUG=0 $*
+  set +x
+elif [ "${TOOLCHAIN}" = "pnacl" ]; then
+  export PATH=${NACL_SDK_ROOT}/toolchain/linux_pnacl/bin:${BASE_PATH}
+  set -x
+  make NACL_ARCH=pnacl DEBUG=1 $*
+  make NACL_ARCH=pnacl DEBUG=0 $*
+  set +x
 fi
-
-export PATH=${NACL_SDK_ROOT}/toolchain/linux_x86_newlib/bin:${BASE_PATH}
-set -x
-make NACL_ARCH=x86_64 DEBUG=1 $*
-make NACL_ARCH=x86_64 DEBUG=0 $*
-make NACL_ARCH=i686 DEBUG=1 $*
-make NACL_ARCH=i686 DEBUG=0 $*
-set +x
-
-export PATH=${NACL_SDK_ROOT}/toolchain/linux_arm_newlib/bin:${BASE_PATH}
-set -x
-make NACL_ARCH=arm DEBUG=1 $*
-make NACL_ARCH=arm DEBUG=0 $*
-set +x
-
-export PATH=${NACL_SDK_ROOT}/toolchain/linux_pnacl/bin:${BASE_PATH}
-set -x
-make NACL_ARCH=pnacl DEBUG=1 $*
-make NACL_ARCH=pnacl DEBUG=0 $*
-set +x

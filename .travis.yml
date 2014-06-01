@@ -3,9 +3,8 @@ env:
   matrix:
   - GEN_JSB=YES
   - PLATFORM=linux DEBUG=1
-  - PLATFORM=nacl DEBUG=1
-  - PLATFORM=nacl DEBUG=1 NACL_ARCH=arm
-  - PLATFORM=nacl DEBUG=1 NACL_GLIBC=1
+  - PLATFORM=nacl DEBUG=1 TOOLCHAIN=newlib
+  - PLATFORM=nacl DEBUG=1 TOOLCHAIN=glibc
   - PLATFORM=android
   - PLATFORM=emscripten DEBUG=1
   global:

@@ -6,7 +6,7 @@ SOURCES = ../blackberry/SimpleAudioEngine.cpp
 
 include $(COCOS_ROOT)/cocos2dx/proj.nacl/cocos2dx.mk
 
-ifeq ($(NACL_GLIBC),1)
+ifeq ($(TOOLCHAIN),glibc)
 TARGET = $(LIB_DIR)/libcocosdenshion.so
 else
 TARGET = $(LIB_DIR)/libcocosdenshion.a
@@ -14,7 +14,7 @@ endif
 
 all: $(TARGET)
 
-ifeq ($(NACL_GLIBC),1)
+ifeq ($(TOOLCHAIN),glibc)
 $(TARGET): $(OBJECTS) $(CORE_MAKEFILE_LIST)
 	@mkdir -p $(@D)
 	$(LOG_LDSO)$(NACL_CXX) -shared $(CXXFLAGS) -o $@ $(OBJECTS)

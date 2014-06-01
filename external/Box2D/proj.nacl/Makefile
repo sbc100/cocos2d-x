@@ -70,7 +70,7 @@ else
 DEFINES =
 endif
 
-ifeq ($(NACL_GLIBC),1)
+ifeq ($(TOOLCHAIN),glibc)
 TARGET = $(LIB_DIR)/libbox2d.so
 CXXFLAGS += -fPIC
 else
@@ -79,7 +79,7 @@ endif
 
 all: $(TARGET)
 
-ifeq ($(NACL_GLIBC),1)
+ifeq ($(TOOLCHAIN),glibc)
 $(TARGET): $(OBJECTS) $(CORE_MAKEFILE_LIST)
 	@mkdir -p $(@D)
 	$(LOG_LDSO)$(NACL_CXX) -shared $(CXXFLAGS) -o $(TARGET) $(OBJECTS)
