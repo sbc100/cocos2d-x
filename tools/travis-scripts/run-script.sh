@@ -6,7 +6,6 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 COCOS2DX_ROOT="$DIR"/../..
 CORES=`nproc`
 echo ${CORES}
-export NDK_ROOT=$HOME/bin/android-ndk
 
 if [ "$GEN_JSB"x = "YES"x ]; then
     if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
@@ -24,9 +23,10 @@ build_android()
 }
 
 if [ "$PLATFORM"x = "android"x ]; then
+    export NDK_ROOT=$HOME/bin/android-ndk
     cd $COCOS2DX_ROOT/tools/travis-scripts
-    #./generate-jsbindings.sh
-    
+    ./generate-jsbindings.sh
+
     cd $COCOS2DX_ROOT
     mkdir -p android_build_objs
     build_android Cpp HelloCpp
